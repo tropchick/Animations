@@ -7,7 +7,10 @@
     "studio": "remotion studio",
     "audio": "python3 audio/make_audio.py",
     "render": "python3 audio/make_audio.py && remotion render AirGone out/air-gone.mp4 --concurrency=4 --crf=18",
-    "frames": "remotion render AirGone out/frames --sequence --image-format=jpeg"
+    "frames": "remotion render AirGone out/frames --sequence --image-format=jpeg",
+    "audio:gravity": "python3 audio/make_gravity_audio.py",
+    "render:gravity": "python3 audio/make_gravity_audio.py && remotion render GravityFlip out/gravity-flip.mp4 --concurrency=4 --crf=18 --gl=swangle",
+    "stills": "node tools/stills.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",

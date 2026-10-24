@@ -18,6 +18,9 @@ export type PersonPose = {
   mouth?: number;
   // Eye height multiplier: above 1 = wide eyes.
   eyes?: number;
+  // Hip pitch per leg (positive swings the leg forward).
+  legL?: number;
+  legR?: number;
 };
 
 type PersonProps = {
@@ -59,6 +62,8 @@ export const Person: React.FC<PersonProps> = ({
     chest = 1,
     mouth = 0,
     eyes = 1,
+    legL = 0,
+    legR = 0,
   } = pose;
   const headScale = child ? 1.28 : 1;
   const dark = '#2a2622';
@@ -81,11 +86,13 @@ export const Person: React.FC<PersonProps> = ({
       rotation={lying ? [-Math.PI / 2 + 0.25, rotation, 0] : [0, rotation, 0]}
       scale={scale}
     >
-      {/* legs */}
-      <Box size={[0.2, 0.86, 0.22]} position={[-0.12, 0.47, 0]} color={pants} />
-      <Box size={[0.2, 0.86, 0.22]} position={[0.12, 0.47, 0]} color={pants} />
-      <Box size={[0.21, 0.08, 0.3]} position={[-0.12, 0.04, 0.04]} color="#efefef" />
-      <Box size={[0.21, 0.08, 0.3]} position={[0.12, 0.04, 0.04]} color="#efefef" />
+      {/* legs, pivoting at the hips */}
+      {([[-0.12, legL], [0.12, legR]] as const).map(([lx, pitch]) => (
+        <group key={lx} position={[lx, 0.9, 0]} rotation={[-pitch, 0, 0]}>
+          <Box size={[0.2, 0.86, 0.22]} position={[0, -0.43, 0]} color={pants} />
+          <Box size={[0.21, 0.08, 0.3]} position={[0, -0.86, 0.04]} color="#efefef" />
+        </group>
+      ))}
       {/* torso: the chest scale shows the lungs emptying */}
       <group position={[0, 1.22, 0]} scale={[1, 1, chest]}>
         <Box size={[0.54, 0.7, 0.3]} color={shirt} />
