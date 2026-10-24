@@ -1,0 +1,29 @@
+{
+  "name": "what-if-videos",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "studio": "remotion studio",
+    "audio": "python3 audio/make_audio.py",
+    "render": "python3 audio/make_audio.py && remotion render AirGone out/air-gone.mp4 --concurrency=4 --crf=18",
+    "frames": "remotion render AirGone out/frames --sequence --image-format=jpeg"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/spectral": "^5.3.0",
+    "@react-three/fiber": "^9.8.2",
+    "@remotion/cli": "^4.0.538",
+    "@remotion/media": "^4.0.538",
+    "@remotion/three": "^4.0.538",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.538",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/three": "^0.186.0",
+    "typescript": "^7.0.2"
+  }
+}
