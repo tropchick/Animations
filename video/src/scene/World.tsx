@@ -69,11 +69,14 @@ const Grill: React.FC<{v: number}> = ({v}) => {
       )}
       <Box size={[1.0, 0.36, 0.55]} position={[0, 0.96, 0]} color="#3a3d42" />
       <Box size={[0.94, 0.02, 0.5]} position={[0, 1.15, 0]} color="#1e1f22" shadow={false} />
-      <group position={[0, 1.14, -0.28]} rotation={[-1.25, 0, 0]}>
-        <Box size={[1.0, 0.06, 0.55]} position={[0, 0, 0.27]} color="#43474d" />
+      {/* lid: hinged at the back (far from dad) and opened away from him */}
+      <group position={[0, 1.14, 0.28]} rotation={[2.0, 0, 0]}>
+        <Box size={[1.0, 0.07, 0.52]} position={[0, 0.035, -0.26]} color="#43474d" />
+        <Box size={[0.5, 0.04, 0.04]} position={[0, 0.1, -0.5]} color="#1e1f22" shadow={false} />
       </group>
-      {[-0.25, 0.05, 0.3].map((bx, i) => (
-        <Cyl key={i} rTop={0.09} rBottom={0.09} height={0.045} segments={8} position={[bx, 1.18, 0.05 * (i - 1)]} color="#6e3e22" />
+      {/* patties kept clear of the spatula's path (x 0.2..0.4, z > 0) */}
+      {([[-0.3, 0.02], [-0.04, -0.04], [0.3, -0.16]] as const).map(([bx, bz], i) => (
+        <Cyl key={i} rTop={0.09} rBottom={0.09} height={0.045} segments={8} position={[bx, 1.18, bz]} color="#6e3e22" />
       ))}
       <Flame position={[0, 1.13, 0]} t={worldTime(v)} visible={v < T.airGone} />
       <Box size={[0.3, 0.04, 0.2]} position={[0.75, 0.9, 0]} color="#3a3d42" />
@@ -127,6 +130,17 @@ export const World: React.FC<{v: number}> = ({v}) => {
       : lerp(-0.18, 0.05, ramp(v, T.airBack + 1, T.airBack + 3));
   const dadEyes = v < T.airGone ? 1 : v < T.airBack ? 1 + 0.75 * ramp(v, 12.3, 15) : lerp(1.75, 1.15, ramp(v, T.airBack, T.airBack + 4));
   const armRelax = ramp(v, T.airBack + 1.5, T.airBack + 3.5);
+
+  // Flipping pose keeps the blade just above the grate. When he lets go (58.5..60.5s) he lifts the
+  // spatula, pulls the hand to his chest, then lowers the arm with the blade pointing up,
+  // so it never passes through the grill. Checked offline against the grill boxes.
+  const lift = ramp(v, 58.5, 59.0);
+  const pull = ramp(v, 58.7, 59.4);
+  const lower = ramp(v, 59.5, 60.5);
+  const dadArm = lerp(lerp(0.75 + 0.08 * flip, 0.15, pull), 0.1, lower);
+  const dadElbow = lerp(lerp(1.33 - 0.05 * flip, 2.4, pull), 0.15, lower);
+  // Blade angle in the world: 0 = level, negative = tip down.
+  const spatulaPitch = lerp(lerp(-0.16 + 0.16 * flip, 1.0, lift), 1.2, ramp(v, 59.4, 59.9));
 
   // ----- Girl -----
   const girlArm = lerp(1.55, 0.2, armRelax);
@@ -205,17 +219,17 @@ export const World: React.FC<{v: number}> = ({v}) => {
         pants="#9ec0e6"
         hair="#8a5a34"
         pose={{
-          armR: [lerp(0.95 + 0.22 * flip, 0.1, armRelax), -0.1],
-          elbowR: lerp(0.7, 0.1, armRelax),
-          armL: [lerp(0.5, 0.05, armRelax), 0.1],
-          elbowL: lerp(0.6, 0.1, armRelax),
+          armR: [dadArm, -0.1],
+          elbowR: dadElbow,
+          armL: [lerp(0.25, 0.05, armRelax), 0.1],
+          elbowL: lerp(0.5, 0.1, armRelax),
           head: [dadHead, 0],
           chest: dadChest,
           mouth: Math.max(0, dadMouth),
           eyes: dadEyes,
         }}
         rightHand={
-          <group rotation={[1.2, 0, 0]}>
+          <group rotation={[dadArm + dadElbow - spatulaPitch, 0, 0]}>
             <Box size={[0.03, 0.03, 0.32]} position={[0, 0, 0.16]} color="#5b3a24" shadow={false} />
             <Box size={[0.12, 0.01, 0.12]} position={[0, 0, 0.36]} color="#c8c8c8" shadow={false} />
           </group>
