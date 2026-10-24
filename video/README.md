@@ -6,8 +6,9 @@
 |---|---|---|---|
 | `AirGone` | What if the air disappeared for 5 seconds? (1:08) | `../scripts/what-if-air-disappeared.md` | `../renders/air-gone.mp4` |
 | `GravityFlip` | What if gravity flipped for 10 seconds? (1:05) | `../scripts/what-if-gravity-flipped.md` | `../renders/gravity-flip.mp4` |
+| `SlimeEp1` | Хроника слизи, серия 1 «Утечка» (1:25) | `../scripts/slime-chronicle-ep1.md` | `../renders/slime-chronicle-ep1.mp4` |
 
-Оба вертикальные 1080×1920, 30 кадров в секунду.
+Все вертикальные 1080×1920, 30 кадров в секунду.
 
 ## What if the air disappeared for 5 seconds?
 
@@ -58,3 +59,27 @@ tools/sheet.sh out/stills out/sheet.jpg              # раскадровка и
 | `src/gravity/camera.tsx` | Все 22 плана камеры и тряска на ударах |
 | `src/gravity/Overlay.tsx` | Таймер слева, заголовок и надписи |
 | `audio/make_gravity_audio.py` | Весь звук ролика, синтезирован кодом |
+
+## Хроника слизи, серия 1 «Утечка»
+
+Озвучка сделана в ElevenLabs (голос VASKO, Multilingual v2) и лежит в `audio/voice/`. Паузы в ней вышли короткими, поэтому скрипт звука сам режет голос по словам и вставляет тишину. От этого же зависят все тайминги кадров.
+
+```bash
+cd video
+pip install numpy scipy
+npm run render:slime     # режет голос, делает звук и cues.json, рендерит out/slime-ep1.mp4
+npm run stills -- SlimeEp1 out/stills 3 31 80   # отдельные кадры по секундам для проверки
+```
+
+| Файл | Что внутри |
+|---|---|
+| `audio/make_slime_audio.py` | Монтаж голоса (`PAUSES`: где и сколько тишины вставить), границы всех 23 кадров, весь остальной звук |
+| `audio/voice/slime-ep1-words.json` | Время каждого слова в двух файлах озвучки (распознано один раз, чтобы не ставить распознавалку) |
+| `src/slime/cues.json` | Создаётся скриптом звука: время слов в видео, кадры, огибающая голоса для экрана диктофона |
+| `src/slime/camera.tsx` | Все планы камеры, дрожание «с рук» и толчки |
+| `src/slime/Hall.tsx` | Зал «Ковыль»: стеклянная камера с замками, рука-манипулятор, пульт, стол Глеба, колпак, руки в перчатках |
+| `src/slime/Macro.tsx` | Макро-мир: стальная поверхность с ямкой, крупинки, пыль, стенка колпака |
+| `src/slime/Corridor.tsx` | Коридор с запертой дверью |
+| `src/slime/Gleb.tsx` | Глеб и отдельная рука в перчатке для крупных планов |
+| `src/slime/screens.tsx` | Экраны: диктофон с волной голоса, счётчик образцов, микроскоп, страница блокнота |
+| `src/slime/Overlay.tsx` | Русские надписи, рамка микроскопа, боке, виньетка, зерно, финальная карточка |

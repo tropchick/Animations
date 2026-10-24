@@ -10,9 +10,12 @@
     "frames": "remotion render AirGone out/frames --sequence --image-format=jpeg",
     "audio:gravity": "python3 audio/make_gravity_audio.py",
     "render:gravity": "python3 audio/make_gravity_audio.py && remotion render GravityFlip out/gravity-flip.mp4 --concurrency=4 --crf=18 --gl=swangle",
-    "stills": "node tools/stills.mjs"
+    "stills": "node tools/stills.mjs",
+    "audio:slime": "python3 audio/make_slime_audio.py",
+    "render:slime": "python3 audio/make_slime_audio.py && tools/render-chunks.sh SlimeEp1 public/audio/slime-ep1.wav out/slime-ep1.mp4 2561"
   },
   "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/spectral": "^5.3.0",
     "@react-three/fiber": "^9.8.2",
