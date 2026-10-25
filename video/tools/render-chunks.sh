@@ -11,8 +11,13 @@ while [ $start -lt $total ]; do
   end=$((start + size - 1)); [ $end -ge $total ] && end=$((total - 1))
   f="$dir/part-$(printf %05d $start).mp4"
   if [ ! -f "$f" ]; then
-    npx remotion render "$id" "$f.tmp.mp4" --frames=$start-$end --muted --concurrency=4 --crf=18 --gl=swangle --log=error
-    mv "$f.tmp.mp4" "$f"
+    # a busy machine sometimes trips a timeout inside Remotion; try a chunk up to 3 times
+    for try in 1 2 3; do
+      if npx remotion render "$id" "$f.tmp.mp4" --frames=$start-$end --muted --concurrency=4 --crf=18 --gl=swangle --log=error --timeout=120000; then
+        mv "$f.tmp.mp4" "$f"; break
+      fi
+      [ $try -eq 3 ] && exit 1
+    done
   fi
   echo "file '$(basename "$f")'" >> "$dir/list.txt"
   start=$((end + 1))
