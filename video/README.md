@@ -6,8 +6,8 @@
 |---|---|---|---|
 | `AirGone` | What if the air disappeared for 5 seconds? (1:08) | `../scripts/what-if-air-disappeared.md` | `../renders/air-gone.mp4` |
 | `GravityFlip` | What if gravity flipped for 10 seconds? (1:05) | `../scripts/what-if-gravity-flipped.md` | `../renders/gravity-flip.mp4` |
-| `SlimeEp1` | Хроника слизи, серия 1 «Утечка» (1:25) | `../scripts/slime-chronicle-ep1.md` | `../renders/slime-chronicle-ep1.mp4` |
-| `SlimeEp2` | Хроника слизи, серия 2 «Первые сутки» (1:31) | `../scripts/slime-chronicle-ep2.md` | `../renders/slime-chronicle-ep2.mp4` |
+| `SlimeEp1` | Хроника слизи, серия 1 «Утечка» (1:29) | `../scripts/slime-chronicle-ep1.md` | `../renders/slime-chronicle-ep1.mp4` |
+| `SlimeEp2` | Хроника слизи, серия 2 «Первые сутки» (1:30) | `../scripts/slime-chronicle-ep2.md` | `../renders/slime-chronicle-ep2.mp4` |
 
 Все вертикальные 1080×1920, 30 кадров в секунду.
 
