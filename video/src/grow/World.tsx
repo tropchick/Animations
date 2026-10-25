@@ -33,11 +33,10 @@ const skyFragment = /* glsl */ `
 
 const Sky: React.FC<{black: number}> = ({black}) => {
   const uniforms = useMemo(() => ({uBlack: {value: 0}}), []);
-  uniforms.uBlack.value = black;
   return (
     <mesh renderOrder={-10} frustumCulled={false}>
       <sphereGeometry args={[7000, 32, 16]} />
-      <shaderMaterial side={THREE.BackSide} depthWrite={false} fog={false} uniforms={uniforms} vertexShader={skyVertex} fragmentShader={skyFragment} />
+      <shaderMaterial side={THREE.BackSide} depthWrite={false} fog={false} uniforms={uniforms} uniforms-uBlack-value={black} vertexShader={skyVertex} fragmentShader={skyFragment} />
     </mesh>
   );
 };

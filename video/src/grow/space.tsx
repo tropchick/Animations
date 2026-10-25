@@ -91,19 +91,20 @@ const atmoFragment = /* glsl */ `
 const Earth: React.FC<{v: number}> = ({v}) => {
   const uniforms = useMemo(() => ({uSun: {value: SUN_DIR.clone()}, uHeat: {value: 0}, uDark: {value: 0}}), []);
   const atmo = useMemo(() => ({uSun: {value: SUN_DIR.clone()}, uK: {value: 1}}), []);
-  uniforms.uHeat.value = heatK(v) * (1 - darkK(v));
-  uniforms.uDark.value = darkK(v);
-  atmo.uK.value = 0.9 * (1 - ramp(v, 50, 53));
+  // R3F copies the uniforms object once, so changing values must go through the uniforms-*-value props
+  const heat = heatK(v) * (1 - darkK(v));
+  const dark = darkK(v);
+  const atmoK = 0.9 * (1 - ramp(v, 50, 53));
   return (
     <group rotation={[0.35, v * 0.05, 0]}>
       <mesh>
         <sphereGeometry args={[R, 96, 64]} />
-        <shaderMaterial uniforms={uniforms} vertexShader={earthVertex} fragmentShader={earthFragment} />
+        <shaderMaterial uniforms={uniforms} uniforms-uHeat-value={heat} uniforms-uDark-value={dark} vertexShader={earthVertex} fragmentShader={earthFragment} />
       </mesh>
-      {atmo.uK.value > 0.001 ? (
+      {atmoK > 0.001 ? (
         <mesh>
           <sphereGeometry args={[R * 1.012, 96, 64]} />
-          <shaderMaterial uniforms={atmo} vertexShader={earthVertex} fragmentShader={atmoFragment} transparent blending={THREE.AdditiveBlending} depthWrite={false} />
+          <shaderMaterial uniforms={atmo} uniforms-uK-value={atmoK} vertexShader={earthVertex} fragmentShader={atmoFragment} transparent blending={THREE.AdditiveBlending} depthWrite={false} />
         </mesh>
       ) : null}
     </group>
@@ -175,12 +176,12 @@ const StarLayer: React.FC<{v: number; sign: 1 | -1; center: THREE.Vector3}> = ({
   }, []);
   const uniforms = useMemo(() => ({uC: {value: new THREE.Vector3()}, uThetaE: {value: 0}, uSign: {value: sign}, uSize: {value: 3.2}, uOpacity: {value: 1}}), [sign]);
   camera.updateMatrixWorld();
-  uniforms.uC.value.copy(center).applyMatrix4(camera.matrixWorldInverse);
-  uniforms.uThetaE.value = 0.36 * lensK(v);
+  const c = center.clone().applyMatrix4(camera.matrixWorldInverse);
+  const thetaE = 0.36 * lensK(v);
   if (sign < 0 && lensK(v) <= 0) return null;
   return (
     <points geometry={geometry} frustumCulled={false} renderOrder={-5}>
-      <shaderMaterial uniforms={uniforms} vertexShader={starVertex} fragmentShader={starFragment} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
+      <shaderMaterial uniforms={uniforms} uniforms-uC-value={[c.x, c.y, c.z]} uniforms-uThetaE-value={thetaE} vertexShader={starVertex} fragmentShader={starFragment} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
     </points>
   );
 };
@@ -210,15 +211,15 @@ const ringVertex = /* glsl */ `
 const LightRing: React.FC<{v: number}> = ({v}) => {
   const camera = useThree((s) => s.camera);
   const uniforms = useMemo(() => ({uK: {value: 0}}), []);
-  uniforms.uK.value = lensK(v);
-  if (uniforms.uK.value <= 0) return null;
+  const k = lensK(v);
+  if (k <= 0) return null;
   const q = camera.quaternion.clone();
   // the photon ring sits just outside the black disc (r = 0.42 of the quad half size)
   const size = (R * 1.12 * 2) / 0.42;
   return (
     <mesh quaternion={q} renderOrder={5}>
       <planeGeometry args={[size, size]} />
-      <shaderMaterial uniforms={uniforms} vertexShader={ringVertex} fragmentShader={ringFragment} transparent depthWrite={false} depthTest={false} blending={THREE.AdditiveBlending} />
+      <shaderMaterial uniforms={uniforms} uniforms-uK-value={k} vertexShader={ringVertex} fragmentShader={ringFragment} transparent depthWrite={false} depthTest={false} blending={THREE.AdditiveBlending} />
     </mesh>
   );
 };
@@ -302,34 +303,55 @@ const Moon: React.FC<{v: number}> = ({v}) => {
 
 const CHUNKS = Array.from({length: 120}, (_, i) => ({
   da: (random(`ch-a-${i}`) - 0.5) * 2,
-  dr: (random(`ch-r-${i}`) - 0.5) * 0.5,
-  dy: (random(`ch-y-${i}`) - 0.5) * 0.35,
-  size: 0.18 + random(`ch-s-${i}`) ** 2 * 0.9,
+  dr: (random(`ch-r-${i}`) - 0.5) * 0.7,
+  dy: (random(`ch-y-${i}`) - 0.5) * 0.06,
+  size: 0.14 + random(`ch-s-${i}`) ** 2 * 0.6,
   fall: random(`ch-f-${i}`),
 }));
 
+const DEBRIS_W = 0.55; // rad/s at the Moon's distance
+const chunkFall = (c: (typeof CHUNKS)[number]) => ({t0: 54 + c.fall * 2.5, t1: 56.2 + c.fall * 4 + (c.dr + 0.35) * 2.5});
+
+// Radius (in R) of a chunk over time: spreads out from the Moon's orbit, then spirals in.
+const chunkR = (c: (typeof CHUNKS)[number], r0: number, v: number) => {
+  const spread = ramp(v, MOON_BREAK, MOON_BREAK + 2.2, (t) => 1 - (1 - t) * (1 - t));
+  const {t0, t1} = chunkFall(c);
+  const kIn = ramp(v, t0, t1, (t) => t * t);
+  // about half the chunks fall in; the rest settle into a hot disc that keeps circling the black hole
+  const end = c.fall < 0.5 ? 0.97 : 1.22 + 0.5 * (c.fall - 0.5);
+  return {r: lerp(r0 + c.dr * spread, end, kIn), kIn, spread};
+};
+
+// The Moon's remains: a flat disc that circles the Earth, faster the closer a chunk gets (like a real orbit),
+// and spirals down into it. The angle is integrated step by step so the speed-up is smooth.
 const Debris: React.FC<{v: number}> = ({v}) => {
   if (v < MOON_BREAK) return null;
   const m = moonState(MOON_BREAK);
   const a0 = Math.atan2(m.p[2], m.p[0]);
   const r0 = Math.hypot(m.p[0], m.p[2]) / R;
-  const spread = ramp(v, MOON_BREAK, MOON_BREAK + 2.2, (t) => 1 - (1 - t) * (1 - t));
+  const steps = Math.ceil((v - MOON_BREAK) * 60);
+  const dt = steps > 0 ? (v - MOON_BREAK) / steps : 0;
   return (
     <group rotation={[RING_TILT, 0, 0.12]}>
       {CHUNKS.map((c, i) => {
-        // each chunk spirals inward; the inner ones go first
-        const tIn = 54.6 + c.fall * 6 + (c.dr + 0.25) * 3;
-        const kIn = ramp(v, 54, tIn, (t) => t * t);
-        const r = lerp(r0 + c.dr * spread * 1.6, 0.98, kIn) * R;
-        if (r < R * 1.0) return null;
-        const a = -a0 + c.da * Math.PI * spread + (v - MOON_BREAK) * (0.5 + 1.2 * kIn) * (1 + c.da * 0.1);
-        const heat = clamp01(kIn * 1.3);
+        let phase = 0;
+        for (let s = 0; s < steps; s++) {
+          const rr = chunkR(c, r0, MOON_BREAK + (s + 0.5) * dt).r;
+          phase += DEBRIS_W * Math.pow(r0 / rr, 1.5) * dt;
+        }
+        const {r: rn, kIn, spread} = chunkR(c, r0, v);
+        const r = rn * R;
+        // gone once it reaches the surface
+        const fade = clamp01((rn - 1.0) / 0.06);
+        if (fade <= 0) return null;
+        const a = -a0 + c.da * Math.PI * spread + phase;
+        const heat = clamp01(kIn * 1.4);
         return (
           <Ico
             key={i}
-            radius={c.size * (1 - 0.4 * kIn)}
+            radius={c.size * (1 - 0.35 * kIn) * fade}
             detail={0}
-            position={[Math.cos(a) * r, c.dy * R * 0.2 * (1 - kIn), Math.sin(a) * r]}
+            position={[Math.cos(a) * r, c.dy * R * (1 - kIn), Math.sin(a) * r]}
             rotation={[i, v * 0.7 + i, i * 2]}
             color={heat > 0.2 ? '#ffd9a0' : '#bdb9b2'}
             emissive={heat > 0.05 ? '#ff7a2a' : undefined}
