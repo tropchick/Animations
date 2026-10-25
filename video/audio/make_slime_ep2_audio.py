@@ -1,7 +1,7 @@
 """Soundtrack and timing cues for "Slime Chronicle", episode 2 "The First Day".
 
-Voice: three ElevenLabs takes (audio/voice/slime-ep2-*.mp3). The main take is used everywhere except
-"Я закрыл. Сам..." (take "closed") and "Я ждал... тут пол мягкий" (take "radio"), which were regenerated.
+Voice: one ElevenLabs take on Eleven v4 (audio/voice/slime-ep2-v4.mp3). The first cut used three
+Multilingual v2 takes (slime-ep2-main/closed/radio.mp3); PIECES can still glue several takes.
 Savelyeva's words on the radio get a walkie-talkie sound.
 
 Outputs: public/audio/slime-ep2.wav and src/slime/ep2/cues.json.
@@ -18,11 +18,11 @@ VOICE_START = 0.4
 HOLD_AFTER = 1.0
 TITLE = 3.2
 
-words = json.loads((ROOT / "audio/voice/slime-ep2-words.json").read_text())
+words = json.loads((ROOT / "audio/voice/slime-ep2-v4-words.json").read_text())
 takes = {k: load(ROOT / f"audio/voice/slime-ep2-{k}.mp3") for k in words}
 
-# global word numbers (after gluing): 0-33 main, 34-42 closed, 43-85 main, 86-99 radio, 100-133 main
-PIECES = [("main", 0, 33), ("closed", 0, 8), ("main", 43, 85), ("radio", 0, 13), ("main", 99, 132)]
+# (take, first word, last word); global word numbers count across the pieces
+PIECES = [("v4", 0, 133)]
 PAUSES = {4: 0.6, 8: 0.4, 13: 0.3, 16: 0.4, 22: 0.6, 24: 0.2, 27: 0.4, 34: 0.6, 36: 0.2, 43: 0.7, 54: 0.6,
           56: 0.4, 60: 0.6, 65: 0.4, 71: 0.8, 79: 0.3, 86: 0.6, 89: 0.4, 90: 0.6, 96: 0.3, 100: 0.8, 106: 0.8,
           113: 1.0, 115: 0.3, 122: 0.4, 128: 1.5, 130: 0.5}
