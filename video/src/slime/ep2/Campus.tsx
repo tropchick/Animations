@@ -11,7 +11,7 @@ import {Radio, WallClock} from './Props';
 // The institute's grounds: корпус «Ковыль» (the lab), корпус «Осока» across the yard, the third building with the roof.
 // Local metres; the whole set sits at x = CAMPUS_X.
 export const CAMPUS_X = -300;
-export type Time = 'dusk' | 'night' | 'dawn';
+export type Time = 'dusk' | 'night' | 'dawn' | 'overcast' | 'evening';
 
 const CONCRETE: Mat = {color: '#5d646a', rough: 0.92};
 const CONCRETE_DARK: Mat = {color: '#454b51', rough: 0.92};
@@ -39,7 +39,7 @@ export const RADIO_POS: V3 = [0.32, SILL_Y, WINDOW_Z + 0.4];
 
 // ---------------------------------------------------------------- sky
 
-const SkyDome: React.FC<{top: string; horizon: string; low?: string}> = ({top, horizon, low}) => {
+export const SkyDome: React.FC<{top: string; horizon: string; low?: string}> = ({top, horizon, low}) => {
   const geo = useMemo(() => {
     const g = new SphereGeometry(900, 24, 16);
     const pos = g.attributes.position as BufferAttribute;
@@ -353,7 +353,10 @@ export const Campus: React.FC<{
   reflect?: number;
   glebAtWindow?: boolean;
   glebOnRoof?: boolean;
-}> = ({v, time, shot, osokaOn, nina, led = 0, reflect = 0, glebAtWindow, glebOnRoof}) => {
+  // episode 3: no buildings of the lab and no mass of ep. 2, the episode brings its own
+  bare?: boolean;
+  children?: React.ReactNode;
+}> = ({v, time, shot, osokaOn, nina, led = 0, reflect = 0, glebAtWindow, glebOnRoof, bare, children}) => {
   const morning = time === 'dawn';
   const center = useTarget([CAMPUS_X, 0, 0]);
   const inside = shot === 'waiting' || shot === 'radio' || shot === 'silent';
@@ -362,9 +365,11 @@ export const Campus: React.FC<{
       {time === 'dusk' ? <SkyDome top="#1b2638" horizon="#55698a" low="#2a3446" /> : null}
       {time === 'night' ? <SkyDome top="#05070b" horizon="#141b26" low="#090c12" /> : null}
       {time === 'dawn' ? <SkyDome top="#7d8b99" horizon="#c9cdcc" low="#9aa2a8" /> : null}
+      {time === 'overcast' ? <SkyDome top="#737e88" horizon="#a9afb2" low="#8a9196" /> : null}
+      {time === 'evening' ? <SkyDome top="#151c27" horizon="#46505e" low="#232a34" /> : null}
       <Ground />
       <Town />
-      {morning ? (
+      {bare ? null : morning ? (
         <MorningMass v={v} />
       ) : (
         <>
@@ -425,6 +430,19 @@ export const Campus: React.FC<{
           />
         </>
       ) : null}
+      {time === 'overcast' ? (
+        <>
+          <hemisphereLight color="#b9c2ca" groundColor="#3a3f44" intensity={0.75} />
+          <directionalLight position={[-60, 80, 40]} color="#d9dde0" intensity={0.45} target={center} />
+        </>
+      ) : null}
+      {time === 'evening' ? (
+        <>
+          <hemisphereLight color="#4f6078" groundColor="#101318" intensity={0.22} />
+          <directionalLight position={[-80, 30, -60]} color="#8d9db3" intensity={0.25} target={center} />
+        </>
+      ) : null}
+      {children}
       {osokaOn && time === 'night' ? <pointLight position={[0, 5, -10]} color="#e8e0c8" intensity={30} distance={22} decay={2} /> : null}
     </group>
   );

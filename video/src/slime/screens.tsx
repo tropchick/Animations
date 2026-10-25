@@ -7,7 +7,7 @@ import {useScene} from './scene';
 const MONO = "'IBM Plex Mono'";
 
 // A canvas drawn again on every frame from the current time, used as a glowing screen.
-const useScreen = (w: number, h: number, draw: (c: CanvasRenderingContext2D) => void, key: unknown) => {
+export const useScreen = (w: number, h: number, draw: (c: CanvasRenderingContext2D) => void, key: unknown) => {
   const {canvas, tex} = useMemo(() => {
     const cv = document.createElement('canvas');
     cv.width = w;
@@ -24,7 +24,7 @@ const useScreen = (w: number, h: number, draw: (c: CanvasRenderingContext2D) => 
   return tex;
 };
 
-const Screen: React.FC<{tex: CanvasTexture; size: [number, number]; position?: V3; rotation?: V3; power?: number}> = ({
+export const Screen: React.FC<{tex: CanvasTexture; size: [number, number]; position?: V3; rotation?: V3; power?: number}> = ({
   tex,
   size,
   position,

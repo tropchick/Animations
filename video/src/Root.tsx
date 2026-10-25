@@ -12,6 +12,8 @@ import {LastEp1} from './LastEp1';
 import {LastDebug} from './last/Debug';
 import {LastCover} from './LastCover';
 import {DURATION_S as LAST1_S} from './last/cues';
+import {SlimeEp3} from './SlimeEp3';
+import {DURATION_S as SLIME3_S} from './slime/ep3/cues';
 
 export const RemotionRoot = () => (
   <>
@@ -43,6 +45,15 @@ export const RemotionRoot = () => (
       height={1920}
       defaultProps={{withAudio: true}}
     />
+    <Composition
+      id="SlimeEp3"
+      component={SlimeEp3}
+      durationInFrames={Math.round(SLIME3_S * FPS)}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: true}}
+    />
     <Composition id="SlimeCover" component={SlimeCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition
       id="SlimeCover2"
@@ -64,5 +75,14 @@ export const RemotionRoot = () => (
     />
     <Composition id="LastCover" component={LastCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="LastDebug" component={LastDebug} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{v: 0}} />
+    <Composition
+      id="SlimeCover3"
+      component={SlimeCover}
+      durationInFrames={1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{episode: 3, title: 'ГОРОД', line: 'ВСЕ КАНАЛЫ МОЛЧАТ'}}
+    />
   </>
 );

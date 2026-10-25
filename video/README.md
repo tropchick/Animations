@@ -8,6 +8,7 @@
 | `GravityFlip` | What if gravity flipped for 10 seconds? (1:05) | `../scripts/what-if-gravity-flipped.md` | `../renders/gravity-flip.mp4` |
 | `SlimeEp1` | Хроника слизи, серия 1 «Утечка» (1:29) | `../scripts/slime-chronicle-ep1.md` | `../renders/slime-chronicle-ep1.mp4` |
 | `SlimeEp2` | Хроника слизи, серия 2 «Первые сутки» (1:30) | `../scripts/slime-chronicle-ep2.md` | `../renders/slime-chronicle-ep2.mp4` |
+| `SlimeEp3` | Хроника слизи, серия 3 «Город» (1:34) | `../scripts/slime-chronicle-ep3.md` | `../renders/slime-chronicle-ep3.mp4` |
 
 Все вертикальные 1080×1920, 30 кадров в секунду.
 
@@ -108,3 +109,26 @@ npm run stills -- SlimeEp2 out/stills 2 30 61 84
 | `src/slime/ep2/Tunnel.tsx` | Кабельный тоннель с ползущей полосой |
 | `src/slime/ep2/Props.tsx` | Рация, телефон, часы на стене |
 | `src/slime/ep2/Overlay.tsx` | Метки времени, рамка окошка двери, финальная карточка |
+
+## Хроника слизи, серия 3 «Город»
+
+Голос Глеба: один дубль Eleven v4. Женский голос в рации (голос Nadya из библиотеки ElevenLabs) сгенерирован отдельно, `audio/voice/slime-ep3-her-a.mp3`; в конце он звучит дважды, второй раз дальше и грязнее. Объявление «Сохраняйте спокойствие» звучит как из кухонного приёмника.
+
+```bash
+cd video
+npm run render:slime3    # голос, звук и cues.json, потом рендер кусками в out/slime-ep3.mp4 (~80 минут)
+npm run stills -- SlimeEp3 out/stills 2 30 61 84
+npx remotion still SlimeCover3 out/slime-ep3-cover.png --gl=swangle
+```
+
+| Файл | Что внутри |
+|---|---|
+| `audio/make_slime_ep3_audio.py` | Монтаж голоса, границы 18 кадров, время гаснущих кварталов, сканирования рации, оба раза её голоса |
+| `src/slime/ep3/World.tsx` | Какая сцена в каком кадре, туман, состояние рации (каналы, огонёк по голосу) |
+| `src/slime/ep3/camera.tsx` | Планы камеры третьей серии |
+| `src/slime/ep3/Cordon.tsx` | Оцепление вокруг холмов: грузовики, сетка, прожекторы, солдаты, бетонный забор (днём и оплывший вечером), кран, огнемёт с паром |
+| `src/slime/ep3/Tent.tsx` | Штабная палатка: стол, карта с красным кругом, диктофон, человек в противогазе, блокнот с двойками и рука с ручкой |
+| `src/slime/ep3/City.tsx` | Город ночью за рекой: дома, огни окон, которые гаснут волной от института, отражения в реке, мост с людьми, кухня на 14-м этаже, отражение Глеба в стекле |
+| `src/slime/ep3/Props3.tsx` | Рация штаба с экраном каналов, старый приёмник со шкалой, телефон «Нет сети» |
+| `src/slime/ep3/PhoneSet.tsx` | Крупный план телефона в руке |
+| `src/slime/ep3/Overlay.tsx` | Метки времени, финальная карточка |

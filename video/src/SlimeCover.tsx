@@ -10,22 +10,28 @@ import {CAMPUS_X, GLEB_ON_ROOF} from './slime/ep2/Campus';
 // episode 2: high behind Gleb, so the grey mounds fill the frame and the sky stays free for the title
 const G = GLEB_ON_ROOF;
 const cover2 = () => ({pos: [CAMPUS_X + G[0] + 4, G[1] + 7, G[2] + 9] as [number, number, number], target: [CAMPUS_X - 2, 0, -6] as [number, number, number], fov: 48, far: 2000});
+import {World3} from './slime/ep3/World';
+import {shotStart as shotStart3} from './slime/ep3/cues';
+import {CITY_X, FLOOR_Y, WIN_Z} from './slime/ep3/City';
 import './slime/fonts';
 
+// episode 3: Gleb at the window from behind, the city lights and the searchlights over the institute
+const cover3 = () => ({pos: [CITY_X + 0.7, FLOOR_Y + 1.7, WIN_Z + 5.4] as [number, number, number], target: [CITY_X - 30, FLOOR_Y + 50, -300] as [number, number, number], fov: 52, far: 2600});
+
 // Covers for "Хроника слизи": a frame of the episode with its key line (the last word in red).
-// Episode 1: the two grains under the jar. Episode 2: Gleb on the roof over the grey mounds.
+// Episode 1: the two grains under the jar. Episode 2: Gleb on the roof over the grey mounds. Episode 3: the city from the 14th floor.
 export const SlimeCover: React.FC<{episode?: number; title?: string; line?: string}> = ({
   episode = 1,
   title = 'УТЕЧКА',
   line = 'ИХ СТАЛО ДВА',
 }) => {
   const {width, height} = useVideoConfig();
-  const v = episode === 2 ? shotStart2('roof') + 1.6 : shotStart('shock') + 1.2;
+  const v = episode === 3 ? shotStart3('window') + 2 : episode === 2 ? shotStart2('roof') + 1.6 : shotStart('shock') + 1.2;
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
       <AbsoluteFill style={{filter: 'saturate(0.55) contrast(1.15) brightness(0.95)'}}>
         <ThreeCanvas width={width} height={height} shadows flat camera={{fov: 40, position: [0, 2, 6]}}>
-          {episode === 2 ? <World2 v={v} view={cover2} /> : <World v={v} />}
+          {episode === 3 ? <World3 v={v} view={cover3} /> : episode === 2 ? <World2 v={v} view={cover2} /> : <World v={v} />}
         </ThreeCanvas>
       </AbsoluteFill>
       <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.25) 38%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.75) 100%)'}} />
