@@ -21,7 +21,10 @@
     "audio:slime3": "python3 audio/make_slime_ep3_audio.py",
     "render:slime3": "python3 audio/make_slime_ep3_audio.py && tools/render-chunks.sh SlimeEp3 public/audio/slime-ep3.wav out/slime-ep3.mp4 2809",
     "audio:pov": "python3 audio/make_pov_audio.py",
-    "render:pov": "python3 audio/make_pov_audio.py && tools/render-chunks.sh PovMrBeast public/audio/pov-mrbeast.wav out/pov-mrbeast.mp4 2687"
+    "render:pov": "python3 audio/make_pov_audio.py && tools/render-chunks.sh PovMrBeast public/audio/pov-mrbeast.wav out/pov-mrbeast.mp4 2687",
+    "audio:earth": "python3 audio/make_earth_audio.py",
+    "render:earth": "python3 audio/make_earth_audio.py && tools/render-chunks.sh EarthStop public/audio/earth-stop.wav out/earth-stop.mp4 1980",
+    "cover:earth": "remotion still EarthCover out/earth-stop-cover.jpg --gl=swangle --jpeg-quality=90"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

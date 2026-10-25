@@ -17,9 +17,30 @@ import {DURATION_S as SLIME3_S} from './slime/ep3/cues';
 import {PovMrBeast} from './PovMrBeast';
 import {PovCover} from './PovCover';
 import {DURATION_S as POV_S} from './pov/cues';
+import {EarthStop} from './EarthStop';
+import {EarthCover} from './EarthCover';
+import {DURATION_S as EARTH_S} from './earth/time';
 
 export const RemotionRoot = () => (
   <>
+    <Composition
+      id="EarthStop"
+      component={EarthStop}
+      durationInFrames={EARTH_S * FPS}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition
+      id="EarthCover"
+      component={EarthCover}
+      durationInFrames={1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{v: 31.2, view: {pos: [-24, 1.6, 6.4], target: [-26, 40, -14], fov: 66}}}
+    />
     <Composition id="AirGone" component={AirGone} durationInFrames={DURATION_S * FPS} fps={FPS} width={1080} height={1920} />
     <Composition
       id="GravityFlip"
