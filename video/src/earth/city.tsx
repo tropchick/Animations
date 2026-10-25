@@ -30,40 +30,62 @@ export const METRO: V3 = [24.5, 0.16, -10.3];
 
 const Stripes: React.FC = () => {
   const items = [];
-  for (let i = 0; i < 30; i++) {
-    const x = -105 + i * 7;
+  for (let i = 0; i < 300; i++) {
+    const x = -1050 + i * 7;
     if (Math.abs(x) < 9) continue;
-    items.push(<Box key={i} size={[3, 0.02, 0.16]} position={[x, 0.012, 0]} color="#f2efe6" shadow={false} />);
+    items.push(<Box key={i} size={[3, 0.02, 0.16]} position={[x, 0.025, 0]} color="#f2efe6" shadow={false} />);
   }
   // crosswalk across the avenue west of the side street
   for (let i = 0; i < 9; i++) {
-    items.push(<Box key={`z${i}`} size={[3.2, 0.022, 0.6]} position={[-7.5, 0.013, -5.6 + i * 1.4]} color="#f4f2ec" shadow={false} />);
+    items.push(<Box key={`z${i}`} size={[3.2, 0.02, 0.6]} position={[-7.5, 0.025, -5.6 + i * 1.4]} color="#f4f2ec" shadow={false} />);
   }
   return <>{items}</>;
 };
 
-export const Ground: React.FC = () => (
-  <>
-    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[3000, 3000]} />
-      <meshStandardMaterial color="#8c8a84" roughness={1} />
-    </mesh>
-    <Box size={[400, 0.02, ROAD_HALF * 2]} position={[0, 0.01, 0]} color="#56585d" />
-    <Stripes />
-    {/* sidewalks with curbs */}
-    {[-1, 1].map((s) => (
-      <React.Fragment key={s}>
-        <Box size={[400, 0.16, WALK - ROAD_HALF]} position={[0, 0.08, s * (ROAD_HALF + WALK) / 2]} color="#d3cdc2" />
-        <Box size={[400, 0.17, 0.3]} position={[0, 0.085, s * (ROAD_HALF + 0.15)]} color="#bdb7ab" />
-      </React.Fragment>
-    ))}
-    {/* side street going north */}
-    <Box size={[SIDE_HALF * 2, 0.021, 300]} position={[0, 0.011, -WALK - 150]} color="#56585d" />
-    {[-1, 1].map((s) => (
-      <Box key={s} size={[2.4, 0.16, 300]} position={[s * (SIDE_HALF + 1.2), 0.08, -WALK - 150]} color="#d3cdc2" />
-    ))}
-  </>
+// The metro stairwell is a real hole: the ground and the north sidewalk are laid around it.
+// The north end of the stairs runs on under the sidewalk, into the dark.
+const HOLE = {x0: METRO[0] - 1.3, x1: METRO[0] + 1.3, z0: METRO[2] - 0.6, z1: METRO[2] + 1.8};
+const AVENUE_LEN = 2400;
+
+const Flat: React.FC<{x0: number; x1: number; z0: number; z1: number}> = ({x0, x1, z0, z1}) => (
+  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[(x0 + x1) / 2, 0, (z0 + z1) / 2]} receiveShadow>
+    <planeGeometry args={[x1 - x0, z1 - z0]} />
+    <meshStandardMaterial color="#8c8a84" roughness={1} />
+  </mesh>
 );
+
+export const Ground: React.FC = () => {
+  const {x0, x1, z0, z1} = HOLE;
+  const walkZ = -(ROAD_HALF + WALK) / 2;
+  const walkW = WALK - ROAD_HALF;
+  const L = AVENUE_LEN / 2;
+  return (
+    <>
+      <Flat x0={-1500} x1={x0} z0={-1500} z1={1500} />
+      <Flat x0={x1} x1={1500} z0={-1500} z1={1500} />
+      <Flat x0={x0} x1={x1} z0={-1500} z1={z0} />
+      <Flat x0={x0} x1={x1} z0={z1} z1={1500} />
+      <Box size={[AVENUE_LEN, 0.02, ROAD_HALF * 2]} position={[0, 0.01, 0]} color="#56585d" />
+      <Stripes />
+      {/* south sidewalk */}
+      <Box size={[AVENUE_LEN, 0.16, walkW]} position={[0, 0.08, -walkZ]} color="#d3cdc2" />
+      {/* north sidewalk, cut around the stairwell */}
+      <Box size={[x0 + L, 0.16, walkW]} position={[(x0 - L) / 2, 0.08, walkZ]} color="#d3cdc2" />
+      <Box size={[L - x1, 0.16, walkW]} position={[(x1 + L) / 2, 0.08, walkZ]} color="#d3cdc2" />
+      <Box size={[x1 - x0, 0.16, -ROAD_HALF - z1]} position={[METRO[0], 0.08, (z1 - ROAD_HALF) / 2]} color="#d3cdc2" />
+      <Box size={[x1 - x0, 0.16, z0 + WALK]} position={[METRO[0], 0.08, (z0 - WALK) / 2]} color="#d3cdc2" />
+      {/* curbs sit just proud of the sidewalk edge so their faces never share a plane */}
+      {[-1, 1].map((s) => (
+        <Box key={s} size={[AVENUE_LEN, 0.18, 0.3]} position={[0, 0.09, s * (ROAD_HALF + 0.13)]} color="#bdb7ab" />
+      ))}
+      {/* side street going north */}
+      <Box size={[SIDE_HALF * 2, 0.02, 300]} position={[0, 0.01, -WALK - 150]} color="#56585d" />
+      {[-1, 1].map((s) => (
+        <Box key={s} size={[2.4, 0.16, 300]} position={[s * (SIDE_HALF + 1.2), 0.08, -WALK - 150.02]} color="#d3cdc2" />
+      ))}
+    </>
+  );
+};
 
 // ---------- Towers ----------
 
@@ -256,10 +278,11 @@ export const Billboard: React.FC<{v: number}> = ({v}) => {
   const flap = 0.5 * ramp(v, BILLBOARD_TEAR - 0.8, BILLBOARD_TEAR, (x) => x * x) + 0.12 * Math.sin(v * 9) * ramp(v, 22, BILLBOARD_TEAR - 0.8) * (v < BILLBOARD_TEAR ? 1 : 0);
   const d = Math.max(0, v - BILLBOARD_TEAR);
   if (d > 6 || v >= V.zero) return null;
-  const pos: V3 = [t.x + 4 + 0.5 * 18 * d * d, 21 + 4 * d - 0.5 * 3 * d * d, z0 + 3 * d];
+  // it peels off from the top: hinged at its bottom edge, the face tips out and down toward the street
+  const pos: V3 = [t.x + 4 + 0.5 * 20 * d * d, 14 + 4 * d - 0.5 * 3 * d * d, z0 + 0.4 + 3.5 * d + 0.8 * d * d];
   return (
-    <group position={pos} rotation={[flap + d * 2.2, d * 1.3, -d * 1.6]}>
-      <group position={[0, -3.5, 0]}>
+    <group position={pos} rotation={[flap + d * 1.6, -d * 0.5, -d * 1.2]}>
+      <group position={[0, 3.5, 0]}>
         <Box size={[14.4, 7.4, 0.3]} position={[0, 0, 0]} color="#2c2f34" />
         <Box size={[14, 7, 0.1]} position={[0, 0, 0.18]} color="#f08a3c" />
         <Cyl rTop={2.1} rBottom={2.1} height={0.1} segments={16} position={[3.8, 0.6, 0.25]} rotation={[Math.PI / 2, 0, 0]} color="#ffe08a" />
@@ -378,7 +401,10 @@ export const FarCity: React.FC<{v: number}> = ({v}) => {
           const dist = Math.hypot(x, z);
           const h = 10 + random(`fc-h-${key}`) * (dist < 220 ? 60 : 26) + (random(`fc-t-${key}`) > 0.92 ? 45 : 0);
           const s = 13 + random(`fc-s-${key}`) * 4;
-          items.push({p: [x, h / 2, z], s: [s, h, s], c: cols[Math.floor(random(`fc-c-${key}`) * cols.length)]});
+          // nothing stands on the avenue: blocks in its way are dropped, the ones next to it line up behind the sidewalk
+          if (Math.abs(z) < WALK) continue;
+          const zz = Math.abs(z) - s / 2 < WALK + 1 ? Math.sign(z) * (WALK + 1 + s / 2) : z;
+          items.push({p: [x, h / 2, zz], s: [s, h, s], c: cols[Math.floor(random(`fc-c-${key}`) * cols.length)]});
         }
       }
     }
@@ -399,6 +425,27 @@ export const FarCity: React.FC<{v: number}> = ({v}) => {
 
 // ---------- Metro entrance: stairs down, railings, the M sign ----------
 
+// Stairs going down from the sidewalk (local coordinates, the top of the sidewalk is y = 0).
+// The open part is z -0.6..1.8; past that the stairs run on under a ceiling into the dark.
+const STEP_RUN = 0.3;
+const STEP_RISE = 0.258;
+const Stairwell: React.FC = () => (
+  <>
+    {Array.from({length: 14}).map((_, i) => {
+      const top = -(i + 1) * STEP_RISE;
+      return <Box key={i} size={[2.3, top + 3.7, STEP_RUN]} position={[0, (top - 3.7) / 2, 1.8 - (i + 0.5) * STEP_RUN]} color="#6f6b66" />;
+    })}
+    {[-1, 1].map((s) => (
+      <React.Fragment key={s}>
+        <Box size={[0.15, 3.6, 2.4]} position={[s * 1.225, -1.8, 0.6]} color="#8d8880" />
+        <Box size={[0.15, 3.46, 1.8]} position={[s * 1.225, -1.9, -1.5]} color="#3a3c40" />
+      </React.Fragment>
+    ))}
+    <Box size={[2.6, 0.13, 1.8]} position={[0, -0.235, -1.5]} color="#26282c" />
+    <Box size={[2.6, 3.4, 0.1]} position={[0, -1.9, -2.45]} color="#151619" />
+  </>
+);
+
 export const Metro: React.FC<{v: number}> = ({v}) => {
   const [x, y, z] = METRO;
   // the sign dies when the power goes, then flickers back on at the very end
@@ -408,20 +455,16 @@ export const Metro: React.FC<{v: number}> = ({v}) => {
   const railsUp = v < 44.5;
   return (
     <group position={[x, y, z]}>
-      {/* dark stairwell opening */}
-      <Box size={[2.6, 0.02, 3.6]} position={[0, 0.012, 0]} color="#1b1d21" shadow={false} />
-      {Array.from({length: 6}).map((_, i) => (
-        <Box key={i} size={[2.5, 0.03, 0.12]} position={[0, 0.03, -1.6 + i * 0.6]} color="#4a4d53" shadow={false} />
-      ))}
+      <Stairwell />
       {railsUp ? (
         <>
           {[-1.4, 1.4].map((rx) => (
             <React.Fragment key={rx}>
-              <Box size={[0.1, 1.0, 3.8]} position={[rx, 0.5, 0]} color="#2f6b4f" />
-              <Box size={[0.16, 0.1, 3.9]} position={[rx, 1.05, 0]} color="#2f6b4f" />
+              <Box size={[0.1, 1.0, 2.6]} position={[rx, 0.5, 0.6]} color="#2f6b4f" />
+              <Box size={[0.16, 0.1, 2.7]} position={[rx, 1.05, 0.6]} color="#2f6b4f" />
             </React.Fragment>
           ))}
-          <Box size={[2.9, 1.0, 0.1]} position={[0, 0.5, -1.9]} color="#2f6b4f" />
+          <Box size={[2.9, 1.0, 0.1]} position={[0, 0.5, -0.7]} color="#2f6b4f" />
         </>
       ) : null}
       {/* sign post with the M (concrete-set post, stays) */}

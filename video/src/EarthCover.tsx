@@ -21,7 +21,7 @@ export const EarthCover: React.FC<{v: number; view: View}> = ({v, view}) => {
   const {width, height} = useVideoConfig();
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
-      <ThreeCanvas width={width} height={height} shadows flat camera={{fov: 55, position: [0, 4, 16]}}>
+      <ThreeCanvas width={width} height={height} shadows flat gl={{logarithmicDepthBuffer: true}} camera={{fov: 55, position: [0, 4, 16]}}>
         <World v={v} view={view} />
       </ThreeCanvas>
       <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.2) 28%, rgba(0,0,0,0) 48%, rgba(0,0,0,0.25) 70%, rgba(0,0,0,0.7) 100%)'}} />

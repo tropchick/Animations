@@ -13,7 +13,7 @@ export const EarthStop: React.FC<{withAudio?: boolean}> = ({withAudio = true}) =
   const v = frame / fps;
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
-      <ThreeCanvas width={width} height={height} shadows flat camera={{fov: 55, position: [0, 4, 16]}}>
+      <ThreeCanvas width={width} height={height} shadows flat gl={{logarithmicDepthBuffer: true}} camera={{fov: 55, position: [0, 4, 16]}}>
         <World v={v} />
       </ThreeCanvas>
       <Overlay />

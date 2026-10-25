@@ -97,7 +97,7 @@ export const Person: React.FC<PersonProps> = ({
       {([[-0.12, legL], [0.12, legR]] as const).map(([lx, pitch]) => (
         <group key={lx} position={[lx, 0.9, 0]} rotation={[-pitch, 0, 0]}>
           <Box size={[0.2, 0.86, 0.22]} position={[0, -0.43, 0]} color={pants} />
-          <Box size={[0.21, 0.08, 0.3]} position={[0, -0.86, 0.04]} color="#efefef" />
+          <Box size={[0.22, 0.08, 0.3]} position={[0, -0.86, 0.05]} color="#efefef" />
         </group>
       ))}
       {/* torso: the chest scale shows the lungs emptying */}

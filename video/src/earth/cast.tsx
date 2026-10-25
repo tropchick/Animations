@@ -45,6 +45,34 @@ const walked = (path: Key[], v: number) => {
   return d;
 };
 
+// The path, smoothed over a short window so people speed up, slow down and turn instead of snapping.
+const SMOOTH = [-0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3];
+const smoothPos = (path: Key[], v: number) => {
+  let x = 0;
+  let z = 0;
+  for (const o of SMOOTH) {
+    const q = sample(path, v + o);
+    x += q.x;
+    z += q.z;
+  }
+  return {x: x / SMOOTH.length, z: z / SMOOTH.length};
+};
+const smoothWalked = (path: Key[], v: number) => SMOOTH.reduce((a, o) => a + walked(path, v + o), 0) / SMOOTH.length;
+
+// Direction of the last stretch someone walked before time v (NaN if they have not moved yet).
+const lastYaw = (path: Key[], v: number) => {
+  for (let i = path.length - 1; i >= 1; i--) {
+    const [t0, x0, z0] = path[i - 1];
+    const [, x1, z1] = path[i];
+    if (t0 < v && Math.hypot(x1 - x0, z1 - z0) > 0.05) return Math.atan2(x1 - x0, z1 - z0);
+  }
+  return NaN;
+};
+const angleLerp = (a: number, b: number, k: number) => {
+  const d = Math.atan2(Math.sin(b - a), Math.cos(b - a));
+  return a + d * k;
+};
+
 // Height on the metro stairs: walking north from the top step goes down about 3 m.
 const stairY = (x: number, z: number) => {
   if (Math.abs(x - METRO[0]) > 1.4) return 0;
@@ -54,30 +82,39 @@ const stairY = (x: number, z: number) => {
 
 const sidewalkY = (z: number) => (Math.abs(z) > 7 ? 0.16 : 0.02);
 
-type Body = {p: V3; yaw: number; pose: PersonPose; lean: number; hidden: boolean};
+type Body = {p: V3; yaw: number; pose: PersonPose; lean: number; hidden: boolean; moving: boolean};
 
-const bodyOn = (path: Key[], v: number, stride = 1.0, seed = 0, lookUp = 0): Body => {
-  const s = sample(path, v);
-  const speed = Math.hypot(s.vx, s.vz);
-  const dist = walked(path, v);
+const bodyOn = (path: Key[], v: number, stride = 1.0, seed = 0, lookUp = 0, face = NaN): Body => {
+  const s = smoothPos(path, v);
+  const ahead = smoothPos(path, v + 0.05);
+  const behind = smoothPos(path, v - 0.05);
+  const svx = (ahead.x - behind.x) / 0.1;
+  const svz = (ahead.z - behind.z) / 0.1;
+  const speed = Math.hypot(svx, svz);
+  const dist = smoothWalked(path, v);
   const phase = (dist / stride) * Math.PI;
   const run = clamp01((speed - 1.8) / 3);
-  const amp = speed > 0.05 ? lerp(0.38, 0.75, run) : 0;
-  const yaw = speed > 0.05 ? Math.atan2(s.vx, s.vz) : NaN;
+  const amp = lerp(0.38, 0.75, run) * clamp01(speed / 0.6);
+  // they face where they go; slowing down they turn toward where they want to look (face)
+  const yawMove = speed > 0.02 ? Math.atan2(svx, svz) : lastYaw(path, v);
+  let yaw: number;
+  if (Number.isNaN(face)) yaw = speed > 0.25 ? yawMove : lastYaw(path, v);
+  else yaw = Number.isNaN(yawMove) ? face : angleLerp(yawMove, face, 1 - clamp01((speed - 0.1) / 0.7));
   const y = (s.z < STAIR_TOP[1] + 0.2 && Math.abs(s.x - METRO[0]) < 1.4 ? stairY(s.x, s.z) : 0) + sidewalkY(s.z);
   // they brace against the push (lean west) while standing; a stumble when it first bites
-  const brace = speed < 0.05 ? 0.28 * clamp01(pushG(v) / 0.4) : 0.1 * clamp01(pushG(v) / 0.4);
+  const brace = lerp(0.28, 0.1, clamp01(speed / 0.6)) * clamp01(pushG(v) / 0.4);
   const stumble = 0.18 * Math.sin(Math.PI * clamp01((v - 13.2 - seed * 0.4) / 0.9));
-  const bob = speed > 0.05 ? Math.abs(Math.sin(phase)) * 0.06 * (1 + run) : 0;
+  const bob = Math.abs(Math.sin(phase)) * 0.06 * (1 + run) * clamp01(speed / 0.6);
   return {
     p: [s.x, y + bob, s.z],
     yaw,
     lean: brace - stumble,
     hidden: y < -2.4,
+    moving: speed > 0.25,
     pose: {
       legL: Math.sin(phase) * amp,
       legR: -Math.sin(phase) * amp,
-      armL: [-Math.sin(phase) * amp * 0.9 + (speed > 0.05 ? 0 : 0.1 * brace), 0.12],
+      armL: [-Math.sin(phase) * amp * 0.9 + 0.1 * brace * (1 - clamp01(speed / 0.6)), 0.12],
       armR: [Math.sin(phase) * amp * 0.9, -0.12],
       elbowL: 0.3 + run * 0.9,
       elbowR: 0.3 + run * 0.9,
@@ -102,14 +139,17 @@ const COURIER: Key[] = [
   [24.6, STAIR_BOTTOM[0], STAIR_BOTTOM[1]],
 ];
 const GIRL_WAIT: Key[] = [
-  [0, -3.6, 9.4],
-  [6, -3.6, 9.4],
-  [7.5, -3.9, 9.3],
+  [0, -11.0, 9.3],
+  [6.4, -4.6, 9.3],
+  [7.1, -4.1, 9.3],
+  [7.8, -3.9, 9.3],
 ];
+const GIRL_FACE = Math.PI; // waiting, she faces the avenue (north)
 const MOM: Key[] = [
-  [0, -2.9, 9.7],
-  [6, -2.9, 9.7],
-  [7.5, -3.3, 9.6],
+  [0, -10.6, 9.75],
+  [6.4, -4.0, 9.7],
+  [7.1, -3.5, 9.65],
+  [7.8, -3.3, 9.6],
   [19.0, -3.3, 9.6],
   [20.6, 2.8, 6.9],
   [22.6, 18.4, -4.0],
@@ -164,16 +204,17 @@ const WALKERS = [
   };
 });
 
-// Her raised right hand while she waits (scale 0.62, facing yaw -0.4).
+// Her raised right hand while she waits (scale 0.62, facing the avenue).
 export const RELEASE_HAND: V3 = (() => {
   const s = 0.62;
-  const yaw = -0.4;
-  const [gx, , gz] = [GIRL_WAIT[2][1], 0, GIRL_WAIT[2][2]];
+  const yaw = GIRL_FACE;
+  const last = GIRL_WAIT[GIRL_WAIT.length - 1];
+  const [gx, , gz] = [last[1], 0, last[2]];
   return [gx + Math.cos(yaw) * 0.33 * s + Math.sin(yaw) * 0.45 * s, 0.16 + 1.55 * s + 0.25, gz - Math.sin(yaw) * 0.33 * s + Math.cos(yaw) * 0.45 * s];
 })();
 
 export const courierAt = (v: number) => bodyOn(COURIER, v, 1.1, 0);
-export const girlSpot = (): V3 => [GIRL_WAIT[2][1], 0.16, GIRL_WAIT[2][2]];
+export const girlSpot = (): V3 => [GIRL_WAIT[GIRL_WAIT.length - 1][1], 0.16, GIRL_WAIT[GIRL_WAIT.length - 1][2]];
 export const DOG_WOMAN_PATH = DOG_WOMAN;
 
 // ---------- Props ----------
@@ -298,9 +339,9 @@ export const Cast: React.FC<{v: number}> = ({v}) => {
   let girlYaw: number;
   let girlPose: PersonPose;
   if (!carrying) {
-    const g = bodyOn(GIRL_WAIT, v, 0.6, 1, -0.35);
+    const g = bodyOn(GIRL_WAIT, v, 0.6, 1, -0.35, GIRL_FACE);
     girlP = g.p;
-    girlYaw = Number.isNaN(g.yaw) ? -0.4 : g.yaw;
+    girlYaw = Number.isNaN(g.yaw) ? GIRL_FACE : g.yaw;
     girlPose = {...g.pose, armR: [v < BALLOON_GONE ? 1.2 : 2.6 * (1 - ramp(v, BALLOON_GONE + 0.6, BALLOON_GONE + 1.6)), -0.2], elbowR: 0.2, mouth: v > BALLOON_GONE ? 0.7 : 0, head: [v < BALLOON_GONE ? -0.35 : -0.6, 0]};
     if (!c.hidden) {
       items.push(
@@ -338,7 +379,7 @@ export const Cast: React.FC<{v: number}> = ({v}) => {
   if (v >= BALLOON_GONE) items.push(<Balloon key="balloon-free" v={v} hand={RELEASE_HAND} />);
 
   // mom
-  const m = bodyOn(MOM, v, 1.0, 2);
+  const m = bodyOn(MOM, v, 1.0, 2, 0, -2.85);
   items.push(<HumanAt key="mom" b={m} shirt="#46a6a0" pants="#3b3b3b" hair="#8a5a34" skin="#f3dcc4" longHair yawFallback={-0.3} />);
 
   // woman with the dog
@@ -348,7 +389,7 @@ export const Cast: React.FC<{v: number}> = ({v}) => {
     const wy = Number.isNaN(wb.yaw) ? -Math.PI / 2 : wb.yaw;
     // the dog trots half a step ahead, on the street side
     const dp: V3 = [wb.p[0] + Math.sin(wy) * 1.1 + Math.cos(wy) * 0.5, wb.p[1] + (wb.p[1] < 0 ? -0.3 : 0), wb.p[2] + Math.cos(wy) * 1.1 - Math.sin(wy) * 0.5];
-    const moving = !Number.isNaN(wb.yaw);
+    const moving = wb.moving;
     const dogHidden = dp[1] < -1.6;
     if (!dogHidden) {
       items.push(

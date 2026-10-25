@@ -2,12 +2,13 @@ import React from 'react';
 import {random} from 'remotion';
 import {Box, Cyl} from '../scene/parts';
 import {Car} from '../gravity/props';
-import {CafeTable, Chair, HotDogCart, LampPost, Pigeon, Planter, TrafficLight, TreeInPlanter, Bin, Bus} from '../gravity/city';
+import {CafeTable, Chair, HotDogCart, LampPost, Pigeon, Planter, TrafficLight, TreeInPlanter, Bin} from '../gravity/city';
 import {Slide, slide, slideSpeed, slideX, vAtWind} from './loose';
 import {V, V3, clamp01, ramp, windKmh} from './time';
 
 const G = 9.81;
 const FAR = 320; // past this offset a thing has left every shot
+const WALK_EDGE = 12; // north edge of the avenue's sidewalk, where the side street starts
 
 // Where a loose thing is: base position plus its slide downwind, with a tumble once it is fast.
 const loosePose = (s: Slide, v: number, base: V3, rollAfter = 25, rollR = 1.5, hop = 0.6) => {
@@ -66,41 +67,52 @@ export const Cars: React.FC<{v: number}> = ({v}) => (
   </>
 );
 
-// ---------- Yellow bus at the corner of the side street, nose out onto the avenue ----------
+// ---------- Yellow bus waiting at the red light in the side street, broadside to the wind ----------
 
-export const BUS_POS: V3 = [-1.6, 0, -4.5];
+export const BUS_POS: V3 = [-2, 0, -WALK_EDGE - 6.6]; // center; the bus runs along z, nose toward the avenue
 const BUS_TIP_START = 21.8;
+const BUS_W = 2.55;
+const SIDE_CURB = 4; // the tipped bus scrapes east until the curb of the side street stops it
 
 export const busState = (v: number) => {
   const tip = (Math.PI / 2) * ramp(v, BUS_TIP_START, BUS_TIP_START + 1.25, (t) => t * t);
+  // once on its side it scrapes east until its roof (3.2 m from the pivot) hits the curb
+  const room = SIDE_CURB - 0.05 - (BUS_POS[0] + BUS_W / 2 + 3.2);
   const s = slide(0.55, 0.0025);
-  const dx = v > BUS_TIP_START + 1.25 ? slideX(s, v) - slideX(s, BUS_TIP_START + 1.25) : 0;
+  const slid = v > BUS_TIP_START + 1.25 ? slideX(s, Math.min(v, V.zero)) - slideX(s, BUS_TIP_START + 1.25) : 0;
+  // when the Earth snaps back the bus is left behind and shoots west with the rest
+  const k = v >= V.restart ? clamp01((v - V.restart) / (V.restored - V.restart)) : 0;
   const rock = v < BUS_TIP_START ? 0.05 * ramp(v, 15, BUS_TIP_START) * (1 + Math.sin(v * 7)) : 0;
-  return {tip: tip + rock, dx};
+  return {tip: tip + rock, dx: Math.min(room, slid) - 0.5 * 355 * k * k};
 };
 
 export const YellowBus: React.FC<{v: number}> = ({v}) => {
   const {tip, dx} = busState(v);
-  if (dx > FAR || v >= V.zero) return null;
-  const roll = dx > 40 ? -(dx - 40) / 2.5 : 0;
-  // pivot on the downwind (+x) bottom edge; the bus is 2.55 m wide
+  if (dx < -FAR) return null;
+  // pivot on the downwind (+x) bottom edge
   return (
-    <group position={[BUS_POS[0] + 1.28 + dx, Math.abs(Math.sin(roll)) * 1.2, BUS_POS[2]]} rotation={[0, 0, -tip + roll]}>
-      <group position={[-1.28, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <group>
-          <BusBody />
-        </group>
+    <group position={[BUS_POS[0] + BUS_W / 2 + dx, 0.02, BUS_POS[2]]} rotation={[0, 0, -tip]}>
+      <group position={[-BUS_W / 2, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+        <BusBody />
       </group>
     </group>
   );
 };
 
+// A plain yellow city bus (length along x, front at +x). Every part sticks out a few cm from the body
+// so no two faces share a plane.
 const BusBody: React.FC = () => (
   <group>
-    <Bus />
-    {/* repaint the red city bus yellow */}
-    <Box size={[12.02, 1.0, 2.57]} position={[0, 1.55, 0]} color="#f2c230" />
-    <Box size={[12.02, 0.45, 2.57]} position={[0, 3.0, 0]} color="#f2c230" />
+    <Box size={[12, 2.7, BUS_W]} position={[0, 1.75, 0]} color="#f2c230" />
+    <Box size={[11.2, 0.9, BUS_W + 0.06]} position={[-0.2, 2.25, 0]} color="#2b3947" shadow={false} />
+    <Box size={[0.08, 1.3, 2.2]} position={[6.03, 2.0, 0]} color="#2b3947" shadow={false} />
+    <Box size={[12.08, 0.3, BUS_W + 0.08]} position={[0, 0.65, 0]} color="#3a3f47" shadow={false} />
+    <Box size={[1.6, 0.4, 0.06]} position={[4.8, 3.3, BUS_W / 2 + 0.04]} color="#1d2a1f" shadow={false} />
+    {[-4, 3.6].map((x) =>
+      [-1.12, 1.12].map((z) => (
+        <Cyl key={`${x}${z}`} rTop={0.5} rBottom={0.5} height={0.36} segments={10} position={[x, 0.5, z]} rotation={[Math.PI / 2, 0, 0]} color="#22242a" />
+      )),
+    )}
   </group>
 );
 
@@ -154,7 +166,7 @@ export const Cafe: React.FC<{v: number}> = ({v}) => {
       items.push(
         <group key={`cup${i}${k}`} position={[tbl.p[0] + ox + dx, y, CAFE_Z + (k ? 0.12 : -0.1)]} rotation={[0, 0, onTable ? 0 : -fall * 6]}>
           <Cyl rTop={0.05} rBottom={0.04} height={0.1} segments={8} position={[0, 0.05, 0]} color="#ffffff" />
-          <Cyl rTop={0.044} rBottom={0.044} height={0.01} segments={8} position={[0, 0.095, 0]} rotation={[0, 0, tilt]} color="#6b3e22" shadow={false} />
+          <Cyl rTop={0.044} rBottom={0.044} height={0.01} segments={8} position={[0, 0.099, 0]} rotation={[0, 0, tilt]} color="#6b3e22" shadow={false} />
           <Cyl rTop={0.08} rBottom={0.08} height={0.01} segments={10} position={[0, 0.0, 0]} color="#f2efe8" />
         </group>,
       );

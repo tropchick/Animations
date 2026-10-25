@@ -20,7 +20,7 @@ export const SHOTS: Shot[] = [
   // courier waiting at the crosswalk on his scooter
   {from: 5.5, to: 6.8, pos: [[-6.0, 1.6, 4.6], [-6.2, 1.65, 4.9]], target: [[-7.5, 1.35, 8.0], [-7.5, 1.35, 8.0]], fov: 40},
   // the girl with the red balloon and her mom
-  {from: 6.8, to: 8.2, pos: [[-1.2, 1.25, 6.4], [-1.4, 1.3, 6.6]], target: [[-3.3, 1.45, 9.5], [-3.3, 1.5, 9.5]], fov: 44},
+  {from: 6.8, to: 8.2, pos: [[0.6, 1.35, 5.0], [0.3, 1.4, 5.2]], target: [[-4.2, 1.3, 9.4], [-3.9, 1.35, 9.4]], fov: 46},
   // the avenue: the braking starts
   {from: 8.2, to: 11.2, pos: [[-32, 5.6, 3.6], [-31, 5.8, 3.4]], target: [[6, 4, -8], [6, 4.5, -8]], fov: 56},
   // people on the south sidewalk stumble, pigeons take off
@@ -29,10 +29,10 @@ export const SHOTS: Shot[] = [
   {from: 14.5, to: 17.5, pos: [[6.5, 0.9, -5.0], [6.9, 1.0, -5.3]], target: [[14.5, 1.5, -9.6], [14.5, 1.8, -9.6]], fov: 52},
   // the balloon is torn out of her hand; the courier runs to her
   {from: 17.5, to: 19.6, pos: [[-2.6, 1.2, 3.2], [-2.4, 1.1, 3.0]], target: [[-3.6, 2.2, 9.4], [-3.6, 2.6, 9.4]], fov: 56, track: true},
-  // everyone runs across the avenue; the bus goes over
-  {from: 19.6, to: 22.6, pos: [[-17, 3.4, 2.5], [-16.4, 3.6, 2.8]], target: [[2, 1.6, -3], [3, 1.8, -3]], fov: 56},
+  // everyone runs across the avenue; up the side street the bus goes over
+  {from: 19.6, to: 23.5, pos: [[-6.5, 2.4, 7], [-6, 2.5, 6.6]], target: [[0.5, 2, -15], [1, 2, -15]], fov: 56},
   // down into the metro
-  {from: 22.6, to: 26, pos: [[M[0] + 4.2, 2.5, M[2] + 5.8], [M[0] + 4.0, 2.7, M[2] + 6.2]], target: [[M[0] - 0.5, 0.6, M[2]], [M[0] - 0.5, 0.4, M[2]]], fov: 52},
+  {from: 23.5, to: 26, pos: [[M[0] + 3.6, 4.4, M[2] + 5.4], [M[0] + 3.4, 4.6, M[2] + 5.8]], target: [[M[0] - 0.5, 0.6, M[2]], [M[0] - 0.5, 0.4, M[2]]], fov: 52},
   // cars start to slide and roll down the avenue
   {from: 26, to: 29.2, pos: [[-6.5, 1.1, 9.4], [-6.1, 1.2, 9.6]], target: [[-30, 1.4, 3], [-30, 1.6, 3]], fov: 54},
   // looking up at towers A and B: windows blow out, the billboard tears off
@@ -85,7 +85,7 @@ export const CameraRig: React.FC<{v: number; view?: View}> = ({v, view}) => {
   camera.up.set(0, 1, 0);
   camera.lookAt(...target);
   camera.fov = fov;
-  camera.near = 0.05;
+  camera.near = 0.1;
   camera.far = 2500;
   camera.updateProjectionMatrix();
   return null;
