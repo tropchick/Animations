@@ -41,14 +41,27 @@ def load(path):
     return np.frombuffer(raw, np.int16).astype(np.float64) / 32768
 
 
-def quietest(x, a, b):
+def quietest(x, a, b, thr=0.01):
+    """Sample index in the middle of the longest pause between a and b seconds.
+    The longest one matters: a short dip inside a word (the closure before "т", "к") must not be taken for a pause."""
+    w = int(0.01 * SR)
+    i0 = int(a * SR)
+    seg = x[i0: int(b * SR)]
+    env = np.sqrt(np.convolve(seg ** 2, np.ones(w) / w, "same"))
+    quiet = env < thr
+    best, run, best_end = 0, 0, len(seg) // 2
+    for k, q in enumerate(quiet):
+        run = run + 1 if q else 0
+        if run > best:
+            best, best_end = run, k
+    return i0 + best_end - best // 2
+
+
+def dip(x, a, b):
     """Sample index of the quietest 20 ms between a and b seconds."""
     w = int(0.02 * SR)
     i0, i1 = int(a * SR), int(b * SR)
-    seg = x[i0:i1]
-    if len(seg) <= w:
-        return (i0 + i1) // 2
-    e = np.convolve(seg ** 2, np.ones(w), "valid")
+    e = np.convolve(x[i0:i1] ** 2, np.ones(w), "valid")
     return i0 + int(np.argmin(e)) + w // 2
 
 
@@ -70,7 +83,7 @@ mw, ew = words["main"], words["ending"]
 
 cuts = []  # (sample in main, pause)
 for n, p in sorted(PAUSES.items()):
-    cuts.append((quietest(main, mw[n - 1][1] - 0.08, mw[n][0] + 0.06), p))
+    cuts.append((quietest(main, mw[n - 1][1] - 0.15, mw[n][0] + 0.35), p))
 
 pieces, bounds, prev = [], [], 0
 for c, p in cuts:
@@ -87,7 +100,7 @@ def map_main(s):
     return VOICE_START + s + sum(p for c, p in bounds if c <= s)
 
 
-end_cut = quietest(ending, ew[ENDING_FROM_WORD - 1][1] - 0.05, ew[ENDING_FROM_WORD][0] + 0.04)
+end_cut = dip(ending, ew[ENDING_FROM_WORD - 1][1] - 0.05, ew[ENDING_FROM_WORD][0] + 0.04)
 voice_end = fade_edges(ending[end_cut:])
 end_start = VOICE_START + len(voice_main) / SR + GAP_BEFORE_ENDING
 
