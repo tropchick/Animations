@@ -8,6 +8,10 @@ import {SlimeCover} from './SlimeCover';
 import {DURATION_S as SLIME_S} from './slime/cues';
 import {SlimeEp2} from './SlimeEp2';
 import {DURATION_S as SLIME2_S} from './slime/ep2/cues';
+import {LastEp1} from './LastEp1';
+import {LastDebug} from './last/Debug';
+import {LastCover} from './LastCover';
+import {DURATION_S as LAST1_S} from './last/cues';
 
 export const RemotionRoot = () => (
   <>
@@ -49,5 +53,16 @@ export const RemotionRoot = () => (
       height={1920}
       defaultProps={{episode: 2, title: 'ПЕРВЫЕ СУТКИ', line: 'ТУТ ПОЛ МЯГКИЙ'}}
     />
+    <Composition
+      id="LastEp1"
+      component={LastEp1}
+      durationInFrames={Math.round(LAST1_S * FPS)}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: true}}
+    />
+    <Composition id="LastCover" component={LastCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition id="LastDebug" component={LastDebug} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{v: 0}} />
   </>
 );

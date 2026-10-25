@@ -14,7 +14,10 @@
     "audio:slime": "python3 audio/make_slime_audio.py",
     "render:slime": "python3 audio/make_slime_audio.py && tools/render-chunks.sh SlimeEp1 public/audio/slime-ep1.wav out/slime-ep1.mp4 2669",
     "audio:slime2": "python3 audio/make_slime_ep2_audio.py",
-    "render:slime2": "python3 audio/make_slime_ep2_audio.py && tools/render-chunks.sh SlimeEp2 public/audio/slime-ep2.wav out/slime-ep2.mp4 2708"
+    "render:slime2": "python3 audio/make_slime_ep2_audio.py && tools/render-chunks.sh SlimeEp2 public/audio/slime-ep2.wav out/slime-ep2.mp4 2708",
+    "audio:last1": "python3 audio/make_last_ep1_audio.py",
+    "render:last1": "python3 audio/make_last_ep1_audio.py && tools/render-chunks.sh LastEp1 public/audio/last-ep1.wav out/last-ep1.mp4 3136",
+    "cover:last1": "remotion still LastCover out/last-ep1-cover.jpg --gl=swangle --jpeg-quality=90"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
