@@ -36,6 +36,10 @@ type PersonProps = {
   lying?: boolean;
   pose?: PersonPose;
   rightHand?: React.ReactNode;
+  leftHand?: React.ReactNode;
+  // extra parts that move with the head (beard, cap, headphones) or the torso (hood, bag)
+  headExtra?: React.ReactNode;
+  bodyExtra?: React.ReactNode;
 };
 
 // Blocky low-poly person, ~1.9 m tall, built like the characters on the references.
@@ -52,6 +56,9 @@ export const Person: React.FC<PersonProps> = ({
   lying = false,
   pose = {},
   rightHand,
+  leftHand,
+  headExtra,
+  bodyExtra,
 }) => {
   const {
     armL = [0, 0.06],
@@ -111,8 +118,10 @@ export const Person: React.FC<PersonProps> = ({
         <Box size={[0.07, 0.018, 0.012]} position={[0.07, 0.255 + 0.01 * (eyes - 1), 0.152]} color={hair} shadow={false} />
         <Box size={[0.05, 0.07, 0.05]} position={[0, 0.15, 0.165]} color={skin} shadow={false} />
         <Box size={[0.09, 0.014 + 0.06 * mouth, 0.012]} position={[0, 0.075 - 0.02 * mouth, 0.152]} color={mouth > 0.05 ? '#4a2422' : '#b98466'} shadow={false} />
+        {headExtra}
       </group>
-      {arm(-1, armL, elbowL)}
+      {bodyExtra}
+      {arm(-1, armL, elbowL, leftHand)}
       {arm(1, armR, elbowR, rightHand)}
     </group>
   );

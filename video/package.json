@@ -19,7 +19,9 @@
     "render:last1": "python3 audio/make_last_ep1_audio.py && tools/render-chunks.sh LastEp1 public/audio/last-ep1.wav out/last-ep1.mp4 3136",
     "cover:last1": "remotion still LastCover out/last-ep1-cover.jpg --gl=swangle --jpeg-quality=90",
     "audio:slime3": "python3 audio/make_slime_ep3_audio.py",
-    "render:slime3": "python3 audio/make_slime_ep3_audio.py && tools/render-chunks.sh SlimeEp3 public/audio/slime-ep3.wav out/slime-ep3.mp4 2809"
+    "render:slime3": "python3 audio/make_slime_ep3_audio.py && tools/render-chunks.sh SlimeEp3 public/audio/slime-ep3.wav out/slime-ep3.mp4 2809",
+    "audio:pov": "python3 audio/make_pov_audio.py",
+    "render:pov": "python3 audio/make_pov_audio.py && tools/render-chunks.sh PovMrBeast public/audio/pov-mrbeast.wav out/pov-mrbeast.mp4 2687"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

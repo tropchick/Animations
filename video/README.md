@@ -9,6 +9,7 @@
 | `SlimeEp1` | Хроника слизи, серия 1 «Утечка» (1:29) | `../scripts/slime-chronicle-ep1.md` | `../renders/slime-chronicle-ep1.mp4` |
 | `SlimeEp2` | Хроника слизи, серия 2 «Первые сутки» (1:30) | `../scripts/slime-chronicle-ep2.md` | `../renders/slime-chronicle-ep2.mp4` |
 | `SlimeEp3` | Хроника слизи, серия 3 «Город» (1:34) | `../scripts/slime-chronicle-ep3.md` | `../renders/slime-chronicle-ep3.mp4` |
+| `PovMrBeast` | ПОВ: ты Мистер Бист, пародия (1:30) | `../scripts/pov-mrbeast.md` | `../renders/pov-mrbeast.mp4` |
 
 Все вертикальные 1080×1920, 30 кадров в секунду.
 
@@ -132,3 +133,29 @@ npx remotion still SlimeCover3 out/slime-ep3-cover.png --gl=swangle
 | `src/slime/ep3/Props3.tsx` | Рация штаба с экраном каналов, старый приёмник со шкалой, телефон «Нет сети» |
 | `src/slime/ep3/PhoneSet.tsx` | Крупный план телефона в руке |
 | `src/slime/ep3/Overlay.tsx` | Метки времени, финальная карточка |
+
+## ПОВ: ты Мистер Бист (пародия)
+
+Голос: один дубль ElevenLabs Eleven v4, голос Miron (`audio/voice/pov-mrbeast.mp3`). Музыка и все звуки синтезированы кодом.
+
+```bash
+cd video
+npm run render:pov       # звук и cues.json, потом рендер кусками в out/pov-mrbeast.mp4
+npm run stills -- PovMrBeast out/stills 8 25 50 80
+npx remotion still PovCover out/pov-cover.png --gl=swangle   # обложка
+```
+
+| Файл | Что внутри |
+|---|---|
+| `audio/make_pov_audio.py` | Паузы в голосе, границы 21 кадра, траты для счётчика, музыка и звуки |
+| `src/pov/cues.json` | Создаётся скриптом звука: время слов, кадров, трат, вспышек |
+| `src/pov/camera.tsx` | Планы камеры для всех кадров |
+| `src/pov/Bedroom.tsx` | Спальня (будильник, утро, ночь) и коридор с 20 камерами |
+| `src/pov/HouseFront.tsx` | Дом, курьер, ключи, машина с бантом |
+| `src/pov/Field.tsx` | Поле с кругом и сотней людей, таймлапс |
+| `src/pov/Studio.tsx` | Фотостудия для обложки |
+| `src/pov/Beach.tsx` | Пляж, закопанный спорткар, тысяча людей с лопатами |
+| `src/pov/EditRoom.tsx` | Монтажная, мониторы, гора стаканчиков, деньги |
+| `src/pov/Crowd.tsx` | Толпы одной пачкой (instanced), чтобы 1000 человек рендерились быстро |
+| `src/pov/Overlay.tsx` | Счётчик денег, время дня, надписи, экран фотоаппарата и телефона |
+| `src/PovCover.tsx` | Обложка |

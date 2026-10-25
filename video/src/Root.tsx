@@ -14,6 +14,9 @@ import {LastCover} from './LastCover';
 import {DURATION_S as LAST1_S} from './last/cues';
 import {SlimeEp3} from './SlimeEp3';
 import {DURATION_S as SLIME3_S} from './slime/ep3/cues';
+import {PovMrBeast} from './PovMrBeast';
+import {PovCover} from './PovCover';
+import {DURATION_S as POV_S} from './pov/cues';
 
 export const RemotionRoot = () => (
   <>
@@ -73,6 +76,15 @@ export const RemotionRoot = () => (
       height={1920}
       defaultProps={{withAudio: true}}
     />
+    <Composition
+      id="PovMrBeast"
+      component={PovMrBeast}
+      durationInFrames={Math.round(POV_S * FPS)}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: true}}
+    />
     <Composition id="LastCover" component={LastCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="LastDebug" component={LastDebug} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{v: 0}} />
     <Composition
@@ -84,5 +96,6 @@ export const RemotionRoot = () => (
       height={1920}
       defaultProps={{episode: 3, title: 'ГОРОД', line: 'ВСЕ КАНАЛЫ МОЛЧАТ'}}
     />
+    <Composition id="PovCover" component={PovCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
   </>
 );
