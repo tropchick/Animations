@@ -4,6 +4,7 @@ import {GravityFlip} from './GravityFlip';
 import {DURATION_S, FPS} from './timeline';
 import {DURATION_S as GRAVITY_S} from './gravity/time';
 import {SlimeEp1} from './SlimeEp1';
+import {SlimeCover} from './SlimeCover';
 import {DURATION_S as SLIME_S} from './slime/cues';
 
 export const RemotionRoot = () => (
@@ -27,5 +28,6 @@ export const RemotionRoot = () => (
       height={1920}
       defaultProps={{withAudio: true}}
     />
+    <Composition id="SlimeCover" component={SlimeCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
   </>
 );
