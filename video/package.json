@@ -12,7 +12,7 @@
     "render:gravity": "python3 audio/make_gravity_audio.py && remotion render GravityFlip out/gravity-flip.mp4 --concurrency=4 --crf=18 --gl=swangle",
     "stills": "node tools/stills.mjs",
     "audio:slime": "python3 audio/make_slime_audio.py",
-    "render:slime": "python3 audio/make_slime_audio.py && tools/render-chunks.sh SlimeEp1 public/audio/slime-ep1.wav out/slime-ep1.mp4 2561",
+    "render:slime": "python3 audio/make_slime_audio.py && tools/render-chunks.sh SlimeEp1 public/audio/slime-ep1.wav out/slime-ep1.mp4 2669",
     "audio:slime2": "python3 audio/make_slime_ep2_audio.py",
     "render:slime2": "python3 audio/make_slime_ep2_audio.py && tools/render-chunks.sh SlimeEp2 public/audio/slime-ep2.wav out/slime-ep2.mp4 2736"
   },

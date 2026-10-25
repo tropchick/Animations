@@ -1,6 +1,6 @@
 """Builds the soundtrack and the timing cues for "Slime Chronicle", episode 1 "The Leak".
 
-The voice comes from ElevenLabs (audio/voice/slime-ep1-*.mp3). Its pauses came out too short, so the
+The voice comes from ElevenLabs (audio/voice/slime-ep1-v4-*.mp3, model Eleven v4; the first version used Multilingual v2). Its pauses came out too short, so the
 voice is cut at the word boundaries listed in PAUSES and silence is inserted there. Word times come
 from audio/voice/slime-ep1-words.json (speech recognition of the two files).
 
@@ -30,7 +30,7 @@ VOICE_START = 0.45  # the record click comes first
 PAUSES = {4: 0.5, 10: 0.6, 17: 0.3, 24: 0.6, 34: 0.5, 41: 0.3, 52: 0.6, 66: 0.7, 72: 0.7,
           84: 0.5, 91: 0.7, 103: 0.6, 113: 0.5, 118: 0.5, 119: 0.8, 128: 0.5}
 GAP_BEFORE_ENDING = 1.5  # silence before "Их стало два"
-ENDING_FROM_WORD = 4  # the ending file starts with a run-up "Всё под контролем. Всё..."; keep from "Их"
+ENDING_FROM_WORD = 0  # the ending file is only "Их стало два"
 HOLD_AFTER = 0.9  # the shock frame stays this long after "два"
 TITLE = 3.2  # black title card
 
@@ -74,9 +74,9 @@ def fade_edges(x, ms=8):
     return x
 
 
-words = json.loads((ROOT / "audio/voice/slime-ep1-words.json").read_text())
-main = load(ROOT / "audio/voice/slime-ep1-main.mp3")
-ending = load(ROOT / "audio/voice/slime-ep1-ending.mp3")
+words = json.loads((ROOT / "audio/voice/slime-ep1-v4-words.json").read_text())
+main = load(ROOT / "audio/voice/slime-ep1-v4-main.mp3")[: int(words["main_end"] * SR)]
+ending = load(ROOT / "audio/voice/slime-ep1-v4-ending.mp3")
 mw, ew = words["main"], words["ending"]
 
 # ---------------------------------------------------------------- voice edit
@@ -100,7 +100,7 @@ def map_main(s):
     return VOICE_START + s + sum(p for c, p in bounds if c <= s)
 
 
-end_cut = dip(ending, ew[ENDING_FROM_WORD - 1][1] - 0.05, ew[ENDING_FROM_WORD][0] + 0.04)
+end_cut = 0 if ENDING_FROM_WORD == 0 else dip(ending, ew[ENDING_FROM_WORD - 1][1] - 0.05, ew[ENDING_FROM_WORD][0] + 0.04)
 voice_end = fade_edges(ending[end_cut:])
 end_start = VOICE_START + len(voice_main) / SR + GAP_BEFORE_ENDING
 
