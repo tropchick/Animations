@@ -40,5 +40,14 @@ export const RemotionRoot = () => (
       defaultProps={{withAudio: true}}
     />
     <Composition id="SlimeCover" component={SlimeCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="SlimeCover2"
+      component={SlimeCover}
+      durationInFrames={1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{episode: 2, title: 'ПЕРВЫЕ СУТКИ', line: 'ТУТ ПОЛ МЯГКИЙ'}}
+    />
   </>
 );

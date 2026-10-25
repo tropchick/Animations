@@ -5,7 +5,7 @@ import {V3, lerp, ramp, smooth} from '../cues';
 import {Hall} from '../Hall';
 import {Macro, MacroState, surfaceY} from '../Macro';
 import {Cyl, GLASS} from '../parts';
-import {CameraRig} from '../camera';
+import {CameraRig, View} from '../camera';
 import {useEnvironment} from '../World';
 import {SceneContext, SceneState} from '../scene';
 import {EP1_END, HER, LEVER, LIGHTS_OFF, LOG_NUMBER, RADIO_CLICK, Shot2, VOICE, shotAt, shotEnd, shotStart, wordStart} from './cues';
@@ -124,7 +124,7 @@ const herLevel = (v: number) => {
   return 0;
 };
 
-export const World2: React.FC<{v: number}> = ({v}) => {
+export const World2: React.FC<{v: number; view?: (v: number) => View}> = ({v, view = viewAt2}) => {
   const env = useEnvironment();
   const s = shotAt(v);
   const shot = s.name;
@@ -140,7 +140,7 @@ export const World2: React.FC<{v: number}> = ({v}) => {
   scene.background = bg;
   return (
     <>
-      <CameraRig v={v} view={viewAt2} />
+      <CameraRig v={v} view={view} />
       {set === 'macro' ? (
         <Macro v={v} shot={shot} state={macroFor(shot, v)}>
           {shot === 'jarsink' ? <SunkJar v={v} /> : null}

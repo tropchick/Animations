@@ -3,21 +3,29 @@ import {AbsoluteFill, useVideoConfig} from 'remotion';
 import {ThreeCanvas} from '@remotion/three';
 import {World} from './slime/World';
 import {shotStart} from './slime/cues';
+import {World2} from './slime/ep2/World';
+import {shotStart as shotStart2} from './slime/ep2/cues';
+import {CAMPUS_X, GLEB_ON_ROOF} from './slime/ep2/Campus';
+
+// episode 2: high behind Gleb, so the grey mounds fill the frame and the sky stays free for the title
+const G = GLEB_ON_ROOF;
+const cover2 = () => ({pos: [CAMPUS_X + G[0] + 4, G[1] + 7, G[2] + 9] as [number, number, number], target: [CAMPUS_X - 2, 0, -6] as [number, number, number], fov: 48, far: 2000});
 import './slime/fonts';
 
-// Cover for "Хроника слизи", episode 1: the two grains under the jar with the last line of the episode.
+// Covers for "Хроника слизи": a frame of the episode with its key line (the last word in red).
+// Episode 1: the two grains under the jar. Episode 2: Gleb on the roof over the grey mounds.
 export const SlimeCover: React.FC<{episode?: number; title?: string; line?: string}> = ({
   episode = 1,
   title = 'УТЕЧКА',
   line = 'ИХ СТАЛО ДВА',
 }) => {
   const {width, height} = useVideoConfig();
-  const v = shotStart('shock') + 1.2;
+  const v = episode === 2 ? shotStart2('roof') + 1.6 : shotStart('shock') + 1.2;
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
       <AbsoluteFill style={{filter: 'saturate(0.55) contrast(1.15) brightness(0.95)'}}>
         <ThreeCanvas width={width} height={height} shadows flat camera={{fov: 40, position: [0, 2, 6]}}>
-          <World v={v} />
+          {episode === 2 ? <World2 v={v} view={cover2} /> : <World v={v} />}
         </ThreeCanvas>
       </AbsoluteFill>
       <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.25) 38%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.75) 100%)'}} />
