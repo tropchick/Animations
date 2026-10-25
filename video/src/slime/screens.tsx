@@ -2,6 +2,7 @@ import React, {useMemo} from 'react';
 import {random} from 'remotion';
 import {CanvasTexture, SRGBColorSpace} from 'three';
 import {COUNT_ZERO, VOICE, FPS, V3} from './cues';
+import {useScene} from './scene';
 
 const MONO = "'IBM Plex Mono'";
 
@@ -37,7 +38,10 @@ const Screen: React.FC<{tex: CanvasTexture; size: [number, number]; position?: V
 );
 
 // Voice recorder display: blinking dot, the log label and a waveform that follows the voice.
-export const RecorderScreen: React.FC<{v: number; size: [number, number]; position?: V3; rotation?: V3}> = ({v, ...p}) => {
+export const RecorderScreen: React.FC<{v: number; size: [number, number]; position?: V3; rotation?: V3}> = ({v: v1, ...p}) => {
+  const ep = useScene();
+  const v = ep ? ep.v : v1;
+  const voice = ep ? ep.voice : VOICE;
   const frame = Math.round(v * FPS);
   const tex = useScreen(
     512,
@@ -51,18 +55,18 @@ export const RecorderScreen: React.FC<{v: number; size: [number, number]; positi
       c.fill();
       c.fillStyle = '#b8d4dc';
       c.font = `500 30px ${MONO}`;
-      c.fillText('ЗАП  19', 58, 49);
+      c.fillText(`ЗАП  ${ep ? ep.log : 19}`, 58, 49);
       const sec = Math.floor(v);
       c.fillText(`00:${String(sec).padStart(2, '0')}`, 372, 49);
       c.fillStyle = '#7fa6b1';
       for (let i = 0; i < 46; i++) {
-        const a = VOICE[Math.max(0, frame - 45 + i)] ?? 0;
+        const a = voice[Math.max(0, frame - 45 + i)] ?? 0;
         const hgt = 4 + a * 120;
         c.fillRect(22 + i * 10.4, 160 - hgt / 2, 6, hgt);
       }
       c.fillStyle = '#3c5960';
       c.font = `500 20px ${MONO}`;
-      c.fillText('03:40  НОЧЬ', 22, 236);
+      c.fillText(`${ep ? ep.clock : '03:40'}  НОЧЬ`, 22, 236);
     },
     frame,
   );
@@ -71,10 +75,12 @@ export const RecorderScreen: React.FC<{v: number; size: [number, number]; positi
 
 // Chamber monitor (portrait panel): the unit counter that drops to zero at 03:52.
 export const CounterScreen: React.FC<{v: number; count?: number; size: [number, number]; position?: V3; rotation?: V3}> = ({
-  v,
+  v: v1,
   count,
   ...p
 }) => {
+  const ep = useScene();
+  const v = ep ? ep.v + 1000 : v1;
   const n = count ?? (v < COUNT_ZERO ? 1 : 0);
   const zero = n === 0;
   const sec = 4 + Math.floor(Math.max(0, v - COUNT_ZERO + 3));
@@ -97,8 +103,9 @@ export const CounterScreen: React.FC<{v: number; count?: number; size: [number, 
       c.font = `500 30px ${MONO}`;
       c.fillText('ОБРАЗЦОВ', 180, 168);
       c.fillText('В КАМЕРЕ', 180, 206);
-      c.font = `500 200px ${MONO}`;
-      if (!zero || Math.floor((v - COUNT_ZERO) * 3) % 2 === 0) c.fillText(String(n), 180, 410);
+      c.font = ep?.counter ? `500 52px ${MONO}` : `500 200px ${MONO}`;
+      const blinkOn = !zero || Math.floor((v - COUNT_ZERO) * 3) % 2 === 0;
+      if (blinkOn) c.fillText(ep?.counter ?? String(n), 180, ep?.counter ? 345 : 410);
       c.fillStyle = '#4f6f78';
       c.font = `500 21px ${MONO}`;
       c.fillText('ЗАМКИ 3/3', 180, 470);

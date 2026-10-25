@@ -6,6 +6,8 @@ import {DURATION_S as GRAVITY_S} from './gravity/time';
 import {SlimeEp1} from './SlimeEp1';
 import {SlimeCover} from './SlimeCover';
 import {DURATION_S as SLIME_S} from './slime/cues';
+import {SlimeEp2} from './SlimeEp2';
+import {DURATION_S as SLIME2_S} from './slime/ep2/cues';
 
 export const RemotionRoot = () => (
   <>
@@ -23,6 +25,15 @@ export const RemotionRoot = () => (
       id="SlimeEp1"
       component={SlimeEp1}
       durationInFrames={Math.round(SLIME_S * FPS)}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: true}}
+    />
+    <Composition
+      id="SlimeEp2"
+      component={SlimeEp2}
+      durationInFrames={Math.round(SLIME2_S * FPS)}
       fps={FPS}
       width={1080}
       height={1920}

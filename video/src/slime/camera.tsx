@@ -5,7 +5,7 @@ import {MACRO_X} from './Macro';
 import {MONITOR, NOTEBOOK, RECORDER, SPOT, gripperY} from './Hall';
 import {CORRIDOR_X} from './Corridor';
 
-type View = {pos: V3; target: V3; fov: number; up?: V3; near?: number};
+type View = {pos: V3; target: V3; fov: number; up?: V3; near?: number; far?: number};
 const M = (p: V3): V3 => [p[0] + MACRO_X, p[1], p[2]];
 const move = (a: V3, b: V3, ta: V3, tb: V3, fov: number, up?: V3) => (k: number): View => ({
   pos: lerp3(a, b, smooth(k)),
@@ -57,14 +57,14 @@ const SHAKES: [number, number][] = [
   [shotStart('shock'), 1.4],
 ];
 
-export const viewAt = (v: number): View => {
-  const s = shotAt(v);
-  const view = SHOTS[s.name](s.k, v, s.t);
+export type {View};
+
+// breathing handheld drift, scaled to how close the camera is, plus short jolts at the given times
+export const handheld = (view: View, v: number, shakes: [number, number][]): View => {
   const d = Math.hypot(view.pos[0] - view.target[0], view.pos[1] - view.target[1], view.pos[2] - view.target[2]);
-  // breathing handheld drift, scaled to how close the camera is
   const h = d * 0.006;
   let jolt = 0;
-  for (const [at, a] of SHAKES) {
+  for (const [at, a] of shakes) {
     const x = v - at;
     if (x >= 0 && x < 0.8) jolt += a * Math.exp(-x * 7);
   }
@@ -74,18 +74,23 @@ export const viewAt = (v: number): View => {
     h * (Math.sin(v * 1.7 + 2) + 0.4 * Math.sin(v * 2.6)) + j * Math.sin(v * 57 + 1.3),
     h * 0.6 * Math.sin(v * 1.1 + 4) + j * 0.5 * Math.sin(v * 63 + 2.1),
   ];
-  return {...view, pos: add3(view.pos, off), near: Math.min(0.1, Math.max(0.003, d * 0.02))};
+  return {...view, pos: add3(view.pos, off), near: view.near ?? Math.min(0.1, Math.max(0.003, d * 0.02))};
 };
 
-export const CameraRig: React.FC<{v: number}> = ({v}) => {
+export const viewAt = (v: number): View => {
+  const s = shotAt(v);
+  return handheld(SHOTS[s.name](s.k, v, s.t), v, SHAKES);
+};
+
+export const CameraRig: React.FC<{v: number; view?: (v: number) => View}> = ({v, view = viewAt}) => {
   const camera = useThree((st) => st.camera) as PerspectiveCamera;
-  const {pos, target, fov, up, near} = viewAt(v);
+  const {pos, target, fov, up, near, far} = view(v);
   camera.up.set(...(up ?? [0, 1, 0]));
   camera.position.set(...pos);
   camera.lookAt(...target);
   camera.fov = fov;
   camera.near = near ?? 0.05;
-  camera.far = 200;
+  camera.far = far ?? 200;
   camera.updateProjectionMatrix();
   return null;
 };

@@ -178,8 +178,8 @@ export const macroState = (shot: string): MacroState => {
   return {pitR: 0, pitD: 0, grains: [[0, 0.22, 0]], scale: 1};
 };
 
-export const Macro: React.FC<{v: number; shot: string}> = ({v, shot}) => {
-  const st = macroState(shot);
+export const Macro: React.FC<{v: number; shot: string; state?: MacroState; children?: React.ReactNode}> = ({v, shot, state, children}) => {
+  const st = state ?? macroState(shot);
   const target = useTarget([MACRO_X, 0, 0]);
   return (
     <group position={[MACRO_X, 0, 0]}>
@@ -195,6 +195,7 @@ export const Macro: React.FC<{v: number; shot: string}> = ({v, shot}) => {
           <Cyl r={2.76} h={0.06} seg={48} open position={[0, 0.03, 0]} m={{...GLASS, opacity: 0.35}} />
         </>
       ) : null}
+      {children}
       <ambientLight intensity={0.1} color="#9fb4c8" />
       <hemisphereLight color="#d5e3f2" groundColor="#11161b" intensity={0.3} />
       <spotLight

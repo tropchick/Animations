@@ -7,6 +7,7 @@
 | `AirGone` | What if the air disappeared for 5 seconds? (1:08) | `../scripts/what-if-air-disappeared.md` | `../renders/air-gone.mp4` |
 | `GravityFlip` | What if gravity flipped for 10 seconds? (1:05) | `../scripts/what-if-gravity-flipped.md` | `../renders/gravity-flip.mp4` |
 | `SlimeEp1` | Хроника слизи, серия 1 «Утечка» (1:25) | `../scripts/slime-chronicle-ep1.md` | `../renders/slime-chronicle-ep1.mp4` |
+| `SlimeEp2` | Хроника слизи, серия 2 «Первые сутки» (1:31) | `../scripts/slime-chronicle-ep2.md` | `../renders/slime-chronicle-ep2.mp4` |
 
 Все вертикальные 1080×1920, 30 кадров в секунду.
 
@@ -83,3 +84,27 @@ npm run stills -- SlimeEp1 out/stills 3 31 80   # отдельные кадры 
 | `src/slime/Gleb.tsx` | Глеб и отдельная рука в перчатке для крупных планов |
 | `src/slime/screens.tsx` | Экраны: диктофон с волной голоса, счётчик образцов, микроскоп, страница блокнота |
 | `src/slime/Overlay.tsx` | Русские надписи, рамка микроскопа, боке, виньетка, зерно, финальная карточка |
+
+## Хроника слизи, серия 2 «Первые сутки»
+
+Голос собран из трёх дублей ElevenLabs: основной, «Я закрыл. Сам...» и «Я ждал... тут пол мягкий». Какие слова из какого дубля брать, задаёт `PIECES` в скрипте звука. Слова Савельевой звучат как из рации.
+
+```bash
+cd video
+npm run render:slime2    # голос, звук и cues.json, потом рендер кусками в out/slime-ep2.mp4 (~80 минут)
+npm run stills -- SlimeEp2 out/stills 2 30 61 84
+```
+
+| Файл | Что внутри |
+|---|---|
+| `audio/slime_lib.py` | Общее для всех серий: склейка голоса из дублей, синтез звуков, сведение и громкость |
+| `audio/make_slime_ep2_audio.py` | Монтаж голоса (`PIECES`, `PAUSES`), границы 20 кадров, звук серии |
+| `src/slime/scene.ts` | Что следующие серии меняют в зале первой серии (номер записи, тонущий колпак, исчезнувший стол, дверь) |
+| `src/slime/ep2/World.tsx` | Какая сцена в каком кадре, макро с крупинками, свет и туман по времени суток |
+| `src/slime/ep2/camera.tsx` | Планы камеры второй серии |
+| `src/slime/ep2/Mass.tsx` | Серая масса: гладкая кожа с дрожащими гранями, холмы, наплывы на ножках |
+| `src/slime/ep2/HallEp2.tsx` | Масса на полу зала, Глеб с телефоном, у рычага, в окошке, рука на двери |
+| `src/slime/ep2/Campus.tsx` | Двор, «Ковыль», «Осока», третий корпус с крышей, коридор с рацией, утренние холмы, город |
+| `src/slime/ep2/Tunnel.tsx` | Кабельный тоннель с ползущей полосой |
+| `src/slime/ep2/Props.tsx` | Рация, телефон, часы на стене |
+| `src/slime/ep2/Overlay.tsx` | Метки времени, рамка окошка двери, финальная карточка |

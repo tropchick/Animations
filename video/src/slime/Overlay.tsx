@@ -2,12 +2,12 @@ import React from 'react';
 import {AbsoluteFill, interpolate, random, useCurrentFrame} from 'remotion';
 import {ENDING, FPS, LOG_NUMBER, ShotName, ramp, shotAt, shotStart} from './cues';
 
-const MONO = "'IBM Plex Mono', monospace";
-const INK = '#c9d7dd';
-const RED = '#ff4a3d';
+export const MONO = "'IBM Plex Mono', monospace";
+export const INK = '#c9d7dd';
+export const RED = '#ff4a3d';
 
 // small diary label in the top-left corner (out of the way of the Shorts/TikTok buttons)
-const Label: React.FC<{children: React.ReactNode; opacity: number; color?: string; dot?: boolean; blink?: boolean}> = ({
+export const Label: React.FC<{children: React.ReactNode; opacity: number; color?: string; dot?: boolean; blink?: boolean}> = ({
   children,
   opacity,
   color = INK,
@@ -69,7 +69,7 @@ const MicroscopeUI: React.FC<{v: number; dust: boolean}> = ({v, dust}) => {
 };
 
 // soft out-of-focus lights in the macro shots, like a real lens close to the steel
-const Bokeh: React.FC<{v: number; seed: string; strength: number}> = ({v, seed, strength}) => (
+export const Bokeh: React.FC<{v: number; seed: string; strength: number}> = ({v, seed, strength}) => (
   <AbsoluteFill style={{mixBlendMode: 'screen', opacity: strength}}>
     {Array.from({length: 7}).map((_, i) => {
       const x = random(`${seed}-x-${i}`) * 1080;
@@ -94,7 +94,7 @@ const Bokeh: React.FC<{v: number; seed: string; strength: number}> = ({v, seed, 
   </AbsoluteFill>
 );
 
-const Grain: React.FC<{frame: number}> = ({frame}) => (
+export const Grain: React.FC<{frame: number}> = ({frame}) => (
   <AbsoluteFill style={{opacity: 0.09, mixBlendMode: 'overlay'}}>
     <svg width="1080" height="1920">
       <filter id={`grain-${frame}`}>

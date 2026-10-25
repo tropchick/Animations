@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import {random} from 'remotion';
-import {AdditiveBlending, CanvasTexture, Object3D} from 'three';
+import {AdditiveBlending, BufferGeometry, CanvasTexture, Float32BufferAttribute, Object3D} from 'three';
 import {
   COUNT_ZERO,
   GLASS_TAP,
@@ -15,9 +15,10 @@ import {
   shotStart,
   smooth,
 } from './cues';
-import {Box, Cyl, DARK_STEEL, FLOOR, GLASS, Glow, Ico, Mat, PANEL, RUBBER, STEEL} from './parts';
+import {Box, Cyl, DARK_STEEL, FLOOR, GLASS, Glow, Ico, Mat, Material, PANEL, RUBBER, STEEL} from './parts';
 import {Gleb, GloveHand} from './Gleb';
 import {CounterScreen, NotePage, RecorderScreen, ScopeScreen} from './screens';
+import {useScene} from './scene';
 
 // ---------------------------------------------------------------- layout (metres)
 
@@ -79,12 +80,16 @@ const Room: React.FC = () => {
       ))}
       <Box size={[34, 0.1, 16]} position={[0, 3.45, 0]} m={{color: '#161a1f', rough: 0.9}} shadow={false} />
       {/* walls with panel seams */}
-      <Box size={[34, 3.4, 0.2]} position={[0, 1.7, -7.1]} m={PANEL} />
+      {/* back wall with the door to the corridor */}
+      <Box size={[11.95, 3.4, 0.2]} position={[-11.025, 1.7, -7.1]} m={PANEL} />
+      <Box size={[20.95, 3.4, 0.2]} position={[6.525, 1.7, -7.1]} m={PANEL} />
+      <Box size={[1.1, 1.25, 0.2]} position={[-4.5, 2.775, -7.1]} m={PANEL} />
+      <HallDoor />
       <Box size={[0.2, 3.4, 16]} position={[-16.1, 1.7, 0]} m={PANEL} />
       <Box size={[0.2, 3.4, 16]} position={[16.1, 1.7, 0]} m={PANEL} />
       <Box size={[34, 3.4, 0.2]} position={[0, 1.7, 8.1]} m={PANEL} />
       {Array.from({length: 28}).map((_, i) => (
-        <Box key={i} size={[0.02, 3.4, 0.02]} position={[-15.6 + i * 1.2, 1.7, -6.99]} m={HAZE} shadow={false} />
+        Math.abs(-15.6 + i * 1.2 + 4.5) < 0.7 ? null : <Box key={i} size={[0.02, 3.4, 0.02]} position={[-15.6 + i * 1.2, 1.7, -6.99]} m={HAZE} shadow={false} />
       ))}
       <Box size={[34, 0.03, 0.02]} position={[0, 1.2, -6.99]} m={HAZE} shadow={false} />
       {strips.map((p, i) => (
@@ -238,7 +243,8 @@ const jarLift = (v: number) => 0.2 * (1 - smooth(ramp(v, JAR_DOWN - 1.25, JAR_DO
 const jarPlaced = (v: number) => v >= shotStart('jar');
 
 export const Jar: React.FC<{v: number}> = ({v}) => {
-  const y = SPOT[1] + jarLift(v);
+  const ep = useScene();
+  const y = SPOT[1] + jarLift(v) - (ep ? ep.jarSink : 0);
   return (
     <group position={[SPOT[0], y, SPOT[2]]}>
       <Cyl r={0.06} h={0.1} seg={20} open position={[0, 0.05, 0]} m={{...GLASS, opacity: 0.2}} />
@@ -309,7 +315,9 @@ const Glint: React.FC<{v: number}> = ({v}) => {
 const noteK = (v: number) => smooth(ramp(v, shotStart('note') + 0.1, shotEnd('note') - 0.1));
 
 const Desk: React.FC<{v: number}> = ({v}) => {
+  const ep = useScene();
   const nk = noteK(v);
+  if (ep?.deskGone) return null;
   return (
     <group>
       <group position={DESK}>
@@ -342,7 +350,8 @@ const Desk: React.FC<{v: number}> = ({v}) => {
         <Box key={i} size={[0.032, 0.006, 0.006]} position={[-6.25 + i * 0.026, DESK_TOP + 0.003, -3.22 - Math.sin(i * 0.6) * 0.04]} rotation={[0, 0.4, 0]} m={RUBBER} shadow={false} />
       ))}
       {jarPlaced(v) ? <Jar v={v} /> : null}
-      <Glint v={v} />
+      {ep ? <DeskPatch r={ep.deskPatch} v={ep.v} /> : <Glint v={v} />}
+      {ep ? <Box size={[0.6, 0.12, 0.45]} position={[SPOT[0], DESK_TOP - 0.08, SPOT[2]]} m={DARK_STEEL} /> : null}
       <spotLight
         position={LAMP_HEAD}
         color="#e8f1ff"
@@ -368,6 +377,83 @@ export const useTarget = (p: V3) =>
     return o;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [p[0], p[1], p[2]]);
+
+// ---------------------------------------------------------------- later episodes: the door, the grey patch
+
+export const MASS: Mat = {color: '#9aa2a9', metal: 0.6, rough: 0.28, env: 1.1};
+export const HALL_DOOR: V3 = [-4.5, 0, -7.1];
+export const DOOR_WINDOW: V3 = [-4.5, 1.6, -7.1];
+
+// steel door with a small square window of thick glass
+const HallDoor: React.FC = () => {
+  const ep = useScene();
+  const [x, , z] = HALL_DOOR;
+  return (
+    <group>
+      <Box size={[0.32, 1.4, 0.07]} position={[x - 0.34, 0.7, z]} m={DARK_STEEL} />
+      <Box size={[0.36, 1.4, 0.07]} position={[x, 0.7, z]} m={DARK_STEEL} />
+      <Box size={[0.32, 1.4, 0.07]} position={[x + 0.34, 0.7, z]} m={DARK_STEEL} />
+      <Box size={[1.0, 0.32, 0.07]} position={[x, 1.94, z]} m={DARK_STEEL} />
+      <Box size={[0.32, 0.38, 0.07]} position={[x - 0.34, 1.59, z]} m={DARK_STEEL} />
+      <Box size={[0.32, 0.38, 0.07]} position={[x + 0.34, 1.59, z]} m={DARK_STEEL} />
+      <Box size={[0.36, 0.38, 0.02]} position={[x, 1.59, z]} m={{...GLASS, opacity: 0.18}} />
+      {/* frame */}
+      <Box size={[1.12, 0.06, 0.24]} position={[x, 2.13, z]} m={STEEL} />
+      <Box size={[0.06, 2.16, 0.24]} position={[x - 0.53, 1.07, z]} m={STEEL} />
+      <Box size={[0.06, 2.16, 0.24]} position={[x + 0.53, 1.07, z]} m={STEEL} />
+      {ep?.corridorOutside ? <OutsideCorridor red={ep.redLamp} /> : null}
+    </group>
+  );
+};
+
+// the service corridor behind the hall's back wall, with the lock lever and its lamp
+const OutsideCorridor: React.FC<{red: boolean}> = ({red}) => {
+  const [x, , z] = HALL_DOOR;
+  return (
+    <group>
+      <Box size={[8, 0.1, 3]} position={[x, -0.05, z - 1.6]} m={FLOOR} />
+      <Box size={[8, 0.1, 3]} position={[x, 2.85, z - 1.6]} m={{color: '#161a1f', rough: 0.9}} shadow={false} />
+      <Box size={[8, 2.9, 0.2]} position={[x, 1.45, z - 3.0]} m={PANEL} />
+      <Box size={[0.2, 2.9, 3]} position={[x - 4, 1.45, z - 1.6]} m={PANEL} />
+      <Box size={[0.2, 2.9, 3]} position={[x + 4, 1.45, z - 1.6]} m={PANEL} />
+      <Glow size={[0.8, 0.02, 0.3]} position={[x + 1.5, 2.79, z - 1.4]} color={LIGHT_COLD} />
+      <pointLight position={[x + 1.5, 2.5, z - 1.4]} color={LIGHT_COLD} intensity={1.6} distance={6} decay={2} />
+      {/* lever box and the lamp above the door */}
+      <Box size={[0.16, 0.3, 0.08]} position={[x + 0.75, 1.2, z - 0.14]} m={DARK_STEEL} />
+      <group position={[x + 0.75, 1.2, z - 0.2]} rotation={[0, 0, red ? -1.2 : 0.3]}>
+        <Box size={[0.03, 0.22, 0.03]} position={[0, 0.1, 0]} m={STEEL} />
+      </group>
+      <Box size={[0.12, 0.08, 0.06]} position={[x, 2.28, z - 0.13]} m={DARK_STEEL} />
+      <Box size={[0.08, 0.05, 0.02]} position={[x, 2.28, z - 0.17]} m={red ? {color: '#ff3b30', emissive: '#ff3b30', glow: 2.5} : {color: '#3a1512'}} shadow={false} />
+      {red ? <pointLight position={[x, 2.2, z - 0.5]} color="#ff3b30" intensity={0.8} distance={3} decay={2} /> : null}
+    </group>
+  );
+};
+
+// grey glossy patch on the desk where the jar sinks
+const DeskPatch: React.FC<{r: number; v: number}> = ({r, v}) => {
+  const geo = useMemo(() => {
+    const seg = 28;
+    const pts: number[] = [];
+    for (let i = 0; i < seg; i++) {
+      const a0 = (i / seg) * Math.PI * 2;
+      const a1 = ((i + 1) / seg) * Math.PI * 2;
+      const r0 = r * (0.85 + 0.15 * Math.sin(a0 * 3 + 1) + 0.06 * Math.sin(a0 * 7));
+      const r1 = r * (0.85 + 0.15 * Math.sin(a1 * 3 + 1) + 0.06 * Math.sin(a1 * 7));
+      pts.push(0, 0.001, 0, Math.cos(a1) * r1, 0, Math.sin(a1) * r1, Math.cos(a0) * r0, 0, Math.sin(a0) * r0);
+    }
+    const g = new BufferGeometry();
+    g.setAttribute('position', new Float32BufferAttribute(pts, 3));
+    g.computeVertexNormals();
+    return g;
+  }, [r]);
+  if (r <= 0) return null;
+  return (
+    <mesh geometry={geo} position={[SPOT[0], DESK_TOP + 0.0012, SPOT[2]]} rotation={[0, v * 0.02, 0]} receiveShadow>
+      <Material m={MASS} />
+    </mesh>
+  );
+};
 
 // ---------------------------------------------------------------- Gleb in the hall
 

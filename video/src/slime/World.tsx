@@ -11,7 +11,7 @@ import {CameraRig} from './camera';
 export const MACRO_SHOTS = ['grain', 'microscope', 'dust', 'pit', 'rim', 'bottom', 'shock', 'title'];
 
 // Reflections for the steel and glass: a neutral studio room, dimmed and cooled.
-const useEnvironment = () => {
+export const useEnvironment = () => {
   const gl = useThree((s) => s.gl);
   return useMemo(() => {
     const pm = new PMREMGenerator(gl);
