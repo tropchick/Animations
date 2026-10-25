@@ -24,7 +24,10 @@
     "render:pov": "python3 audio/make_pov_audio.py && tools/render-chunks.sh PovMrBeast public/audio/pov-mrbeast.wav out/pov-mrbeast.mp4 2687",
     "audio:earth": "python3 audio/make_earth_audio.py",
     "render:earth": "python3 audio/make_earth_audio.py && tools/render-chunks.sh EarthStop public/audio/earth-stop.wav out/earth-stop.mp4 1980",
-    "cover:earth": "remotion still EarthCover out/earth-stop-cover.jpg --gl=swangle --jpeg-quality=90"
+    "cover:earth": "remotion still EarthCover out/earth-stop-cover.jpg --gl=swangle --jpeg-quality=90",
+    "audio:grow": "python3 audio/make_grow_audio.py",
+    "render:grow": "python3 audio/make_grow_audio.py && tools/render-chunks.sh GravityGrow public/audio/gravity-grow.wav out/gravity-grow.mp4 1981",
+    "cover:grow": "remotion still GrowCover out/gravity-grow-cover.jpg --gl=swangle --jpeg-quality=90"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

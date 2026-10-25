@@ -20,9 +20,22 @@ import {DURATION_S as POV_S} from './pov/cues';
 import {EarthStop} from './EarthStop';
 import {EarthCover} from './EarthCover';
 import {DURATION_S as EARTH_S} from './earth/time';
+import {GravityGrow} from './GravityGrow';
+import {GrowCover, GROW_COVER} from './GrowCover';
+import {DURATION_S as GROW_S} from './grow/time';
 
 export const RemotionRoot = () => (
   <>
+    <Composition
+      id="GravityGrow"
+      component={GravityGrow}
+      durationInFrames={GROW_S * FPS + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="GrowCover" component={GrowCover} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={GROW_COVER} />
     <Composition
       id="EarthStop"
       component={EarthStop}
