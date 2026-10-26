@@ -263,7 +263,9 @@ const Captions: React.FC<{v: number}> = ({v}) => {
   if (i < 0) return null;
   const [a, b] = GROUPS[i];
   const next = i + 1 < GROUPS.length ? wordStart(GROUPS[i + 1][0]) - 0.05 : Infinity;
-  const end = Math.min(wordEnd(b) + 0.6, next - 0.08);
+  // gone before the next phrase, and before a line spoken in the scene starts
+  const line = LINES.map((l) => l.at[0] - 0.1).find((t) => t > wordStart(a)) ?? Infinity;
+  const end = Math.min(wordEnd(b) + 0.6, next - 0.08, line - 0.05);
   if (v > end) return null;
   const o = fade(v, wordStart(a) - 0.05, end, 0.08);
   const words: {w: string; on: boolean}[] = [];
