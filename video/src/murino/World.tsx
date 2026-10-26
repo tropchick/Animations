@@ -290,6 +290,7 @@ export const World: React.FC<{v: number; view?: (v: number) => View; cover?: boo
           {nearLamps.map((i) => (
             <pointLight key={i} position={corrLamp(i)} color="#eef3ea" intensity={3.2 * corrOn(i)} distance={8} decay={1.5} />
           ))}
+          {!cover && v > wordStart(69) - 0.3 && v < WALK0 ? <pointLight position={add3(CORR, [-0.3, 1.2, -4.0])} color="#dfe6e2" intensity={1.2} distance={2.5} decay={1.5} /> : null}
           <pointLight position={corrLamp(LONG_LAMP)} color="#dfe8e2" intensity={cover ? 3 : 2.6 * corrOn(LONG_LAMP)} distance={6} decay={1.5} />
         </>
       ) : null}

@@ -98,7 +98,7 @@ export const openB = (v: number, chain: number) => {
   if (v >= SLAM - 0.12) return Math.max(0, 0.3 * (1 - ramp(v, SLAM - 0.12, SLAM)));
   return 0.3 * smooth(ramp(v, chain - 0.05, chain + 0.3));
 };
-export const growAt = (v: number) => smooth(ramp(v, GROW, GROW + 1.9));
+export const growAt = (v: number) => smooth(ramp(v, GROW, GROW + 1.5));
 export const passAt = (v: number) => smooth(ramp(v, PASS - 0.35, PASS + 0.3));
 export const bagGone = (v: number) => v > PASS + 0.55;
 export const WELL_END = shotEnd('well');

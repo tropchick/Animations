@@ -37,7 +37,7 @@ export const CUTS = {
   doubleFace: wordStart(131) - 0.25, // «заказ не отдавай»
   twinsWide: CHAIN - 0.3,
   twinsGap: CHAIN + 0.65,
-  slam: SLAM - 0.45,
+  slam: SLAM - 0.2,
 };
 
 // the double's face in the dark doorway, one slow push across the doors/twins boundary
@@ -51,7 +51,7 @@ const SHOTS: Record<Shot, (k: number, v: number) => View> = {
   order: (k, v) => {
     if (v < CUTS.orderBack)
       return move(v, shotStart('order'), CUTS.orderBack, E([-0.12, 1.95, 3.35]), E([-0.05, 1.88, 3.08]), E([0.22, 1.62, 1.6]), E([0.2, 1.6, 1.65]), 46, {far: 260});
-    return move(v, CUTS.orderBack, shotEnd('order') + 0.5, E([0.7, 1.7, 4.4]), E([2.6, 2.3, 12.5]), E([0.2, 1.6, 0]), E([0.2, 8.5, 0]), [48, 54], {far: 260});
+    return move(v, CUTS.orderBack, shotEnd('order') + 0.5, E([0.7, 1.7, 4.4]), E([2.6, 2.0, 12.5]), E([0.2, 1.6, 0]), E([0.2, 5.5, 0]), [48, 56], {far: 260});
   },
   // the panel close up, buttons to 100 and the note; then from behind him onto the doors, through them onto the landing
   lift: (k, v) => {
@@ -73,7 +73,7 @@ const SHOTS: Record<Shot, (k: number, v: number) => View> = {
       const kk = ramp(v, shotStart('well'), CUTS.wellSide);
       const a = c.a + Math.PI + 0.35;
       const pos: V3 = add3(WELL, [Math.cos(a) * 1.1, c.p[1] - WELL[1] + lerp(4.6, 3.6, kk), -Math.sin(a) * 1.1]);
-      const target = lerp3(add3(c.p, [0, 0.8, 0]), add3(WELL, [0, c.p[1] - WELL[1] - 7, 0]), 0.3);
+      const target = lerp3(add3(c.p, [0, 0.8, 0]), add3(WELL, [0, c.p[1] - WELL[1] - 7, 0]), 0.12);
       return {pos, target, fov: 64, far: 60};
     }
     return {pos: add3(onStairs(i - 1.9, 2.1).p, [0, 1.45, 0]), target: add3(onStairs(i + 0.7, 3.3).p, [0, 0.95, 0]), fov: 60, far: 60};
@@ -82,7 +82,7 @@ const SHOTS: Record<Shot, (k: number, v: number) => View> = {
   long: (k, v) => {
     if (v < CUTS.longReveal) return move(v, shotStart('long'), CUTS.longReveal, C([0.45, 1.72, -0.15]), C([0.3, 1.66, -0.95]), C([-0.1, 1.5, -20]), C([0.1, 1.55, -20]), 50);
     if (v < CUTS.longFace) return move(v, CUTS.longReveal, CUTS.longFace + 0.3, C([0.05, 1.5, -16.5]), C([0.18, 1.62, -22.0]), C([0.6, 2.2, -31.2]), C([0.62, 2.32, -31.2]), [30, 24]);
-    if (v < CUTS.longFloor) return move(v, CUTS.longFace, CUTS.longFloor, C([-0.22, 1.12, -4.2]), C([-0.26, 1.08, -3.95]), C([-0.42, 1.5, -3.0]), C([-0.42, 1.42, -3.0]), 40);
+    if (v < CUTS.longFloor) return move(v, CUTS.longFace, CUTS.longFloor, C([-0.2, 1.12, -4.35]), C([-0.24, 1.1, -4.15]), C([-0.42, 1.62, -3.0]), C([-0.42, 1.55, -3.0]), 48);
     const c = courierCorrB(v);
     const sway = 0.03 * Math.sin(c.phase);
     return {pos: add3(c.p, [0.05 + sway, 1.62, -0.62]), target: add3(c.p, [0.45 + sway * 2, 0, -2.0]), fov: 68, near: 0.02};
@@ -124,7 +124,7 @@ const SHOTS: Record<Shot, (k: number, v: number) => View> = {
     const kk = smooth(ramp(v, LAND, shotEnd('neighbor')));
     const across = onStairs(CUP_TREAD + 9 + 0.6, 1.9);
     const mid = lerp3(cup, n.p, 0.55);
-    return {pos: add3(across.p, [0, lerp(1.2, 0.9, kk), 0]), target: lerp3(add3(mid, [0, 0.9, 0]), add3(mid, [0, 0.55, 0]), kk), fov: lerp(52, 40, kk), far: 60};
+    return {pos: add3(across.p, [0, lerp(2.4, 2.1, kk), 0]), target: lerp3(add3(mid, [0, 0.9, 0]), add3(mid, [0, 0.55, 0]), kk), fov: lerp(46, 30, kk), far: 60};
   },
   // he walks up to the two doors; А swings open; the face in the dark
   doors: (k, v) => {

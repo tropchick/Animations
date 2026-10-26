@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import * as THREE from 'three';
 import {Box, Glow, Mat} from '../slime/parts';
-import {PaintedWall} from '../last/parts';
+import {PaintedWall} from './wall';
 import {V3, add3} from './cues';
 import {CORR, CORR_H, CORR_LEN, CORR_W, DOOR_A_X, DOOR_B_X, DOOR_H, DOOR_W, LAND, LAND_WALL_Z} from './places';
 import {FONT, drawPlate, seeded, useTex} from './tex';

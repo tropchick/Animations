@@ -82,7 +82,7 @@ export const Human: React.FC<{
         {look.slippers ? (
           <>
             <Box size={[0.15, 0.03, 0.27]} position={[0, -shin - 0.035, 0.05]} m={sole} />
-            <Box size={[0.152, 0.05, 0.13]} position={[0, -shin - 0.0, 0.1]} m={look.shoe} />
+            <Box size={[0.17 * Math.max(1, W), 0.05, 0.13]} position={[0, -shin - 0.0, 0.1]} m={look.shoe} />
             <Box size={[0.13, 0.06, 0.16]} position={[0, -shin - 0.0, -0.02]} m={look.skin} />
           </>
         ) : (
@@ -107,10 +107,10 @@ export const Human: React.FC<{
             {/* the robe: a belt round the waist, the skirt flaps ride on the thighs (see leg) */}
             <Box size={[0.52 * W, 0.16, 0.3 * W]} position={[0, -0.02, 0]} m={look.top} />
             <Box size={[0.53 * W, 0.05, 0.31 * W]} position={[0, 0.04, 0]} m={look.topDark} shadow={false} />
-            <Box size={[0.12, 0.2, 0.02]} position={[0, torso * 0.82, 0.142 * W]} m={look.skin} shadow={false} />
+            <Box size={[0.12, 0.2, 0.02]} position={[0, torso * 0.82, 0.15 * W]} m={look.skin} shadow={false} />
           </>
         ) : null}
-        <Box size={[0.36 * W, 0.08, 0.3 * W]} position={[0, torso - 0.02, -0.01]} m={look.topDark} />
+        <Box size={[0.36 * W, 0.08, 0.28 * W + 0.02]} position={[0, torso - 0.02, 0]} m={look.topDark} />
         {look.backpack ? (
           <>
             {/* the courier's thermal backpack, flat against the back, and its straps */}
@@ -129,7 +129,7 @@ export const Human: React.FC<{
           <Box size={[0.035, 0.12, 0.13]} position={[0.137, 0.25, -0.05]} m={look.hair} shadow={false} />
           {look.cap ? (
             <>
-              <Box size={[0.3, 0.09, 0.31]} position={[0, 0.355, 0]} m={look.cap} />
+              <Box size={[0.31, 0.09, 0.322]} position={[0, 0.355, -0.003]} m={look.cap} />
               <Box size={[0.26, 0.022, 0.13]} position={[0, 0.315, 0.2]} m={look.cap} />
             </>
           ) : (
@@ -160,13 +160,13 @@ export const Human: React.FC<{
           ) : null}
           <Box size={[0.045, 0.065, 0.045]} position={[0, 0.13, 0.155]} m={look.skin} shadow={false} />
           {/* mouth: lips, a wide fixed smile with the corners up, or a dark open mouth */}
-          {mouthDark > 0 ? <Box size={[0.07 + 0.06 * s, 0.012 + 0.03 * mouthDark, 0.008]} position={[0, 0.07, 0.142]} m={DARK} shadow={false} /> : null}
+          {mouthDark > 0 ? <Box size={[0.07 + 0.06 * s, 0.012 + 0.03 * mouthDark, 0.008]} position={[0, 0.07, 0.139]} m={DARK} shadow={false} /> : null}
           <Box size={[0.075 + 0.07 * s, 0.014, 0.012]} position={[0, 0.07 - 0.004 * s + 0.017 * mouthDark, 0.146]} m={LIPS} shadow={false} />
           {s > 0 ? (
             <>
               <Box size={[0.03, 0.012, 0.012]} position={[-0.062 - 0.035 * s, 0.078, 0.146]} rotation={[0, 0, 0.6]} m={LIPS} shadow={false} />
               <Box size={[0.03, 0.012, 0.012]} position={[0.062 + 0.035 * s, 0.078, 0.146]} rotation={[0, 0, -0.6]} m={LIPS} shadow={false} />
-              <Box size={[0.06 + 0.06 * s, 0.01, 0.006]} position={[0, 0.06, 0.143]} m={WHITE} shadow={false} />
+              <Box size={[0.06 + 0.06 * s, 0.01, 0.006]} position={[0, 0.06, 0.1445]} m={WHITE} shadow={false} />
             </>
           ) : null}
           <Box size={[0.03, 0.06, 0.05]} position={[-0.145, 0.16, 0]} m={look.skin} shadow={false} />

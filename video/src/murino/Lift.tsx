@@ -1,6 +1,6 @@
 import React from 'react';
 import {Box, Glow, Mat} from '../slime/parts';
-import {PaintedWall} from '../last/parts';
+import {PaintedWall} from './wall';
 import {V3, add3} from './cues';
 import {LIFT} from './places';
 import {FONT, MONO_FONT, drawPlate, seeded, useTex} from './tex';
@@ -11,7 +11,7 @@ import {FONT, MONO_FONT, drawPlate, seeded, useTex} from './tex';
 
 const L = (p: V3): V3 => add3(LIFT, p);
 
-const STEEL: Mat = {color: '#8d949a', rough: 0.35, metal: 0.7, env: 0.8};
+const STEEL: Mat = {color: '#8d949a', rough: 0.65, metal: 0.25, env: 0.5};
 const DARK: Mat = {color: '#2a2c2f', rough: 0.6};
 const FLOOR: Mat = {color: '#3b3733', rough: 0.9};
 const CEIL: Mat = {color: '#c9c6bd', rough: 0.9};
