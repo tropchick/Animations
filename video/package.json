@@ -30,7 +30,8 @@
     "cover:grow": "remotion still GrowCover out/gravity-grow-cover.jpg --gl=swangle --jpeg-quality=90",
     "audio:scp1": "python3 audio/make_scp_ep1_audio.py",
     "render:scp1": "python3 audio/make_scp_ep1_audio.py && tools/render-chunks.sh ScpEp1 public/audio/scp-ep1.wav out/scp-ep1.mp4 2353",
-    "cover:scp1": "remotion still ScpCover out/scp-ep1-cover.jpg --gl=swangle --jpeg-quality=90"
+    "cover:scp1": "remotion still ScpCover out/scp-ep1-cover.jpg --gl=swangle --jpeg-quality=90",
+    "zcheck": "node tools/zcheck.mjs"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
