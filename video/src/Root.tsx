@@ -23,9 +23,22 @@ import {DURATION_S as EARTH_S} from './earth/time';
 import {GravityGrow} from './GravityGrow';
 import {GrowCover, GROW_COVER} from './GrowCover';
 import {DURATION_S as GROW_S} from './grow/time';
+import {ScpEp1} from './ScpEp1';
+import {ScpCover} from './ScpCover';
+import {DURATION_S as SCP1_S} from './scp/cues';
 
 export const RemotionRoot = () => (
   <>
+    <Composition
+      id="ScpEp1"
+      component={ScpEp1}
+      durationInFrames={Math.round(SCP1_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="ScpCover" component={ScpCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition
       id="GravityGrow"
       component={GravityGrow}
