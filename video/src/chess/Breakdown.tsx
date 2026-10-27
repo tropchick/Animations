@@ -1,7 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Img, OffthreadVideo, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
-import {BadgePop, Board, CREAM, EvalBar, Frame, Glyph, MoveCard, Results, SANS, SERIF, Scoreboard, ShowContext, Subtitles, useShow} from './Chess';
+import {BadgePop, Board, CREAM, EvalBar, Frame, Glyph, MoveCard, Results, SANS, SERIF, Scoreboard, ShowContext, Subtitles, YtCard, badgeLeft, useShow} from './Chess';
 import {CHESS_SHOWS} from '../chessShows';
 import './fonts';
 
@@ -31,6 +31,7 @@ export const ChessVideo: React.FC<{id: string; withAudio?: boolean}> = ({id, wit
           <MoveCard v={v} />
           <Subtitles v={v} />
           <Results v={v} />
+          <YtCard v={v} />
         </AbsoluteFill>
       )}
       {withAudio ? <Audio src={staticFile(`audio/${show.cfg.id}.wav`)} /> : null}
@@ -40,7 +41,8 @@ export const ChessVideo: React.FC<{id: string; withAudio?: boolean}> = ({id, wit
 
 // Frame 0 of the video and the TikTok cover: the cover frame of the scene, the title and the final verdict.
 const CoverPage: React.FC = () => {
-  const {cfg, FOOT} = useShow();
+  const show = useShow();
+  const {cfg, FOOT} = show;
   return (
     <AbsoluteFill>
       <Board />
@@ -49,7 +51,7 @@ const CoverPage: React.FC = () => {
         <Img src={staticFile(`${cfg.id}/cover.jpg`)} style={{width: FOOT.w, height: FOOT.h, objectFit: 'cover'}} />
       </Frame>
       <EvalBar v={0} p={0} />
-      <div style={{position: 'absolute', left: FOOT.x + FOOT.w - 260, top: FOOT.y + 30, filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.6))'}}>
+      <div style={{position: 'absolute', left: badgeLeft(show, show.WINNER, 230), top: FOOT.y + 30, filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.6))'}}>
         <Glyph g="mate" size={230} />
       </div>
       <div style={{position: 'absolute', left: 40, width: 1000, top: 372, textAlign: 'center'}}>

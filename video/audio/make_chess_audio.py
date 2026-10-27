@@ -7,6 +7,7 @@ data's "srcDir" (project files), or in $CHESS_SRC. Everything about one video is
   edl      [part, from, to] pieces of the scene in order (the long silent pauses are left out),
   hold     seconds the last frame is held at the end (optional, for the results screen),
   avatars  {name: [part, second, x, y, size]} squares in the cropped frame, cover [part, second],
+  thumb    [part, second] (optional) the frame for the YouTube-card ending (show.ts yt),
   moves / subs / resultsAt  point at source times (subtitle words come from the whisper file in "words").
 This script
   1. writes the cut scene public/<id>/scene.mp4 (30 fps), the avatars and the cover frame into public/<id>/,
@@ -21,6 +22,7 @@ Sync map (on-screen event <-> sound onset, both at the move's time):
   blunder / mistake badge    <-> low thump
   mate                       <-> deep boom + low bell
   results sections appear    <-> soft clicks
+  YouTube card ending        <-> whoosh in, boom + ting when the time slams on (+0.55 s), soft whoosh for the arrow (+0.95 s)
 """
 
 import hashlib
@@ -92,6 +94,9 @@ for name, (p, sec, x, y, size) in data["avatars"].items():
        "-q:v", "3", str(PUB / f"av-{name}.jpg"))
 cp, csec = data["cover"]
 ff("-ss", str(csec), "-i", str(FILES[cp]), "-frames:v", "1", "-vf", vf(cp), "-q:v", "2", str(PUB / "cover.jpg"))
+if "thumb" in data:
+    tp, tsec = data["thumb"]
+    ff("-ss", str(tsec), "-i", str(FILES[tp]), "-frames:v", "1", "-vf", vf(tp), "-q:v", "2", str(PUB / "thumb.jpg"))
 
 
 # 3. soundtrack
@@ -150,10 +155,18 @@ for m in data["moves"]:
         mix.add(thump(55, 26, 1.8, decay=2.2, click=0.3), mt + 0.02, 0.9)
         mix.add(ting(660, 2.4), mt + 0.05, 0.08)
 
-results = out(*data["resultsAt"])
-for k in range(6):
-    mix.add(click(0.04, 2200), results + 0.4 + k * 1.1, 0.25)
-mix.add(ting(1320, 2.0), results, 0.06)
+# resultsDelay: seconds into the held last frame (so the mate card can be read before the ending covers it)
+results = round(out(*data["resultsAt"]) + data.get("resultsDelay", 0.0), 3)
+if "thumb" in data:
+    # YouTube-card ending (Chess.tsx YtCard): card flies in, the time slams on, the arrow is drawn
+    mix.add(whoosh(0.45), results, 0.16)
+    mix.add(thump(70, 32, 1.0, decay=4, click=0.4), results + 0.55, 0.7)
+    mix.add(ting(1760, 1.2), results + 0.57, 0.07)
+    mix.add(whoosh(0.35), results + 0.95, 0.08)
+else:
+    for k in range(6):
+        mix.add(click(0.04, 2200), results + 0.4 + k * 1.1, 0.25)
+    mix.add(ting(1320, 2.0), results, 0.06)
 
 final = mix.write(ID)
 

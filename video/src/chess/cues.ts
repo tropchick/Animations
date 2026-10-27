@@ -12,11 +12,16 @@ export type ShowConfig = {
   label: string; // the line above the scoreboard
   footH: number; // height of the scene at full width (1080)
   white: {name: string; short: string; gen: string; avatar: string};
-  black: {name: string; short: string; gen: string; glyphs: string; avatars: [string, string]; late: {avatar: string; who: string}};
+  // one or two avatars; late = a piece that joins the game later (its avatar stays a «?» until then)
+  black: {name: string; short: string; gen: string; glyphs: string; avatars: string[]; late?: {avatar: string; who: string}};
   pieces: Record<string, string>; // who -> chess piece shown on the card
-  awards: [string, string][];
-  finalLine: string;
+  clock?: number; // seconds on each chess clock, 180 if not set
+  badgeLeft?: Side; // this side's grade badges pop on the left of the picture (so they don't cover the speaker's face)
+  awards?: [string, string][];
+  finalLine?: string;
   cover: {title: string[]; sub: string};
+  // the ending: the match results, or (when set) a parody YouTube card «Самые быстрые победы в карьере …»
+  yt?: {big: string; unit: string; duration: string; title: string; meta: string};
 };
 
 export const GRADES: Record<Grade, {label: string; glyph: string; color: string; ink: string}> = {
@@ -53,7 +58,7 @@ export const makeShow = (cfg: ShowConfig, cues: CuesJson) => {
   let n = 0;
   const MOVE_NO = MOVES.map((m) => (numbered(m) ? ++n : 0));
   const mateMove = MOVES.find((m) => m.grade === 'mate')!;
-  const late = MOVES.find((m) => m.grade === 'piece' && m.who === cfg.black.late.who)!;
+  const late = cfg.black.late && MOVES.find((m) => m.grade === 'piece' && m.who === cfg.black.late!.who);
   const FOOT = {x: 0, y: Math.round(960 - cfg.footH / 2), w: 1080, h: cfg.footH};
   return {
     cfg,
@@ -65,7 +70,7 @@ export const makeShow = (cfg: ShowConfig, cues: CuesJson) => {
     MATE: mateMove.t,
     WINNER: mateMove.side as Side,
     MATE_NO: MOVE_NO[MOVES.indexOf(mateMove)],
-    LATE_IN: late.t,
+    LATE_IN: late ? late.t : Infinity,
     FOOT,
     moveAt: (v: number) => {
       let i = -1;
@@ -79,10 +84,10 @@ export const makeShow = (cfg: ShowConfig, cues: CuesJson) => {
       return Math.round(s.reduce((a, b) => a + b, 0) / s.length);
     },
     count: (side: Side, g: Grade) => MOVES.filter((m) => m.side === side && m.grade === g).length,
-    // chess clocks: 3:00 each, the side to move runs (after a move by black it is white's turn), stopped at mate
+    // chess clocks (3:00 each unless cfg.clock), the side to move runs (after a move by black it is white's turn), stopped at mate
     clocks: (v: number) => {
-      const left = {w: 180, b: 180};
-      let turn: Side = 'b';
+      const left = {w: cfg.clock ?? 180, b: cfg.clock ?? 180};
+      let turn: Side = (MOVES.find((m) => m.side)?.side || 'b') as Side;
       let since = MOVES[0].t;
       if (v < since) return {left, turn, running: false};
       for (const m of MOVES.slice(1)) {

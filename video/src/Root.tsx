@@ -37,6 +37,7 @@ import {CHESS_SHOWS} from './chessShows';
 const CHESS = [
   {id: 'SlobodyChess', cover: 'SlobodyCover', show: 'slobody'},
   {id: 'KnigaChess', cover: 'KnigaCover', show: 'kniga'},
+  {id: 'MinutochkaChess', cover: 'MinutochkaCover', show: 'minutochka'},
 ];
 
 export const RemotionRoot = () => (

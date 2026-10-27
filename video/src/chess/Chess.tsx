@@ -104,9 +104,17 @@ export const Scoreboard: React.FC<{v: number}> = ({v}) => {
             </div>
           </div>
           <div style={{position: 'relative', width: 112, height: 136, flex: 'none'}}>
-            <Avatar name={cfg.black.avatars[0]} size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', left: 0, top: 0}} />
-            <Avatar name={cfg.black.avatars[1]} size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', right: 0, top: 16}} />
-            <Avatar name={cfg.black.late.avatar} size={74} ring={active('b') ? GREEN : '#55504a'} dim={1 - late} style={{position: 'absolute', left: 18, top: 60, scale: `${1 + 0.25 * Math.sin(Math.PI * late)}`}} />
+            {cfg.black.avatars.length === 1 ? (
+              <Avatar name={cfg.black.avatars[0]} size={112} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', left: 0, top: 12}} />
+            ) : (
+              <>
+                <Avatar name={cfg.black.avatars[0]} size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', left: 0, top: 0}} />
+                <Avatar name={cfg.black.avatars[1]} size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', right: 0, top: 16}} />
+              </>
+            )}
+            {cfg.black.late ? (
+              <Avatar name={cfg.black.late.avatar} size={74} ring={active('b') ? GREEN : '#55504a'} dim={1 - late} style={{position: 'absolute', left: 18, top: 60, scale: `${1 + 0.25 * Math.sin(Math.PI * late)}`}} />
+            ) : null}
           </div>
         </div>
       </div>
@@ -198,8 +206,13 @@ export const Glyph: React.FC<{g: Grade; size: number; glyph?: string}> = ({g, si
   );
 };
 
+// where a badge of this size sits on the picture: top right, or top left (clear of the eval number) for cfg.badgeLeft's moves
+export const badgeLeft = (show: Show, side: '' | 'w' | 'b', size: number) =>
+  side && side === show.cfg.badgeLeft ? show.FOOT.x + 170 : show.FOOT.x + show.FOOT.w - size - 30;
+
 export const BadgePop: React.FC<{v: number}> = ({v}) => {
-  const {MOVES, FOOT, moveAt} = useShow();
+  const show = useShow();
+  const {MOVES, FOOT, moveAt} = show;
   const i = moveAt(v);
   if (i < 1) return null;
   const m = MOVES[i];
@@ -209,7 +222,7 @@ export const BadgePop: React.FC<{v: number}> = ({v}) => {
   const out = m.grade === 'mate' ? 0 : ramp(age, 1.25, 1.6);
   const big = m.grade === 'mate' ? 230 : 170;
   return (
-    <div style={{position: 'absolute', left: FOOT.x + FOOT.w - big - 30, top: FOOT.y + 30, scale: `${k * (1 - 0.3 * out)}`, opacity: 1 - out, filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.6))'}}>
+    <div style={{position: 'absolute', left: badgeLeft(show, m.side, big), top: FOOT.y + 30, scale: `${k * (1 - 0.3 * out)}`, opacity: 1 - out, filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.6))'}}>
       <Glyph g={m.grade} size={big} glyph={m.glyph} />
     </div>
   );
@@ -347,7 +360,7 @@ const Award: React.FC<{label: string; value: string}> = ({label, value}) => (
 
 export const Results: React.FC<{v: number}> = ({v}) => {
   const {cfg, RESULTS, WINNER, MATE_NO, accuracy, count} = useShow();
-  if (v < RESULTS) return null;
+  if (v < RESULTS || cfg.yt) return null;
   const t = (k: number) => RESULTS + 0.4 + k * 1.1;
   const dim = smooth(ramp(v, RESULTS, RESULTS + 0.5));
   const rows = ROW_GRADES.filter((g) => count('w', g) + count('b', g) > 0);
@@ -386,7 +399,7 @@ export const Results: React.FC<{v: number}> = ({v}) => {
           ))}
         </Section>
         <Section v={v} at={t(4)} style={{background: CREAM, borderRadius: 18, padding: '6px 24px'}}>
-          {cfg.awards.map(([label, value]) => (
+          {(cfg.awards ?? []).map(([label, value]) => (
             <Award key={label} label={label} value={value} />
           ))}
         </Section>
@@ -398,3 +411,51 @@ export const Results: React.FC<{v: number}> = ({v}) => {
   );
 };
 
+
+// ---------------------------------------------------------------- the other ending: a parody YouTube card
+// (the «Самые быстрые победы в карьере Магнуса Карлсена» meme): the last frame becomes the video's thumbnail with
+// a huge time on it and a red arrow at the winner, under it a channel icon, the title and the views line.
+
+const YT_RED = '#e53935';
+
+export const YtCard: React.FC<{v: number}> = ({v}) => {
+  const {cfg, RESULTS} = useShow();
+  if (!cfg.yt || v < RESULTS) return null;
+  const yt = cfg.yt;
+  const dim = smooth(ramp(v, RESULTS, RESULTS + 0.35));
+  const k = outBack(clamp01((v - RESULTS - 0.1) / 0.45));
+  const num = outBack(clamp01((v - RESULTS - 0.55) / 0.3));
+  const arrow = smooth(ramp(v, RESULTS + 0.95, RESULTS + 1.35));
+  const W = 1000;
+  const TH = 562;
+  // the time sits on the left (over the blurred foreground), the arrow points from it at the winner's face on the right
+  const path = 'M 380 400 C 430 470, 520 440, 555 350';
+  const len = 300;
+  return (
+    <AbsoluteFill>
+      <AbsoluteFill style={{background: `rgba(18,22,16,${dim})`}} />
+      <div style={{position: 'absolute', left: 40, top: 470, width: W, opacity: clamp01((v - RESULTS - 0.1) / 0.2), scale: `${0.82 + 0.18 * k}`, borderRadius: 30, overflow: 'hidden', background: '#fff', boxShadow: '0 30px 80px rgba(0,0,0,0.6)'}}>
+        <div style={{position: 'relative', width: W, height: TH, overflow: 'hidden', background: '#000'}}>
+          <Img src={staticFile(`${cfg.id}/thumb.jpg`)} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: '70% 50%'}} />
+          <div style={{position: 'absolute', left: 32, top: 70, scale: `${num}`, transformOrigin: '20% 50%', fontFamily: SANS, fontWeight: 800, color: '#fff', lineHeight: 0.98, letterSpacing: '-0.02em', WebkitTextStroke: '6px #000', paintOrder: 'stroke fill', textShadow: '0 8px 30px rgba(0,0,0,0.55)'}}>
+            <div style={{fontSize: 170}}>{yt.big}</div>
+            <div style={{fontSize: 104}}>{yt.unit}</div>
+          </div>
+          <svg width={W} height={TH} style={{position: 'absolute', left: 0, top: 0}}>
+            <path d={path} fill="none" stroke={YT_RED} strokeWidth={16} strokeLinecap="round" strokeDasharray={len} strokeDashoffset={len * (1 - arrow)} />
+            <path d="M 522 376 L 555 350 L 561 392" fill="none" stroke={YT_RED} strokeWidth={16} strokeLinecap="round" strokeLinejoin="round" opacity={arrow > 0.95 ? 1 : 0} />
+          </svg>
+          <div style={{position: 'absolute', right: 20, bottom: 20, padding: '4px 12px', borderRadius: 10, background: 'rgba(0,0,0,0.8)', fontFamily: SANS, fontWeight: 600, fontSize: 34, color: '#fff'}}>{yt.duration}</div>
+        </div>
+        <div style={{display: 'flex', gap: 24, padding: '26px 28px 30px', alignItems: 'flex-start'}}>
+          <div style={{width: 84, flex: 'none', fontSize: 84, lineHeight: 1, color: '#0f0f0f', textAlign: 'center'}}>♜</div>
+          <div style={{flex: 1}}>
+            <div style={{fontFamily: SANS, fontWeight: 500, fontSize: 42, lineHeight: 1.22, color: '#0f0f0f'}}>{yt.title}</div>
+            <div style={{fontFamily: SANS, fontWeight: 400, fontSize: 34, color: '#606060', marginTop: 10}}>{yt.meta}</div>
+          </div>
+          <div style={{flex: 'none', fontFamily: SANS, fontWeight: 800, fontSize: 44, color: '#0f0f0f', lineHeight: 1}}>⋮</div>
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
