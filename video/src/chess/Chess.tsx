@@ -47,7 +47,8 @@ const Avatar: React.FC<{name: string; size: number; ring: string; dim?: number; 
   const {cfg} = useShow();
   return (
   <div style={{width: size, height: size, borderRadius: '50%', border: `5px solid ${ring}`, overflow: 'hidden', flex: 'none', background: '#000', position: 'relative', ...style}}>
-    <Img src={staticFile(`${cfg.id}/av-${name}.jpg`)} style={{width: '100%', height: '100%', objectFit: 'cover', filter: `grayscale(${dim}) brightness(${1 - dim * 0.65})`}} />
+    {/* a name with a slash is a shared picture in public/ (e.g. chess/av-phone.jpg for a side nobody sees) */}
+    <Img src={staticFile(name.includes('/') ? name : `${cfg.id}/av-${name}.jpg`)} style={{width: '100%', height: '100%', objectFit: 'cover', filter: `grayscale(${dim}) brightness(${1 - dim * 0.65})`}} />
     {dim > 0.5 ? (
       <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: SANS, fontWeight: 800, fontSize: size * 0.5, color: 'rgba(255,255,255,0.85)'}}>?</div>
     ) : null}
