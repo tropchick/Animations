@@ -6,6 +6,13 @@ set -e
 id=$1; audio=$2; out=$3; total=$4; size=${5:-500}
 dir=out/chunks-$id
 mkdir -p "$dir"
+# chunks are reused only while nothing changed: any edit in src/, a new soundtrack (it is rebuilt together with the
+# scene and cues) or another length/scale throws the old chunks away
+key=$( (find src -type f -exec sha1sum {} + | sort; sha1sum "$audio"; echo "$total ${SCALE:-1}") | sha1sum | cut -c1-40)
+if [ "$(cat "$dir/key" 2>/dev/null)" != "$key" ]; then
+  rm -f "$dir"/part-*.mp4
+  echo "$key" > "$dir/key"
+fi
 : > "$dir/list.txt"
 start=0
 while [ $start -lt $total ]; do
