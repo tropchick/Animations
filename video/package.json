@@ -35,7 +35,7 @@
     "render:murino1": "python3 audio/make_murino_ep1_audio.py && tools/render-chunks.sh MurinoEp1 public/audio/murino-ep1.wav out/murino-ep1.mp4 2938",
     "cover:murino1": "remotion still MurinoCover out/murino-ep1-cover.jpg --gl=swangle --jpeg-quality=90",
     "audio:slobody": "python3 audio/make_slobody_audio.py",
-    "render:slobody": "python3 audio/make_slobody_audio.py && tools/render-chunks.sh SlobodyChess public/audio/slobody.wav out/slobody-chess.mp4 5714",
+    "render:slobody": "python3 audio/make_slobody_audio.py && SCALE=0.6666666666666666 tools/render-chunks.sh SlobodyChess public/audio/slobody.wav out/slobody-chess.mp4 5714",
     "cover:slobody": "remotion still SlobodyCover out/slobody-chess-cover.jpg --jpeg-quality=90",
     "zcheck": "node tools/zcheck.mjs"
   },

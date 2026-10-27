@@ -14,12 +14,13 @@ const WOOD = '#6e4b2a';
 const GREEN = '#7fa650';
 const DARK = '#23211e';
 
-// Layout of the 1080x1920 frame. TikTok covers the bottom ~380 px and the right edge with its own buttons,
-// so the move card and the subtitles stay left of x = 960 and above y = 1500.
-export const FOOT = {x: 96, y: 450, w: 960, h: 540};
-const BAR = {x: 30, w: 50};
-const CARD_Y = 1022;
-const SUB_Y = 1350;
+// Layout of the 1080x1920 frame: the scene full width in the middle, scoreboard and move card above it,
+// subtitles under it. TikTok covers the bottom ~450 px and the right edge with its own buttons,
+// so the subtitles stay left of x = 940 and above y = 1450.
+export const FOOT = {x: 0, y: 656, w: 1080, h: 608};
+const BAR = {x: 14, w: 28, pad: 22};
+const CARD_Y = 356;
+const SUB_Y = 1292;
 
 const fmtClock = (s: number) => {
   const t = Math.max(0, Math.ceil(s));
@@ -75,14 +76,14 @@ export const Scoreboard: React.FC<{v: number}> = ({v}) => {
   const active = (side: 'w' | 'b') => c.running && c.turn === side;
   return (
     <>
-      <div style={{position: 'absolute', left: 40, right: 40, top: 150, textAlign: 'center', fontFamily: SANS, fontWeight: 700, fontSize: 34, letterSpacing: '0.06em', color: 'rgba(241,234,215,0.72)', whiteSpace: 'nowrap'}}>
-        ШАХМАТНЫЙ РАЗБОР · «МАМА БУДЕТ ПРОТИВ»
+      <div style={{position: 'absolute', left: 40, right: 40, top: 112, textAlign: 'center', fontFamily: SANS, fontWeight: 700, fontSize: 34, letterSpacing: '0.06em', color: 'rgba(241,234,215,0.72)', whiteSpace: 'nowrap'}}>
+        ШАХМАТНЫЙ РАЗБОР · «ДО СЛОБОДЫ ДОЕДУ?»
       </div>
-      <div style={{position: 'absolute', left: 40, right: 40, top: 212, height: 206, display: 'flex', borderRadius: 26, overflow: 'hidden', border: `6px solid ${WOOD}`, boxShadow: '0 14px 40px rgba(0,0,0,0.5)'}}>
+      <div style={{position: 'absolute', left: 40, right: 40, top: 160, height: 178, display: 'flex', borderRadius: 26, overflow: 'hidden', border: `6px solid ${WOOD}`, boxShadow: '0 14px 40px rgba(0,0,0,0.5)'}}>
         <div style={{flex: 1, background: CREAM, display: 'flex', alignItems: 'center', gap: 20, padding: '0 22px'}}>
-          <Avatar name="city" size={124} ring={active('w') ? GREEN : '#cbbf9f'} />
+          <Avatar name="city" size={112} ring={active('w') ? GREEN : '#cbbf9f'} />
           <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 42, color: INK, letterSpacing: '0.02em'}}>ГОРОДСКАЯ</div>
+            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: INK, letterSpacing: '0.02em'}}>ГОРОДСКАЯ</div>
             <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
               <Clock sec={c.left.w} active={active('w')} light />
               <span style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, color: 'rgba(30,26,20,0.6)'}}>♔</span>
@@ -91,16 +92,16 @@ export const Scoreboard: React.FC<{v: number}> = ({v}) => {
         </div>
         <div style={{flex: 1, background: DARK, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 18, padding: '0 22px'}}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10}}>
-            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 42, color: CREAM, letterSpacing: '0.02em'}}>СЛОБОДА</div>
+            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM, letterSpacing: '0.02em'}}>СЛОБОДА</div>
             <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
               <span style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, color: 'rgba(241,234,215,0.6)'}}>♜♞♛</span>
               <Clock sec={c.left.b} active={active('b')} light={false} />
             </div>
           </div>
-          <div style={{position: 'relative', width: 124, height: 150, flex: 'none'}}>
-            <Avatar name="cond" size={84} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', left: 0, top: 0}} />
-            <Avatar name="mom" size={84} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', right: 0, top: 18}} />
-            <Avatar name="willow" size={84} ring={active('b') ? GREEN : '#55504a'} dim={1 - willow} style={{position: 'absolute', left: 20, top: 66, scale: `${1 + 0.25 * Math.sin(Math.PI * willow)}`}} />
+          <div style={{position: 'relative', width: 112, height: 136, flex: 'none'}}>
+            <Avatar name="cond" size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', left: 0, top: 0}} />
+            <Avatar name="mom" size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', right: 0, top: 16}} />
+            <Avatar name="willow" size={74} ring={active('b') ? GREEN : '#55504a'} dim={1 - willow} style={{position: 'absolute', left: 18, top: 60, scale: `${1 + 0.25 * Math.sin(Math.PI * willow)}`}} />
           </div>
         </div>
       </div>
@@ -108,7 +109,7 @@ export const Scoreboard: React.FC<{v: number}> = ({v}) => {
   );
 };
 
-// ---------------------------------------------------------------- the eval bar left of the picture
+// ---------------------------------------------------------------- the eval bar on the left edge of the picture
 
 const pAt = (v: number) => {
   const i = moveAt(v);
@@ -122,18 +123,19 @@ export const evalText = (p: number, mate: boolean) => (mate ? '#' : p === 50 ? '
 export const EvalBar: React.FC<{v: number; p?: number}> = ({v, p}) => {
   const pc = p ?? pAt(v);
   const mate = v >= MATE;
-  const h = FOOT.h * pc / 100;
+  const bh = FOOT.h - 2 * BAR.pad;
+  const h = bh * pc / 100;
   return (
     <>
-      <div style={{position: 'absolute', left: BAR.x, top: FOOT.y, width: BAR.w, height: FOOT.h, borderRadius: 12, overflow: 'hidden', background: '#2b2925', border: `4px solid ${WOOD}`, boxSizing: 'border-box'}}>
+      <div style={{position: 'absolute', left: BAR.x, top: FOOT.y + BAR.pad, width: BAR.w, height: bh, borderRadius: 10, overflow: 'hidden', background: '#2b2925', border: `3px solid ${WOOD}`, boxSizing: 'border-box', boxShadow: '0 4px 14px rgba(0,0,0,0.5)'}}>
         <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: h, background: CREAM}} />
-        <div style={{position: 'absolute', left: 0, right: 0, top: FOOT.h / 2 - 5, height: 2, background: 'rgba(127,166,80,0.9)'}} />
+        <div style={{position: 'absolute', left: 0, right: 0, top: bh / 2 - 4, height: 2, background: 'rgba(127,166,80,0.9)'}} />
       </div>
       <div
         style={{
           position: 'absolute',
-          left: FOOT.x + 18,
-          top: FOOT.y + 18,
+          left: BAR.x + BAR.w + 14,
+          top: FOOT.y + BAR.pad,
           padding: '8px 16px',
           borderRadius: 12,
           fontFamily: MONO,
@@ -152,7 +154,7 @@ export const EvalBar: React.FC<{v: number; p?: number}> = ({v, p}) => {
 // ---------------------------------------------------------------- frame around the scene
 
 export const Frame: React.FC<{children: React.ReactNode}> = ({children}) => (
-  <div style={{position: 'absolute', left: FOOT.x - 6, top: FOOT.y - 6, width: FOOT.w + 12, height: FOOT.h + 12, borderRadius: 22, border: `6px solid ${WOOD}`, overflow: 'hidden', boxShadow: '0 18px 50px rgba(0,0,0,0.55)', background: '#000'}}>
+  <div style={{position: 'absolute', left: FOOT.x, top: FOOT.y - 6, width: FOOT.w, height: FOOT.h + 12, borderTop: `6px solid ${WOOD}`, borderBottom: `6px solid ${WOOD}`, boxSizing: 'border-box', overflow: 'hidden', boxShadow: '0 18px 50px rgba(0,0,0,0.55)', background: '#000'}}>
     {children}
   </div>
 );
@@ -204,35 +206,42 @@ export const BadgePop: React.FC<{v: number}> = ({v}) => {
 
 // ---------------------------------------------------------------- the move card: a line of a score sheet
 
-const fitTitle = (s: string) => Math.min(64, Math.floor(1430 / s.length));
+const fitTitle = (s: string) => Math.min(62, Math.floor(1660 / s.length));
 
-const Card: React.FC<{m: Move; no: number}> = ({m, no}) => {
+// each part of the card is wiped in from left to right, one after another
+const wipe = (age: number, delay: number): React.CSSProperties => {
+  const k = smooth(ramp(age, delay, delay + 0.4));
+  return {clipPath: `inset(-20px ${(1 - k) * 100}% -20px -20px)`};
+};
+
+const Card: React.FC<{m: Move; no: number; age: number}> = ({m, no, age}) => {
   const G = GRADES[m.grade];
   const head = m.grade === 'start' ? 'ДЕБЮТ' : m.grade === 'piece' ? 'В ИГРУ ВХОДИТ' : `ХОД ${no} · ${m.who.toUpperCase()} ${PIECE[m.who] ?? ''}`;
   return (
     <div
       style={{
-        width: 900,
+        width: 1000,
         background: CREAM,
         backgroundImage: 'repeating-linear-gradient(0deg, transparent 0 55px, rgba(110,75,42,0.12) 55px 57px)',
         borderRadius: 20,
         borderLeft: `16px solid ${G.color}`,
-        padding: '22px 30px 26px',
+        padding: '16px 28px 20px',
         boxSizing: 'border-box',
         boxShadow: '0 16px 40px rgba(0,0,0,0.5)',
+        ...wipe(age, 0),
       }}
     >
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16}}>
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, ...wipe(age, 0.15)}}>
         <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, letterSpacing: '0.08em', color: '#7a6448', whiteSpace: 'nowrap'}}>{head}</div>
         <div style={{display: 'flex', alignItems: 'center', gap: 12, flex: 'none'}}>
-          <Glyph g={m.grade} size={50} />
+          <Glyph g={m.grade} size={48} />
           <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 34, color: m.grade === 'mate' ? INK : G.color, filter: 'brightness(0.85)'}}>{G.label.replace(' ход', '')}</span>
         </div>
       </div>
-      <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: fitTitle(m.title), lineHeight: 1.1, color: INK, marginTop: 10, whiteSpace: 'nowrap'}}>{m.title}</div>
-      <div style={{fontFamily: SANS, fontWeight: 500, fontSize: 36, lineHeight: 1.3, color: '#3b342b', marginTop: 10}}>{m.text}</div>
+      <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: fitTitle(m.title), lineHeight: 1.1, color: INK, marginTop: 6, whiteSpace: 'nowrap', ...wipe(age, 0.3)}}>{m.title}</div>
+      <div style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, lineHeight: 1.25, color: '#3b342b', marginTop: 6, ...wipe(age, 0.5)}}>{m.text}</div>
       {m.better ? (
-        <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, color: INK, marginTop: 10}}>
+        <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, color: INK, marginTop: 6, ...wipe(age, 0.7)}}>
           <span style={{color: G.color}}>Лучше было: </span>
           {m.better}
         </div>
@@ -245,13 +254,14 @@ export const MoveCard: React.FC<{v: number}> = ({v}) => {
   if (v >= RESULTS) return null;
   const i = moveAt(v);
   if (i < 0) return null;
-  // the previous card leaves completely before the new one comes in
-  const leaving = i > 0 && v < MOVES[i].t + 0.25;
+  // the previous card fades out completely before the new one is wiped in
+  const leaving = i > 0 && v < MOVES[i].t + 0.2;
   const k = leaving ? i - 1 : i;
-  const x = leaving ? -smooth(ramp(v, MOVES[i].t, MOVES[i].t + 0.25)) * 1000 : (1 - smooth(ramp(v, MOVES[i].t + 0.25, MOVES[i].t + 0.6))) * 1000;
+  const opacity = leaving ? 1 - ramp(v, MOVES[i].t, MOVES[i].t + 0.2) : 1;
+  const age = leaving ? 99 : v - MOVES[i].t - (i > 0 ? 0.2 : 0);
   return (
-    <div style={{position: 'absolute', left: 40, top: CARD_Y, translate: `${x}px 0`}}>
-      <Card m={MOVES[k]} no={MOVE_NO[k]} />
+    <div style={{position: 'absolute', left: 40, top: CARD_Y, opacity}}>
+      <Card m={MOVES[k]} no={MOVE_NO[k]} age={age} />
     </div>
   );
 };
