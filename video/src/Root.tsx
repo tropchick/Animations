@@ -1,3 +1,4 @@
+import React from 'react';
 import {Composition} from 'remotion';
 import {AirGone} from './AirGone';
 import {GravityFlip} from './GravityFlip';
@@ -29,22 +30,31 @@ import {DURATION_S as SCP1_S} from './scp/cues';
 import {MurinoEp1} from './MurinoEp1';
 import {MurinoCover} from './MurinoCover';
 import {DURATION_S as MURINO1_S} from './murino/cues';
-import {SlobodyChess} from './SlobodyChess';
-import {SlobodyCover} from './SlobodyCover';
-import {DURATION_S as SLOBODY_S} from './slobody/cues';
+import {ChessCover, ChessVideo} from './chess/Breakdown';
+import {CHESS_SHOWS} from './chessShows';
+
+// the «Шахматный разбор» videos: composition ids and their show
+const CHESS = [
+  {id: 'SlobodyChess', cover: 'SlobodyCover', show: 'slobody'},
+  {id: 'KnigaChess', cover: 'KnigaCover', show: 'kniga'},
+];
 
 export const RemotionRoot = () => (
   <>
-    <Composition
-      id="SlobodyChess"
-      component={SlobodyChess}
-      durationInFrames={Math.round(SLOBODY_S * FPS) + 1}
-      fps={FPS}
-      width={1080}
-      height={1920}
-      defaultProps={{withAudio: false}}
-    />
-    <Composition id="SlobodyCover" component={SlobodyCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    {CHESS.map(({id, cover, show}) => (
+      <React.Fragment key={id}>
+        <Composition
+          id={id}
+          component={ChessVideo}
+          durationInFrames={Math.round(CHESS_SHOWS[show].DURATION_S * FPS) + 1}
+          fps={FPS}
+          width={1080}
+          height={1920}
+          defaultProps={{id: show, withAudio: false}}
+        />
+        <Composition id={cover} component={ChessCover} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{id: show}} />
+      </React.Fragment>
+    ))}
     <Composition
       id="MurinoEp1"
       component={MurinoEp1}

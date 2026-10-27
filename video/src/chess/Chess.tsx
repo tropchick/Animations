@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {createContext, useContext} from 'react';
 import {AbsoluteFill, Img, staticFile} from 'remotion';
-import {
-  GRADES, Grade, MATE, MOVES, MOVE_NO, Move, PIECE, RESULTS, SUBS, WILLOW_IN, accuracy, clamp01, clocks, count, moveAt, outBack, ramp,
-  smooth,
-} from './cues';
+import {GRADES, Grade, Move, Show, clamp01, outBack, ramp, smooth} from './cues';
+
+// every component reads the video it belongs to from here (see Breakdown.tsx)
+export const ShowContext = createContext<Show | null>(null);
+export const useShow = () => useContext(ShowContext)!;
 
 export const SANS = "'Inter', Helvetica, Arial, sans-serif";
 export const SERIF = "'Spectral', Georgia, serif";
@@ -14,13 +15,12 @@ const WOOD = '#6e4b2a';
 const GREEN = '#7fa650';
 const DARK = '#23211e';
 
-// Layout of the 1080x1920 frame: the scene full width in the middle, scoreboard and move card above it,
+// Layout of the 1080x1920 frame: the scene full width in the middle (Show.FOOT), scoreboard and move card above it,
 // subtitles under it. TikTok covers the bottom ~450 px and the right edge with its own buttons,
 // so the subtitles stay left of x = 940 and above y = 1450.
-export const FOOT = {x: 0, y: 656, w: 1080, h: 608};
 const BAR = {x: 14, w: 28, pad: 22};
 const CARD_Y = 356;
-const SUB_Y = 1292;
+const SUB_GAP = 28;
 
 const fmtClock = (s: number) => {
   const t = Math.max(0, Math.ceil(s));
@@ -43,14 +43,17 @@ export const Board: React.FC = () => (
 
 // ---------------------------------------------------------------- top: broadcast scoreboard with chess clocks
 
-const Avatar: React.FC<{name: string; size: number; ring: string; dim?: number; style?: React.CSSProperties}> = ({name, size, ring, dim = 0, style}) => (
+const Avatar: React.FC<{name: string; size: number; ring: string; dim?: number; style?: React.CSSProperties}> = ({name, size, ring, dim = 0, style}) => {
+  const {cfg} = useShow();
+  return (
   <div style={{width: size, height: size, borderRadius: '50%', border: `5px solid ${ring}`, overflow: 'hidden', flex: 'none', background: '#000', position: 'relative', ...style}}>
-    <Img src={staticFile(`slobody/av-${name}.jpg`)} style={{width: '100%', height: '100%', objectFit: 'cover', filter: `grayscale(${dim}) brightness(${1 - dim * 0.65})`}} />
+    <Img src={staticFile(`${cfg.id}/av-${name}.jpg`)} style={{width: '100%', height: '100%', objectFit: 'cover', filter: `grayscale(${dim}) brightness(${1 - dim * 0.65})`}} />
     {dim > 0.5 ? (
       <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: SANS, fontWeight: 800, fontSize: size * 0.5, color: 'rgba(255,255,255,0.85)'}}>?</div>
     ) : null}
   </div>
-);
+  );
+};
 
 const Clock: React.FC<{sec: number; active: boolean; light: boolean}> = ({sec, active, light}) => (
   <div
@@ -71,19 +74,21 @@ const Clock: React.FC<{sec: number; active: boolean; light: boolean}> = ({sec, a
 );
 
 export const Scoreboard: React.FC<{v: number}> = ({v}) => {
+  const {cfg, clocks, LATE_IN} = useShow();
   const c = clocks(v);
-  const willow = ramp(v, WILLOW_IN - 0.2, WILLOW_IN + 0.4);
+  const late = ramp(v, LATE_IN - 0.2, LATE_IN + 0.4);
   const active = (side: 'w' | 'b') => c.running && c.turn === side;
   return (
     <>
       <div style={{position: 'absolute', left: 40, right: 40, top: 112, textAlign: 'center', fontFamily: SANS, fontWeight: 700, fontSize: 34, letterSpacing: '0.06em', color: 'rgba(241,234,215,0.72)', whiteSpace: 'nowrap'}}>
-        ШАХМАТНЫЙ РАЗБОР · «ДО СЛОБОДЫ ДОЕДУ?»
+        {/* a long meme title does not fit next to the series name in one line at 34px, so it goes alone */}
+        {cfg.label.length > 19 ? `«${cfg.label}»` : `ШАХМАТНЫЙ РАЗБОР · «${cfg.label}»`}
       </div>
       <div style={{position: 'absolute', left: 40, right: 40, top: 160, height: 178, display: 'flex', borderRadius: 26, overflow: 'hidden', border: `6px solid ${WOOD}`, boxShadow: '0 14px 40px rgba(0,0,0,0.5)'}}>
         <div style={{flex: 1, background: CREAM, display: 'flex', alignItems: 'center', gap: 20, padding: '0 22px'}}>
-          <Avatar name="city" size={112} ring={active('w') ? GREEN : '#cbbf9f'} />
+          <Avatar name={cfg.white.avatar} size={112} ring={active('w') ? GREEN : '#cbbf9f'} />
           <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: INK, letterSpacing: '0.02em'}}>ГОРОДСКАЯ</div>
+            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: INK, letterSpacing: '0.02em'}}>{cfg.white.name}</div>
             <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
               <Clock sec={c.left.w} active={active('w')} light />
               <span style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, color: 'rgba(30,26,20,0.6)'}}>♔</span>
@@ -92,16 +97,16 @@ export const Scoreboard: React.FC<{v: number}> = ({v}) => {
         </div>
         <div style={{flex: 1, background: DARK, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 18, padding: '0 22px'}}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10}}>
-            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM, letterSpacing: '0.02em'}}>СЛОБОДА</div>
+            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM, letterSpacing: '0.02em'}}>{cfg.black.name}</div>
             <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
-              <span style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, color: 'rgba(241,234,215,0.6)'}}>♜♞♛</span>
+              <span style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, color: 'rgba(241,234,215,0.6)'}}>{cfg.black.glyphs}</span>
               <Clock sec={c.left.b} active={active('b')} light={false} />
             </div>
           </div>
           <div style={{position: 'relative', width: 112, height: 136, flex: 'none'}}>
-            <Avatar name="cond" size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', left: 0, top: 0}} />
-            <Avatar name="mom" size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', right: 0, top: 16}} />
-            <Avatar name="willow" size={74} ring={active('b') ? GREEN : '#55504a'} dim={1 - willow} style={{position: 'absolute', left: 18, top: 60, scale: `${1 + 0.25 * Math.sin(Math.PI * willow)}`}} />
+            <Avatar name={cfg.black.avatars[0]} size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', left: 0, top: 0}} />
+            <Avatar name={cfg.black.avatars[1]} size={74} ring={active('b') ? GREEN : '#55504a'} style={{position: 'absolute', right: 0, top: 16}} />
+            <Avatar name={cfg.black.late.avatar} size={74} ring={active('b') ? GREEN : '#55504a'} dim={1 - late} style={{position: 'absolute', left: 18, top: 60, scale: `${1 + 0.25 * Math.sin(Math.PI * late)}`}} />
           </div>
         </div>
       </div>
@@ -111,7 +116,7 @@ export const Scoreboard: React.FC<{v: number}> = ({v}) => {
 
 // ---------------------------------------------------------------- the eval bar on the left edge of the picture
 
-const pAt = (v: number) => {
+const pAt = ({MOVES, moveAt}: Show, v: number) => {
   const i = moveAt(v);
   if (i < 0) return 50;
   const prev = i > 0 ? MOVES[i - 1].p : 50;
@@ -121,8 +126,10 @@ const pAt = (v: number) => {
 export const evalText = (p: number, mate: boolean) => (mate ? '#' : p === 50 ? '0.0' : `${p > 50 ? '+' : '−'}${(Math.abs(p - 50) / 10).toFixed(1)}`);
 
 export const EvalBar: React.FC<{v: number; p?: number}> = ({v, p}) => {
-  const pc = p ?? pAt(v);
-  const mate = v >= MATE;
+  const show = useShow();
+  const {FOOT} = show;
+  const pc = p ?? pAt(show, v);
+  const mate = v >= show.MATE;
   const bh = FOOT.h - 2 * BAR.pad;
   const h = bh * pc / 100;
   return (
@@ -153,16 +160,19 @@ export const EvalBar: React.FC<{v: number; p?: number}> = ({v, p}) => {
 
 // ---------------------------------------------------------------- frame around the scene
 
-export const Frame: React.FC<{children: React.ReactNode}> = ({children}) => (
+export const Frame: React.FC<{children: React.ReactNode}> = ({children}) => {
+  const {FOOT} = useShow();
+  return (
   <div style={{position: 'absolute', left: FOOT.x, top: FOOT.y - 6, width: FOOT.w, height: FOOT.h + 12, borderTop: `6px solid ${WOOD}`, borderBottom: `6px solid ${WOOD}`, boxSizing: 'border-box', overflow: 'hidden', boxShadow: '0 18px 50px rgba(0,0,0,0.55)', background: '#000'}}>
     {children}
   </div>
-);
+  );
+};
 
 // ---------------------------------------------------------------- the grade badge that pops on the picture
 
-export const Glyph: React.FC<{g: Grade; size: number}> = ({g, size}) => {
-  const G = GRADES[g];
+export const Glyph: React.FC<{g: Grade; size: number; glyph?: string}> = ({g, size, glyph}) => {
+  const G = {...GRADES[g], ...(glyph ? {glyph} : {})};
   return (
     <div
       style={{
@@ -189,6 +199,7 @@ export const Glyph: React.FC<{g: Grade; size: number}> = ({g, size}) => {
 };
 
 export const BadgePop: React.FC<{v: number}> = ({v}) => {
+  const {MOVES, FOOT, moveAt} = useShow();
   const i = moveAt(v);
   if (i < 1) return null;
   const m = MOVES[i];
@@ -199,7 +210,7 @@ export const BadgePop: React.FC<{v: number}> = ({v}) => {
   const big = m.grade === 'mate' ? 230 : 170;
   return (
     <div style={{position: 'absolute', left: FOOT.x + FOOT.w - big - 30, top: FOOT.y + 30, scale: `${k * (1 - 0.3 * out)}`, opacity: 1 - out, filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.6))'}}>
-      <Glyph g={m.grade} size={big} />
+      <Glyph g={m.grade} size={big} glyph={m.glyph} />
     </div>
   );
 };
@@ -215,8 +226,9 @@ const wipe = (age: number, delay: number): React.CSSProperties => {
 };
 
 const Card: React.FC<{m: Move; no: number; age: number}> = ({m, no, age}) => {
-  const G = GRADES[m.grade];
-  const head = m.grade === 'start' ? 'ДЕБЮТ' : m.grade === 'piece' ? 'В ИГРУ ВХОДИТ' : `ХОД ${no} · ${m.who.toUpperCase()} ${PIECE[m.who] ?? ''}`;
+  const {cfg} = useShow();
+  const G = {...GRADES[m.grade], ...(m.label ? {label: m.label} : {})};
+  const head = m.head ?? (m.grade === 'start' ? 'ДЕБЮТ' : m.grade === 'piece' ? 'В ИГРУ ВХОДИТ' : `ХОД ${no} · ${m.who.toUpperCase()} ${cfg.pieces[m.who] ?? ''}`);
   return (
     <div
       style={{
@@ -234,7 +246,7 @@ const Card: React.FC<{m: Move; no: number; age: number}> = ({m, no, age}) => {
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, ...wipe(age, 0.15)}}>
         <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, letterSpacing: '0.08em', color: '#7a6448', whiteSpace: 'nowrap'}}>{head}</div>
         <div style={{display: 'flex', alignItems: 'center', gap: 12, flex: 'none'}}>
-          <Glyph g={m.grade} size={48} />
+          <Glyph g={m.grade} size={48} glyph={m.glyph} />
           <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 34, color: m.grade === 'mate' ? INK : G.color, filter: 'brightness(0.85)'}}>{G.label.replace(' ход', '')}</span>
         </div>
       </div>
@@ -251,6 +263,7 @@ const Card: React.FC<{m: Move; no: number; age: number}> = ({m, no, age}) => {
 };
 
 export const MoveCard: React.FC<{v: number}> = ({v}) => {
+  const {MOVES, MOVE_NO, RESULTS, moveAt} = useShow();
   if (v >= RESULTS) return null;
   const i = moveAt(v);
   if (i < 0) return null;
@@ -269,12 +282,13 @@ export const MoveCard: React.FC<{v: number}> = ({v}) => {
 // ---------------------------------------------------------------- subtitles
 
 export const Subtitles: React.FC<{v: number}> = ({v}) => {
+  const {SUBS, RESULTS, FOOT} = useShow();
   if (v >= RESULTS) return null;
   const s = SUBS.find((x) => v >= x.s && v < x.e);
   if (!s) return null;
   const k = smooth(ramp(v, s.s, s.s + 0.12));
   return (
-    <div style={{position: 'absolute', left: 40, width: 900, top: SUB_Y, textAlign: 'center', opacity: k, scale: `${0.94 + 0.06 * k}`}}>
+    <div style={{position: 'absolute', left: 40, width: 900, top: FOOT.y + FOOT.h + SUB_GAP, textAlign: 'center', opacity: k, scale: `${0.94 + 0.06 * k}`}}>
       <span
         style={{
           fontFamily: SANS,
@@ -298,6 +312,7 @@ export const Subtitles: React.FC<{v: number}> = ({v}) => {
 const ROW_GRADES: Grade[] = ['brilliant', 'great', 'good', 'interesting', 'inaccuracy', 'mistake', 'blunder'];
 
 const Graph: React.FC<{k: number}> = ({k}) => {
+  const {MOVES} = useShow();
   const W = 960;
   const H = 230;
   const pts = [{p: 50}, ...MOVES.filter((m) => m.grade !== 'start')].map((m, i, a) => [(i / (a.length - 1)) * W, H - (m.p / 100) * H]);
@@ -331,6 +346,7 @@ const Award: React.FC<{label: string; value: string}> = ({label, value}) => (
 );
 
 export const Results: React.FC<{v: number}> = ({v}) => {
+  const {cfg, RESULTS, WINNER, MATE_NO, accuracy, count} = useShow();
   if (v < RESULTS) return null;
   const t = (k: number) => RESULTS + 0.4 + k * 1.1;
   const dim = smooth(ramp(v, RESULTS, RESULTS + 0.5));
@@ -342,11 +358,11 @@ export const Results: React.FC<{v: number}> = ({v}) => {
         <Section v={v} at={t(0)} style={{textAlign: 'center'}}>
           <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 36, letterSpacing: '0.2em', color: 'rgba(241,234,215,0.75)'}}>ИТОГИ МАТЧА</div>
           <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 36, marginTop: 6}}>
-            <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM}}>ГОРОДСКАЯ</span>
-            <span style={{fontFamily: MONO, fontWeight: 600, fontSize: 104, color: '#fff', lineHeight: 1}}>0 : 1</span>
-            <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM}}>СЛОБОДА</span>
+            <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM}}>{cfg.white.name}</span>
+            <span style={{fontFamily: MONO, fontWeight: 600, fontSize: 104, color: '#fff', lineHeight: 1}}>{WINNER === 'w' ? '1 : 0' : '0 : 1'}</span>
+            <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM}}>{cfg.black.name}</span>
           </div>
-          <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 36, color: GREEN, marginTop: 6}}>Мат на {MOVE_NO[MOVE_NO.length - 1]}-м ходу · победа Слободы</div>
+          <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 36, color: GREEN, marginTop: 6}}>Мат на {MATE_NO}-м ходу · победа {WINNER === 'w' ? cfg.white.gen : cfg.black.gen}</div>
         </Section>
         <Section v={v} at={t(1)}>
           <Graph k={smooth(ramp(v, t(1), t(1) + 1.2))} />
@@ -354,7 +370,7 @@ export const Results: React.FC<{v: number}> = ({v}) => {
         <Section v={v} at={t(2)} style={{display: 'flex', gap: 18}}>
           {(['w', 'b'] as const).map((side) => (
             <div key={side} style={{flex: 1, borderRadius: 18, padding: '14px 20px', background: side === 'w' ? CREAM : DARK, color: side === 'w' ? INK : CREAM, textAlign: 'center'}}>
-              <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, opacity: 0.7}}>Точность · {side === 'w' ? 'Городская' : 'Слобода'}</div>
+              <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, opacity: 0.7}}>Точность · {side === 'w' ? cfg.white.short : cfg.black.short}</div>
               <div style={{fontFamily: MONO, fontWeight: 600, fontSize: 84, lineHeight: 1.05}}>{accuracy(side)}%</div>
             </div>
           ))}
@@ -370,12 +386,12 @@ export const Results: React.FC<{v: number}> = ({v}) => {
           ))}
         </Section>
         <Section v={v} at={t(4)} style={{background: CREAM, borderRadius: 18, padding: '6px 24px'}}>
-          <Award label="Игрок матча" value="Тётка с ивой ♛" />
-          <Award label="Лучший ход" value="«Психушка недалеко»" />
-          <Award label="Худший ход" value="«Вырву ваш лопух»" />
+          {cfg.awards.map(([label, value]) => (
+            <Award key={label} label={label} value={value} />
+          ))}
         </Section>
         <Section v={v} at={t(5)} style={{textAlign: 'center', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 600, fontSize: 40, lineHeight: 1.25, color: CREAM}}>
-          Автобус идёт до Слободы. А доедешь ты или нет — никому не ведомо.
+          {cfg.finalLine}
         </Section>
       </div>
     </AbsoluteFill>

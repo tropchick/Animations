@@ -1,20 +1,22 @@
-"""Scene, soundtrack and timing cues for «Шахматный разбор: До Слободы доеду?» (TikTok, Russian).
+"""Scene, soundtrack and timing cues for one «Шахматный разбор» video (TikTok, Russian).
+Usage: python3 audio/make_chess_audio.py slobody     (or kniga, ...)
 
-The picture and the dialogue are the user's own clip from the series «Мама будет против» (ep. 13, the bus scene),
-two parts: part-a.mov and part-b.mov (854x480, 30 fps). They are not in git: the folder comes from
-$SLOBODY_SRC (default /mnt/project-files/source/do-slobody). This script
-  1. cuts the long silent pauses out (src/slobody/data.json "edl") and writes public/slobody/scene.mp4,
-  2. crops the four avatars and the cover frame into public/slobody/,
-  3. mixes the scene audio with synthesized chess sounds into public/audio/slobody.wav,
-  4. writes src/slobody/cues.json: every move, subtitle and the results screen on the video timeline.
-
-Moves and subtitles in data.json point at source times (part + seconds, subtitle words from
-audio/voice/slobody-words.json made with tools/words.py), so the cut list can change without retiming anything.
+The picture and the dialogue are the user's own clip of a meme scene. The clips are not in git: they sit in the
+data's "srcDir" (project files), or in $CHESS_SRC. Everything about one video is in src/<id>/data.json:
+  sources  {part: file}, crop {part: "w:h:x:y"} (optional, applied before everything else),
+  edl      [part, from, to] pieces of the scene in order (the long silent pauses are left out),
+  hold     seconds the last frame is held at the end (optional, for the results screen),
+  avatars  {name: [part, second, x, y, size]} squares in the cropped frame, cover [part, second],
+  moves / subs / resultsAt  point at source times (subtitle words come from the whisper file in "words").
+This script
+  1. writes the cut scene public/<id>/scene.mp4 (30 fps), the avatars and the cover frame into public/<id>/,
+  2. mixes the scene audio with synthesized chess sounds into public/audio/<id>.wav,
+  3. writes src/<id>/cues.json: every move, subtitle and the results screen on the video timeline.
 
 Frame 0 of the video is the cover, so the scene starts at 1/30 s (OFF).
 
 Sync map (on-screen event <-> sound onset, both at the move's time):
-  move card slides in        <-> wooden piece click
+  move card appears          <-> wooden piece click
   brilliant / great badge    <-> bright ting on top of the click
   blunder / mistake badge    <-> low thump
   mate                       <-> deep boom + low bell
@@ -25,6 +27,7 @@ import hashlib
 import json
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -32,11 +35,15 @@ import numpy as np
 from slime_lib import ROOT, SR, Mix, click, filt, thump, ting, tt_, white
 
 OFF = 1 / 30
-SRC = Path(os.environ.get("SLOBODY_SRC", "/mnt/project-files/source/do-slobody"))
-FILES = {"a": SRC / "part-a.mov", "b": SRC / "part-b.mov"}
-PUB = ROOT / "public" / "slobody"
-data = json.loads((ROOT / "src/slobody/data.json").read_text())
-words = json.loads((ROOT / "audio/voice/slobody-words.json").read_text())
+ID = sys.argv[1]
+data = json.loads((ROOT / f"src/{ID}/data.json").read_text())
+SRC = Path(os.environ.get("CHESS_SRC", data["srcDir"]))
+FILES = {p: SRC / f for p, f in data["sources"].items()}
+PARTS = list(FILES)
+CROP = data.get("crop", {})
+HOLD = data.get("hold", 0.0)
+PUB = ROOT / "public" / ID
+words = json.loads((ROOT / data["words"]).read_text())
 EDL = data["edl"]
 
 # segment k starts at seg_out[k] on the video timeline
@@ -44,7 +51,7 @@ seg_out, t = [], OFF
 for _, s, e in EDL:
     seg_out.append(t)
     t += e - s
-DUR = t
+DUR = t + HOLD
 
 
 def out(part, sec):
@@ -59,28 +66,32 @@ def ff(*args):
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", *args], check=True)
 
 
+def vf(part, extra=""):
+    """The part's own crop first, then whatever else."""
+    chain = [f"crop={CROP[part]}"] if part in CROP else []
+    return ",".join(chain + ([extra] if extra else [])) or "null"
+
+
 # 1. the cut scene (re-encoded with a keyframe every second so every frame seeks exactly)
 PUB.mkdir(parents=True, exist_ok=True)
 scene = PUB / "scene.mp4"
 stamp = PUB / "scene.edl"
-key = hashlib.sha1(json.dumps(EDL).encode()).hexdigest()
+key = hashlib.sha1(json.dumps([EDL, CROP, HOLD]).encode()).hexdigest()
 if not scene.exists() or not stamp.exists() or stamp.read_text() != key:
-    chains = [f"[{0 if p == 'a' else 1}:v]trim={s}:{e},setpts=PTS-STARTPTS,fps=30[v{k}]" for k, (p, s, e) in enumerate(EDL)]
-    graph = ";".join(chains) + ";" + "".join(f"[v{k}]" for k in range(len(EDL))) + f"concat=n={len(EDL)}:v=1:a=0[v]"
-    ff("-i", str(FILES["a"]), "-i", str(FILES["b"]), "-filter_complex", graph, "-map", "[v]",
+    chains = [f"[{PARTS.index(p)}:v]{vf(p)},trim={s}:{e},setpts=PTS-STARTPTS,fps=30[v{k}]" for k, (p, s, e) in enumerate(EDL)]
+    hold = f",tpad=stop_mode=clone:stop_duration={HOLD}" if HOLD else ""
+    graph = ";".join(chains) + ";" + "".join(f"[v{k}]" for k in range(len(EDL))) + f"concat=n={len(EDL)}:v=1:a=0{hold}[v]"
+    inputs = [x for p in PARTS for x in ("-i", str(FILES[p]))]
+    ff(*inputs, "-filter_complex", graph, "-map", "[v]",
        "-c:v", "libx264", "-crf", "15", "-preset", "medium", "-g", "30", "-pix_fmt", "yuv420p", str(scene))
     stamp.write_text(key)
 
-# 2. avatars: (part, second, crop x, crop y, size) in the 854x480 frame
-AVATARS = {"city": ("a", 39.8, 160, 20, 220), "cond": ("a", 35.0, 386, 80, 240),
-           "mom": ("a", 33.0, 160, 90, 220), "willow": ("b", 98.0, 426, 60, 220)}
-for name, (p, sec, x, y, size) in AVATARS.items():
-    ff("-ss", str(sec), "-i", str(FILES[p]), "-frames:v", "1", "-vf", f"crop={size}:{size}:{x}:{y},scale=256:256",
+# 2. avatars (squares in the cropped frame) and the cover frame
+for name, (p, sec, x, y, size) in data["avatars"].items():
+    ff("-ss", str(sec), "-i", str(FILES[p]), "-frames:v", "1", "-vf", vf(p, f"crop={size}:{size}:{x}:{y},scale=256:256"),
        "-q:v", "3", str(PUB / f"av-{name}.jpg"))
-
-
-# the cover frame (her face at «Безнал есть?»)
-ff("-ss", "39.8", "-i", str(FILES["a"]), "-frames:v", "1", "-q:v", "2", str(PUB / "cover.jpg"))
+cp, csec = data["cover"]
+ff("-ss", str(csec), "-i", str(FILES[cp]), "-frames:v", "1", "-vf", vf(cp), "-q:v", "2", str(PUB / "cover.jpg"))
 
 
 # 3. soundtrack
@@ -144,7 +155,7 @@ for k in range(6):
     mix.add(click(0.04, 2200), results + 0.4 + k * 1.1, 0.25)
 mix.add(ting(1320, 2.0), results, 0.06)
 
-final = mix.write("slobody")
+final = mix.write(ID)
 
 
 # 4. cues
@@ -158,5 +169,5 @@ subs[-1]["e"] = round(subs[-1]["e"] + 0.6, 3)
 
 cues = {"duration": round(DUR, 3), "results": results, "moves": moves, "subs": subs,
         "cuts": [round(o, 3) for o in seg_out[1:]]}
-(ROOT / "src/slobody/cues.json").write_text(json.dumps(cues, ensure_ascii=False, indent=1))
+(ROOT / f"src/{ID}/cues.json").write_text(json.dumps(cues, ensure_ascii=False, indent=1))
 print(f"wrote {final}, {scene}; duration {DUR:.2f} s = {round(DUR * 30) + 1} frames; results at {results:.2f} s")

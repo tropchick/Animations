@@ -1,4 +1,9 @@
 {
+  "srcDir": "/mnt/project-files/source/do-slobody",
+  "sources": {"a": "part-a.mov", "b": "part-b.mov"},
+  "words": "audio/voice/slobody-words.json",
+  "avatars": {"city": ["a", 39.8, 160, 20, 220], "cond": ["a", 35.0, 386, 80, 240], "mom": ["a", 33.0, 160, 90, 220], "willow": ["b", 98.0, 426, 60, 220]},
+  "cover": ["a", 39.8],
   "edl": [
     ["a", 0, 45.93],
     ["a", 58.6, 82.23],
