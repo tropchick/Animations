@@ -372,7 +372,7 @@ export const Results: React.FC<{v: number}> = ({v}) => {
         <Section v={v} at={t(4)} style={{background: CREAM, borderRadius: 18, padding: '6px 24px'}}>
           <Award label="Игрок матча" value="Тётка с ивой ♛" />
           <Award label="Лучший ход" value="«Психушка недалеко»" />
-          <Award label="Худший ход" value="«Наказан поездкой с матерью»" />
+          <Award label="Худший ход" value="«Вырву ваш лопух»" />
         </Section>
         <Section v={v} at={t(5)} style={{textAlign: 'center', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 600, fontSize: 40, lineHeight: 1.25, color: CREAM}}>
           Автобус идёт до Слободы. А доедешь ты или нет — никому не ведомо.
