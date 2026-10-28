@@ -10,7 +10,7 @@ import numpy as np
 from faster_whisper import WhisperModel
 
 out, lang, *takes = sys.argv[1:]
-model = WhisperModel("medium", device="cpu", compute_type="int8")
+model = WhisperModel(__import__("os").environ.get("WHISPER", "medium"), device="cpu", compute_type="int8")
 res = {}
 for t in takes:
     name, path = t.split("=", 1)

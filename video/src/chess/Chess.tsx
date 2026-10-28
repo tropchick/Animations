@@ -74,6 +74,9 @@ const Clock: React.FC<{sec: number; active: boolean; light: boolean}> = ({sec, a
   </div>
 );
 
+// a side's name stays on one line next to its avatar: long names (ЧЕЛОВЕК-РИФМА) get a smaller font
+const nameSize = (name: string) => (name.length > 10 ? 32 : 40);
+
 export const Scoreboard: React.FC<{v: number}> = ({v}) => {
   const {cfg, clocks, LATE_IN} = useShow();
   const c = clocks(v);
@@ -89,7 +92,7 @@ export const Scoreboard: React.FC<{v: number}> = ({v}) => {
         <div style={{flex: 1, background: CREAM, display: 'flex', alignItems: 'center', gap: 20, padding: '0 22px'}}>
           <Avatar name={cfg.white.avatar} size={112} ring={active('w') ? GREEN : '#cbbf9f'} />
           <div style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: INK, letterSpacing: '0.02em'}}>{cfg.white.name}</div>
+            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: nameSize(cfg.white.name), color: INK, letterSpacing: '0.02em', whiteSpace: 'nowrap'}}>{cfg.white.name}</div>
             <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
               <Clock sec={c.left.w} active={active('w')} light />
               <span style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, color: 'rgba(30,26,20,0.6)'}}>♔</span>
@@ -98,7 +101,7 @@ export const Scoreboard: React.FC<{v: number}> = ({v}) => {
         </div>
         <div style={{flex: 1, background: DARK, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 18, padding: '0 22px'}}>
           <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10}}>
-            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM, letterSpacing: '0.02em'}}>{cfg.black.name}</div>
+            <div style={{fontFamily: SANS, fontWeight: 800, fontSize: nameSize(cfg.black.name), color: CREAM, letterSpacing: '0.02em', whiteSpace: 'nowrap'}}>{cfg.black.name}</div>
             <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
               <span style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, color: 'rgba(241,234,215,0.6)'}}>{cfg.black.glyphs}</span>
               <Clock sec={c.left.b} active={active('b')} light={false} />
