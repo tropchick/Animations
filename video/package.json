@@ -62,6 +62,9 @@
     "audio:kredit": "python3 audio/make_chess_audio.py kredit",
     "render:kredit": "python3 audio/make_chess_audio.py kredit && SCALE=0.6666666666666666 tools/render-chunks.sh KreditChess public/audio/kredit.wav out/kredit-chess.mp4 2252",
     "cover:kredit": "remotion still KreditCover out/kredit-chess-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90",
+    "audio:palto": "python3 audio/make_chess_audio.py palto",
+    "render:palto": "python3 audio/make_chess_audio.py palto && SCALE=0.6666666666666666 tools/render-chunks.sh PaltoChess public/audio/palto.wav out/palto-chess.mp4 3888",
+    "cover:palto": "remotion still PaltoCover out/palto-chess-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90",
     "render:oneview": "python3 audio/make_oneview_audio.py && SCALE=0.6666666666666666 tools/render-chunks.sh OneViewRecord public/audio/oneview.wav out/oneview.mp4 331",
     "cover:oneview": "remotion still OneViewCover out/oneview-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90"
   },

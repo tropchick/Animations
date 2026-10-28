@@ -8,6 +8,7 @@ import {RIFMA} from './rifma/show';
 import {ODETY} from './odety/show';
 import {KLIM} from './klim/show';
 import {KREDIT} from './kredit/show';
+import {PALTO} from './palto/show';
 
 // The «Шахматный разбор» videos. Compositions get the key as a prop (props must stay plain JSON).
-export const CHESS_SHOWS: Record<string, Show> = {slobody: SLOBODY, kniga: KNIGA, minutochka: MINUTOCHKA, kotly: KOTLY, gelodi: GELODI, rifma: RIFMA, odety: ODETY, klim: KLIM, kredit: KREDIT};
+export const CHESS_SHOWS: Record<string, Show> = {slobody: SLOBODY, kniga: KNIGA, minutochka: MINUTOCHKA, kotly: KOTLY, gelodi: GELODI, rifma: RIFMA, odety: ODETY, klim: KLIM, kredit: KREDIT, palto: PALTO};
