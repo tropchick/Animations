@@ -32,6 +32,7 @@ import {MurinoCover} from './MurinoCover';
 import {DURATION_S as MURINO1_S} from './murino/cues';
 import {ChessCover, ChessVideo} from './chess/Breakdown';
 import {CHESS_SHOWS} from './chessShows';
+import {ONEVIEW_FRAMES, OneViewCover, OneViewRecord} from './oneview/OneView';
 
 // the «Шахматный разбор» videos: composition ids and their show
 const CHESS = [
@@ -45,6 +46,8 @@ const CHESS = [
 
 export const RemotionRoot = () => (
   <>
+    <Composition id="OneViewRecord" component={OneViewRecord} durationInFrames={ONEVIEW_FRAMES} fps={FPS} width={1080} height={1920} defaultProps={{withAudio: false}} />
+    <Composition id="OneViewCover" component={OneViewCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     {CHESS.map(({id, cover, show}) => (
       <React.Fragment key={id}>
         <Composition
