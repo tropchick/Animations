@@ -1,6 +1,6 @@
 import React, {createContext, useContext} from 'react';
 import {AbsoluteFill, Img, staticFile} from 'remotion';
-import {GRADES, Grade, Move, Show, clamp01, outBack, ramp, smooth} from './cues';
+import {GRADES, Grade, Move, Show, clamp01, ends, outBack, ramp, smooth} from './cues';
 
 // every component reads the video it belongs to from here (see Breakdown.tsx)
 export const ShowContext = createContext<Show | null>(null);
@@ -141,7 +141,8 @@ export const EvalBar: React.FC<{v: number; p?: number}> = ({v, p}) => {
   const show = useShow();
   const {FOOT} = show;
   const pc = p ?? pAt(show, v);
-  const mate = v >= show.MATE;
+  const mate = v >= show.MATE && !show.DRAW;
+  const half = show.DRAW && (p !== undefined || v >= show.MATE);
   const bh = FOOT.h - 2 * BAR.pad;
   const h = bh * pc / 100;
   return (
@@ -164,7 +165,7 @@ export const EvalBar: React.FC<{v: number; p?: number}> = ({v, p}) => {
           color: pc >= 50 && !mate ? INK : CREAM,
         }}
       >
-        {p !== undefined ? evalText(p, true) : evalText(Math.round(pc), mate)}
+        {half ? '½' : p !== undefined ? evalText(p, true) : evalText(Math.round(pc), mate)}
       </div>
     </>
   );
@@ -193,7 +194,7 @@ export const Glyph: React.FC<{g: Grade; size: number; glyph?: string}> = ({g, si
         borderRadius: '50%',
         background: G.color,
         color: G.ink,
-        border: g === 'mate' ? `${Math.max(3, size * 0.06)}px solid ${CREAM}` : 'none',
+        border: ends(g) ? `${Math.max(3, size * 0.06)}px solid ${CREAM}` : 'none',
         boxSizing: 'border-box',
         display: 'flex',
         alignItems: 'center',
@@ -221,10 +222,10 @@ export const BadgePop: React.FC<{v: number}> = ({v}) => {
   if (i < 1) return null;
   const m = MOVES[i];
   const age = v - m.t;
-  if (age > 1.6 && m.grade !== 'mate') return null;
+  if (age > 1.6 && !ends(m.grade)) return null;
   const k = outBack(clamp01(age / 0.35));
-  const out = m.grade === 'mate' ? 0 : ramp(age, 1.25, 1.6);
-  const big = m.grade === 'mate' ? 230 : 170;
+  const out = ends(m.grade) ? 0 : ramp(age, 1.25, 1.6);
+  const big = ends(m.grade) ? 230 : 170;
   return (
     <div style={{position: 'absolute', left: badgeLeft(show, m.side, big), top: FOOT.y + 30, scale: `${k * (1 - 0.3 * out)}`, opacity: 1 - out, filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.6))'}}>
       <Glyph g={m.grade} size={big} glyph={m.glyph} />
@@ -264,7 +265,7 @@ const Card: React.FC<{m: Move; no: number; age: number}> = ({m, no, age}) => {
         <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, letterSpacing: '0.08em', color: '#7a6448', whiteSpace: 'nowrap'}}>{head}</div>
         <div style={{display: 'flex', alignItems: 'center', gap: 12, flex: 'none'}}>
           <Glyph g={m.grade} size={48} glyph={m.glyph} />
-          <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 34, color: m.grade === 'mate' ? INK : G.color, filter: 'brightness(0.85)'}}>{G.label.replace(' ход', '')}</span>
+          <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 34, color: ends(m.grade) ? INK : G.color, filter: 'brightness(0.85)'}}>{G.label.replace(' ход', '')}</span>
         </div>
       </div>
       <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: fitTitle(m.title), lineHeight: 1.1, color: INK, marginTop: 6, whiteSpace: 'nowrap', ...wipe(age, 0.3)}}>{m.title}</div>
@@ -363,7 +364,7 @@ const Award: React.FC<{label: string; value: string}> = ({label, value}) => (
 );
 
 export const Results: React.FC<{v: number}> = ({v}) => {
-  const {cfg, RESULTS, WINNER, MATE_NO, accuracy, count} = useShow();
+  const {cfg, RESULTS, WINNER, DRAW, MATE_NO, accuracy, count} = useShow();
   if (v < RESULTS || cfg.yt) return null;
   const t = (k: number) => RESULTS + 0.4 + k * 1.1;
   const dim = smooth(ramp(v, RESULTS, RESULTS + 0.5));
@@ -376,10 +377,12 @@ export const Results: React.FC<{v: number}> = ({v}) => {
           <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 36, letterSpacing: '0.2em', color: 'rgba(241,234,215,0.75)'}}>ИТОГИ МАТЧА</div>
           <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 36, marginTop: 6}}>
             <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM}}>{cfg.white.name}</span>
-            <span style={{fontFamily: MONO, fontWeight: 600, fontSize: 104, color: '#fff', lineHeight: 1}}>{WINNER === 'w' ? '1 : 0' : '0 : 1'}</span>
+            <span style={{fontFamily: MONO, fontWeight: 600, fontSize: 104, color: '#fff', lineHeight: 1}}>{DRAW ? '½ : ½' : WINNER === 'w' ? '1 : 0' : '0 : 1'}</span>
             <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM}}>{cfg.black.name}</span>
           </div>
-          <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 36, color: GREEN, marginTop: 6}}>Мат на {MATE_NO}-м ходу · победа {WINNER === 'w' ? cfg.white.gen : cfg.black.gen}</div>
+          <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 36, color: GREEN, marginTop: 6}}>
+            {DRAW ? `Ничья на ${MATE_NO}-м ходу · по соглашению` : `Мат на ${MATE_NO}-м ходу · победа ${WINNER === 'w' ? cfg.white.gen : cfg.black.gen}`}
+          </div>
         </Section>
         <Section v={v} at={t(1)}>
           <Graph k={smooth(ramp(v, t(1), t(1) + 1.2))} />

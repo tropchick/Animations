@@ -21,6 +21,7 @@ Sync map (on-screen event <-> sound onset, both at the move's time):
   brilliant / great badge    <-> bright ting on top of the click
   blunder / mistake badge    <-> low thump
   mate                       <-> deep boom + low bell
+  draw                       <-> soft boom + two bells (a fifth)
   results sections appear    <-> soft clicks
   YouTube card ending        <-> whoosh in, boom + ting when the time slams on (+0.55 s), soft whoosh for the arrow (+0.95 s)
 """
@@ -154,6 +155,11 @@ for m in data["moves"]:
     elif g == "mate":
         mix.add(thump(55, 26, 1.8, decay=2.2, click=0.3), mt + 0.02, 0.9)
         mix.add(ting(660, 2.4), mt + 0.05, 0.08)
+    elif g == "draw":
+        # a soft boom and two bells a fifth apart: the game stops, nobody won
+        mix.add(thump(70, 40, 1.4, decay=3, click=0.2), mt + 0.02, 0.6)
+        mix.add(ting(880, 2.2), mt + 0.05, 0.06)
+        mix.add(ting(1320, 2.2), mt + 0.05, 0.05)
 
 # resultsDelay: seconds into the held last frame (so the mate card can be read before the ending covers it)
 results = round(out(*data["resultsAt"]) + data.get("resultsDelay", 0.0), 3)

@@ -1,6 +1,6 @@
 // One «Шахматный разбор» video = its cues.json (made by audio/make_chess_audio.py) + a ShowConfig (src/<id>/show.ts).
 // All times are video seconds (frame / 30; frame 0 is the cover).
-export type Grade = 'start' | 'brilliant' | 'great' | 'good' | 'interesting' | 'inaccuracy' | 'mistake' | 'blunder' | 'piece' | 'mate';
+export type Grade = 'start' | 'brilliant' | 'great' | 'good' | 'interesting' | 'inaccuracy' | 'mistake' | 'blunder' | 'piece' | 'mate' | 'draw';
 export type Side = 'w' | 'b';
 // label / glyph / head override the grade's own for one event card ("3 часа спустя", "Новое погоняло")
 export type Move = {t: number; side: '' | Side; who: string; title: string; grade: Grade; text: string; better?: string; p: number; label?: string; glyph?: string; head?: string};
@@ -35,6 +35,7 @@ export const GRADES: Record<Grade, {label: string; glyph: string; color: string;
   blunder: {label: 'Зевок', glyph: '??', color: '#d9452f', ink: '#fff'},
   piece: {label: 'Новая фигура', glyph: '♛', color: '#c9b48a', ink: '#2a2216'},
   mate: {label: 'Мат', glyph: '#', color: '#141414', ink: '#fff'},
+  draw: {label: 'Ничья', glyph: '½', color: '#6f7480', ink: '#fff'},
 };
 
 export const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
@@ -46,10 +47,13 @@ export const outBack = (x: number) => {
 };
 
 // only real moves get a number (the opening card and event cards do not)
+// the move that ends the game: a mate, or a draw (nobody wins, the results say ½ : ½)
+export const ends = (g: Grade) => g === 'mate' || g === 'draw';
+
 export const numbered = (m: Move) => m.grade !== 'start' && m.grade !== 'piece';
 
 // grade -> how accurate the move was, for the results screen
-const SCORE: Partial<Record<Grade, number>> = {brilliant: 100, mate: 100, great: 95, good: 85, interesting: 75, inaccuracy: 60, mistake: 40, blunder: 15};
+const SCORE: Partial<Record<Grade, number>> = {brilliant: 100, mate: 100, draw: 85, great: 95, good: 85, interesting: 75, inaccuracy: 60, mistake: 40, blunder: 15};
 
 export type Show = ReturnType<typeof makeShow>;
 
@@ -57,7 +61,7 @@ export const makeShow = (cfg: ShowConfig, cues: CuesJson) => {
   const MOVES = cues.moves as Move[];
   let n = 0;
   const MOVE_NO = MOVES.map((m) => (numbered(m) ? ++n : 0));
-  const mateMove = MOVES.find((m) => m.grade === 'mate')!;
+  const mateMove = MOVES.find((m) => ends(m.grade))!;
   const late = cfg.black.late && MOVES.find((m) => m.grade === 'piece' && m.who === cfg.black.late!.who);
   const FOOT = {x: 0, y: Math.round(960 - cfg.footH / 2), w: 1080, h: cfg.footH};
   return {
@@ -68,7 +72,8 @@ export const makeShow = (cfg: ShowConfig, cues: CuesJson) => {
     DURATION_S: cues.duration,
     RESULTS: cues.results,
     MATE: mateMove.t,
-    WINNER: mateMove.side as Side,
+    DRAW: mateMove.grade === 'draw',
+    WINNER: (mateMove.grade === 'draw' ? '' : mateMove.side) as '' | Side,
     MATE_NO: MOVE_NO[MOVES.indexOf(mateMove)],
     LATE_IN: late ? late.t : Infinity,
     FOOT,
@@ -84,7 +89,7 @@ export const makeShow = (cfg: ShowConfig, cues: CuesJson) => {
       return Math.round(s.reduce((a, b) => a + b, 0) / s.length);
     },
     count: (side: Side, g: Grade) => MOVES.filter((m) => m.side === side && m.grade === g).length,
-    // chess clocks (3:00 each unless cfg.clock), the side to move runs (after a move by black it is white's turn), stopped at mate
+    // chess clocks (3:00 each unless cfg.clock), the side to move runs (after a move by black it is white's turn), stopped at mate or draw
     clocks: (v: number) => {
       const left = {w: cfg.clock ?? 180, b: cfg.clock ?? 180};
       let turn: Side = (MOVES.find((m) => m.side)?.side || 'b') as Side;
@@ -95,7 +100,7 @@ export const makeShow = (cfg: ShowConfig, cues: CuesJson) => {
         left[turn] -= m.t - since;
         since = m.t;
         if (m.side) turn = m.side === 'b' ? 'w' : 'b';
-        if (m.grade === 'mate') return {left, turn, running: false};
+        if (ends(m.grade)) return {left, turn, running: false};
       }
       left[turn] -= v - since;
       return {left, turn, running: true};

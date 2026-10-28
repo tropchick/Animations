@@ -50,9 +50,9 @@ const CoverPage: React.FC = () => {
       <Frame>
         <Img src={staticFile(`${cfg.id}/cover.jpg`)} style={{width: FOOT.w, height: FOOT.h, objectFit: 'cover'}} />
       </Frame>
-      <EvalBar v={0} p={0} />
+      <EvalBar v={0} p={show.DRAW ? 50 : 0} />
       <div style={{position: 'absolute', left: badgeLeft(show, show.WINNER, 230), top: FOOT.y + 30, filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.6))'}}>
-        <Glyph g="mate" size={230} />
+        <Glyph g={show.DRAW ? 'draw' : 'mate'} size={230} />
       </div>
       <div style={{position: 'absolute', left: 40, width: 1000, top: 372, textAlign: 'center'}}>
         <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: 108, lineHeight: 1.0, color: '#fff', textShadow: '0 8px 30px rgba(0,0,0,0.7)'}}>
