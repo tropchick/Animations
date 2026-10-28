@@ -55,7 +55,7 @@ const CoverPage: React.FC = () => {
         <Glyph g={show.DRAW ? 'draw' : 'mate'} size={230} />
       </div>
       <div style={{position: 'absolute', left: 40, width: 1000, top: 372, textAlign: 'center'}}>
-        <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: 108, lineHeight: 1.0, color: '#fff', textShadow: '0 8px 30px rgba(0,0,0,0.7)'}}>
+        <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: cfg.cover.size ?? 108, lineHeight: 1.0, color: '#fff', textShadow: '0 8px 30px rgba(0,0,0,0.7)'}}>
           {cfg.cover.title.map((l, i) => (
             <div key={i}>{l}</div>
           ))}

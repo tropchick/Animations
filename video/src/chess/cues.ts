@@ -19,7 +19,7 @@ export type ShowConfig = {
   badgeLeft?: Side; // this side's grade badges pop on the left of the picture (so they don't cover the speaker's face)
   awards?: [string, string][];
   finalLine?: string;
-  cover: {title: string[]; sub: string};
+  cover: {title: string[]; sub: string; size?: number}; // size: title font size (108 if not set), smaller for a long one-line title
   // the ending: the match results, or (when set) a parody YouTube card «Самые быстрые победы в карьере …»
   yt?: {big: string; unit: string; duration: string; title: string; meta: string};
 };

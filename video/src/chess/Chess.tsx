@@ -18,9 +18,10 @@ const DARK = '#23211e';
 // Layout of the 1080x1920 frame: the scene full width in the middle (Show.FOOT), scoreboard and move card above it,
 // subtitles under it. TikTok covers the bottom ~450 px and the right edge with its own buttons,
 // so the subtitles stay left of x = 940 and above y = 1450.
-const BAR = {x: 14, w: 28, pad: 22};
+const BAR = {x0: 210, x1: 1040, h: 30, gap: 24}; // the eval bar under the scene
+
 const CARD_Y = 356;
-const SUB_GAP = 28;
+const SUB_GAP = 28 + BAR.gap + BAR.h; // under the eval bar
 
 const fmtClock = (s: number) => {
   const t = Math.max(0, Math.ceil(s));
@@ -143,29 +144,34 @@ export const EvalBar: React.FC<{v: number; p?: number}> = ({v, p}) => {
   const pc = p ?? pAt(show, v);
   const mate = v >= show.MATE && !show.DRAW;
   const half = show.DRAW && (p !== undefined || v >= show.MATE);
-  const bh = FOOT.h - 2 * BAR.pad;
-  const h = bh * pc / 100;
+  // a horizontal bar right under the scene, white's share from the left (TikTok crops a vertical strip at the edge)
+  const top = FOOT.y + FOOT.h + BAR.gap;
+  const bw = BAR.x1 - BAR.x0;
   return (
     <>
-      <div style={{position: 'absolute', left: BAR.x, top: FOOT.y + BAR.pad, width: BAR.w, height: bh, borderRadius: 10, overflow: 'hidden', background: '#2b2925', border: `3px solid ${WOOD}`, boxSizing: 'border-box', boxShadow: '0 4px 14px rgba(0,0,0,0.5)'}}>
-        <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: h, background: CREAM}} />
-        <div style={{position: 'absolute', left: 0, right: 0, top: bh / 2 - 4, height: 2, background: 'rgba(127,166,80,0.9)'}} />
-      </div>
       <div
         style={{
           position: 'absolute',
-          left: BAR.x + BAR.w + 14,
-          top: FOOT.y + BAR.pad,
-          padding: '8px 16px',
+          left: 40,
+          top: top + BAR.h / 2 - 28,
+          width: BAR.x0 - 60,
+          height: 56,
+          lineHeight: '56px',
           borderRadius: 12,
+          textAlign: 'center',
           fontFamily: MONO,
           fontWeight: 600,
           fontSize: 40,
           background: pc >= 50 && !mate ? CREAM : 'rgba(20,20,18,0.88)',
           color: pc >= 50 && !mate ? INK : CREAM,
+          boxShadow: '0 4px 14px rgba(0,0,0,0.5)',
         }}
       >
         {half ? '½' : p !== undefined ? evalText(p, true) : evalText(Math.round(pc), mate)}
+      </div>
+      <div style={{position: 'absolute', left: BAR.x0, top, width: bw, height: BAR.h, borderRadius: 10, overflow: 'hidden', background: '#2b2925', border: `3px solid ${WOOD}`, boxSizing: 'border-box', boxShadow: '0 4px 14px rgba(0,0,0,0.5)'}}>
+        <div style={{position: 'absolute', left: 0, top: 0, bottom: 0, width: (bw * pc) / 100, background: CREAM}} />
+        <div style={{position: 'absolute', top: 0, bottom: 0, left: bw / 2 - 4, width: 2, background: 'rgba(127,166,80,0.9)'}} />
       </div>
     </>
   );
@@ -211,9 +217,9 @@ export const Glyph: React.FC<{g: Grade; size: number; glyph?: string}> = ({g, si
   );
 };
 
-// where a badge of this size sits on the picture: top right, or top left (clear of the eval number) for cfg.badgeLeft's moves
+// where a badge of this size sits on the picture: top right, or top left for cfg.badgeLeft's moves
 export const badgeLeft = (show: Show, side: '' | 'w' | 'b', size: number) =>
-  side && side === show.cfg.badgeLeft ? show.FOOT.x + 170 : show.FOOT.x + show.FOOT.w - size - 30;
+  side && side === show.cfg.badgeLeft ? show.FOOT.x + 30 : show.FOOT.x + show.FOOT.w - size - 30;
 
 export const BadgePop: React.FC<{v: number}> = ({v}) => {
   const show = useShow();
