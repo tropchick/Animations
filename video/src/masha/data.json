@@ -320,5 +320,8 @@
       ]
     }
   ],
-  "subs": []
+  "subs": [],
+  "audioSources": {
+    "s": "audio/voice/masha-no-music.flac"
+  }
 }

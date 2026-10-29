@@ -1,0 +1,11 @@
+{
+  "source_sha256": "0358cde40fa1b8ef7e2bf61feafa0041996b967b88f52ecfcc6b6b8f3686d07f",
+  "model": "JusperLee/DBS-TIGER-DnR",
+  "revision": "22da7d4cd3ea63f9365181008bff1c0d2ab6fb2b",
+  "sample_rate": 44100,
+  "samples": 10574614,
+  "chunk": 6.0,
+  "hop": 5.0,
+  "gain": 1.0,
+  "output_sha256": "83a605077ab056f9a1c76dab67d5278e7c95961c826c8398137457920b5bb157"
+}

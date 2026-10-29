@@ -4,6 +4,7 @@ Usage: python3 audio/make_chess_audio.py slobody     (or kniga, ...)
 The picture and the dialogue are the user's own clip of a meme scene. The clips are not in git: they sit in the
 data's "srcDir" (project files), or in $CHESS_SRC. Everything about one video is in src/<id>/data.json:
   sources  {part: file}, crop {part: "w:h:x:y"} (optional, applied before everything else),
+  audioSources {part: path relative to video/} (optional, separate full-length source audio),
   edl      [part, from, to] pieces of the scene in order (the long silent pauses are left out),
   hold     seconds the last frame is held at the end (optional, for the results screen),
   avatars  {name: [part, second, x, y, size]} squares in the cropped frame, cover [part, second],
@@ -107,7 +108,8 @@ def load_part(path):
     return np.frombuffer(raw, np.int16).astype(np.float64).reshape(-1, 2) / 32768
 
 
-AUD = {p: load_part(f) for p, f in FILES.items()}
+audio_sources = data.get("audioSources", {})
+AUD = {p: load_part(ROOT / audio_sources[p] if p in audio_sources else f) for p, f in FILES.items()}
 mix = Mix(DUR + 0.5)
 fade = int(0.015 * SR)
 for (p, s, e), o in zip(EDL, seg_out):
