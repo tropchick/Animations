@@ -11,6 +11,7 @@ export type ShowConfig = {
   id: string;
   label: string; // the line above the scoreboard
   footH: number; // height of the scene at full width (1080)
+  footY?: number; // optional scene top to leave space below taller move cards
   white: {name: string; short: string; gen: string; avatar: string};
   // one or two avatars; late = a piece that joins the game later (its avatar stays a «?» until then)
   black: {name: string; short: string; gen: string; glyphs: string; avatars: string[]; late?: {avatar: string; who: string}};
@@ -64,7 +65,7 @@ export const makeShow = (cfg: ShowConfig, cues: CuesJson) => {
   const MOVE_NO = MOVES.map((m) => (numbered(m) ? ++n : 0));
   const mateMove = MOVES.find((m) => ends(m.grade))!;
   const late = cfg.black.late && MOVES.find((m) => m.grade === 'piece' && m.who === cfg.black.late!.who);
-  const FOOT = {x: 0, y: Math.round(960 - cfg.footH / 2), w: 1080, h: cfg.footH};
+  const FOOT = {x: 0, y: cfg.footY ?? Math.round(960 - cfg.footH / 2), w: 1080, h: cfg.footH};
   return {
     cfg,
     MOVES,
