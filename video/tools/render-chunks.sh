@@ -2,6 +2,7 @@
 # Renders a composition in chunks (each kept on disk, so a stopped render resumes), then joins them with the audio.
 # Usage: tools/render-chunks.sh SlimeEp1 public/audio/slime-ep1.wav out/slime-ep1.mp4 2561
 # SCALE=0.6666666666666666 renders at 2/3 size (720x1280 for a 1080x1920 composition).
+# CONCURRENCY overrides the default 4 render workers on machines with fewer cores.
 set -e
 id=$1; audio=$2; out=$3; total=$4; size=${5:-500}
 dir=out/chunks-$id
@@ -21,7 +22,7 @@ while [ $start -lt $total ]; do
   if [ ! -f "$f" ]; then
     # a busy machine sometimes trips a timeout inside Remotion; try a chunk up to 3 times
     for try in 1 2 3; do
-      if npx remotion render "$id" "$f.tmp.mp4" --frames=$start-$end ${SCALE:+--scale=$SCALE} --muted --concurrency=4 --crf=18 --gl=swangle --log=error --timeout=120000; then
+      if npx remotion render "$id" "$f.tmp.mp4" --frames=$start-$end ${SCALE:+--scale=$SCALE} --muted --concurrency=${CONCURRENCY:-4} --crf=18 --gl=swangle --log=error --timeout=120000; then
         mv "$f.tmp.mp4" "$f"; break
       fi
       [ $try -eq 3 ] && exit 1

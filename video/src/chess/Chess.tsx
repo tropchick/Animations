@@ -387,7 +387,7 @@ export const Results: React.FC<{v: number}> = ({v}) => {
             <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 40, color: CREAM}}>{cfg.black.name}</span>
           </div>
           <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 36, color: GREEN, marginTop: 6}}>
-            {DRAW ? `Ничья на ${MATE_NO}-м ходу · по соглашению` : `Мат на ${MATE_NO}-м ходу · победа ${WINNER === 'w' ? cfg.white.gen : cfg.black.gen}`}
+            {DRAW ? `Ничья на ${MATE_NO}-м ходу · ${cfg.drawReason ?? 'по соглашению'}` : `Мат на ${MATE_NO}-м ходу · победа ${WINNER === 'w' ? cfg.white.gen : cfg.black.gen}`}
           </div>
         </Section>
         <Section v={v} at={t(1)}>

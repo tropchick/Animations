@@ -69,7 +69,10 @@
     "render:koshey": "python3 audio/make_chess_audio.py koshey && SCALE=0.6666666666666666 tools/render-chunks.sh KosheyChess public/audio/koshey.wav out/koshey-chess.mp4 5345",
     "cover:koshey": "remotion still KosheyCover out/koshey-chess-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90",
     "render:oneview": "python3 audio/make_oneview_audio.py && SCALE=0.6666666666666666 tools/render-chunks.sh OneViewRecord public/audio/oneview.wav out/oneview.mp4 331",
-    "cover:oneview": "remotion still OneViewCover out/oneview-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90"
+    "cover:oneview": "remotion still OneViewCover out/oneview-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90",
+    "audio:geniy": "python3 audio/make_chess_audio.py geniy",
+    "render:geniy": "python3 audio/make_chess_audio.py geniy && CONCURRENCY=2 SCALE=0.6666666666666666 tools/render-chunks.sh GeniyChess public/audio/geniy.wav out/geniy-chess.mp4 1689",
+    "cover:geniy": "remotion still GeniyCover out/geniy-chess-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

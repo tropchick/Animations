@@ -15,6 +15,7 @@ export type ShowConfig = {
   // one or two avatars; late = a piece that joins the game later (its avatar stays a «?» until then)
   black: {name: string; short: string; gen: string; glyphs: string; avatars: string[]; late?: {avatar: string; who: string}};
   pieces: Record<string, string>; // who -> chess piece shown on the card
+  drawReason?: string; // defaults to the original agreement ending
   clock?: number; // seconds on each chess clock, 180 if not set
   badgeLeft?: Side; // this side's grade badges pop on the left of the picture (so they don't cover the speaker's face)
   awards?: [string, string][];
