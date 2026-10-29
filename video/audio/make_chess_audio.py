@@ -184,7 +184,8 @@ for p, a, b, text in data["subs"]:
 for k in range(len(subs) - 1):
     # hold each line a little after it is spoken, never into the next one
     subs[k]["e"] = round(min(subs[k]["e"] + 0.35, subs[k + 1]["s"] - 0.05), 3)
-subs[-1]["e"] = round(subs[-1]["e"] + 0.6, 3)
+if subs:
+    subs[-1]["e"] = round(subs[-1]["e"] + 0.6, 3)
 
 cues = {"duration": round(DUR, 3), "results": results, "moves": moves, "subs": subs,
         "cuts": [round(o, 3) for o in seg_out[1:]]}
