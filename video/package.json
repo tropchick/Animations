@@ -37,6 +37,9 @@
     "audio:slobody": "python3 audio/make_chess_audio.py slobody",
     "render:slobody": "python3 audio/make_chess_audio.py slobody && SCALE=0.6666666666666666 tools/render-chunks.sh SlobodyChess public/audio/slobody.wav out/slobody-chess.mp4 5714",
     "cover:slobody": "remotion still SlobodyCover out/slobody-chess-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90",
+    "audio:bus": "python3 audio/make_bus_audio.py",
+    "render:bus": "python3 audio/make_bus_audio.py && tools/render-chunks.sh BusMeme public/audio/babushka-bus.wav out/babushka-bus.mp4 763",
+    "cover:bus": "remotion still BusCover out/babushka-bus-cover.jpg --gl=swangle --jpeg-quality=90",
     "zcheck": "node tools/zcheck.mjs",
     "audio:kniga": "python3 audio/make_chess_audio.py kniga",
     "render:kniga": "python3 audio/make_chess_audio.py kniga && SCALE=0.6666666666666666 tools/render-chunks.sh KnigaChess public/audio/kniga.wav out/kniga-chess.mp4 7313",
@@ -89,6 +92,7 @@
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
+    "@fontsource/oswald": "^5.3.0",
     "@fontsource/spectral": "^5.3.0",
     "@react-three/fiber": "^9.8.2",
     "@remotion/cli": "^4.0.538",

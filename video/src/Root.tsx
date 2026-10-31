@@ -34,6 +34,9 @@ import {ChessCover, ChessVideo} from './chess/Breakdown';
 import {CHESS_SHOWS} from './chessShows';
 import {MashaVideo} from './masha/Masha';
 import {ONEVIEW_FRAMES, OneViewCover, OneViewRecord} from './oneview/OneView';
+import {BusMeme} from './BusMeme';
+import {BusCover} from './BusCover';
+import {DURATION_S as BUS_S} from './bus/cues';
 
 // the «Шахматный разбор» videos: composition ids and their show
 const CHESS = [
@@ -83,6 +86,16 @@ export const RemotionRoot = () => (
       defaultProps={{withAudio: false}}
     />
     <Composition id="MurinoCover" component={MurinoCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="BusMeme"
+      component={BusMeme}
+      durationInFrames={Math.round(BUS_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="BusCover" component={BusCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition
       id="ScpEp1"
       component={ScpEp1}
