@@ -18,6 +18,7 @@ export type ShowConfig = {
   pieces: Record<string, string>; // who -> chess piece shown on the card
   drawReason?: string; // defaults to the original agreement ending
   clock?: number; // seconds on each chess clock, 180 if not set
+  instant?: boolean; // cards and grade badges appear at once, no wipe or pop (for very fast clips)
   badgeLeft?: Side; // this side's grade badges pop on the left of the picture (so they don't cover the speaker's face)
   awards?: [string, string][];
   finalLine?: string;

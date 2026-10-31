@@ -229,8 +229,8 @@ export const BadgePop: React.FC<{v: number}> = ({v}) => {
   const m = MOVES[i];
   const age = v - m.t;
   if (age > 1.6 && !ends(m.grade)) return null;
-  const k = outBack(clamp01(age / 0.35));
-  const out = ends(m.grade) ? 0 : ramp(age, 1.25, 1.6);
+  const k = show.cfg.instant ? 1 : outBack(clamp01(age / 0.35));
+  const out = ends(m.grade) || show.cfg.instant ? 0 : ramp(age, 1.25, 1.6);
   const big = ends(m.grade) ? 230 : 170;
   return (
     <div style={{position: 'absolute', left: badgeLeft(show, m.side, big), top: FOOT.y + 30, scale: `${k * (1 - 0.3 * out)}`, opacity: 1 - out, filter: 'drop-shadow(0 10px 24px rgba(0,0,0,0.6))'}}>
@@ -244,7 +244,8 @@ export const BadgePop: React.FC<{v: number}> = ({v}) => {
 const fitTitle = (s: string) => Math.min(62, Math.floor(1660 / s.length));
 
 // each part of the card is wiped in from left to right, one after another
-const wipe = (age: number, delay: number): React.CSSProperties => {
+const wipe = (age: number, delay: number, instant?: boolean): React.CSSProperties => {
+  if (instant) return {};
   const k = smooth(ramp(age, delay, delay + 0.4));
   return {clipPath: `inset(-20px ${(1 - k) * 100}% -20px -20px)`};
 };
@@ -264,20 +265,20 @@ const Card: React.FC<{m: Move; no: number; age: number}> = ({m, no, age}) => {
         padding: '16px 28px 20px',
         boxSizing: 'border-box',
         boxShadow: '0 16px 40px rgba(0,0,0,0.5)',
-        ...wipe(age, 0),
+        ...wipe(age, 0, cfg.instant),
       }}
     >
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, ...wipe(age, 0.15)}}>
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, ...wipe(age, 0.15, cfg.instant)}}>
         <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, letterSpacing: '0.08em', color: '#7a6448', whiteSpace: 'nowrap'}}>{head}</div>
         <div style={{display: 'flex', alignItems: 'center', gap: 12, flex: 'none'}}>
           <Glyph g={m.grade} size={48} glyph={m.glyph} />
           <span style={{fontFamily: SANS, fontWeight: 800, fontSize: 34, color: ends(m.grade) ? INK : G.color, filter: 'brightness(0.85)'}}>{G.label.replace(' ход', '')}</span>
         </div>
       </div>
-      <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: fitTitle(m.title), lineHeight: 1.1, color: INK, marginTop: 6, whiteSpace: 'nowrap', ...wipe(age, 0.3)}}>{m.title}</div>
-      <div style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, lineHeight: 1.25, color: '#3b342b', marginTop: 6, ...wipe(age, 0.5)}}>{m.text}</div>
+      <div style={{fontFamily: SERIF, fontWeight: 700, fontSize: fitTitle(m.title), lineHeight: 1.1, color: INK, marginTop: 6, whiteSpace: 'nowrap', ...wipe(age, 0.3, cfg.instant)}}>{m.title}</div>
+      <div style={{fontFamily: SANS, fontWeight: 500, fontSize: 34, lineHeight: 1.25, color: '#3b342b', marginTop: 6, ...wipe(age, 0.5, cfg.instant)}}>{m.text}</div>
       {m.better ? (
-        <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, color: INK, marginTop: 6, ...wipe(age, 0.7)}}>
+        <div style={{fontFamily: SANS, fontWeight: 700, fontSize: 34, color: INK, marginTop: 6, ...wipe(age, 0.7, cfg.instant)}}>
           <span style={{color: G.color}}>Лучше было: </span>
           {m.better}
         </div>
@@ -287,12 +288,12 @@ const Card: React.FC<{m: Move; no: number; age: number}> = ({m, no, age}) => {
 };
 
 export const MoveCard: React.FC<{v: number}> = ({v}) => {
-  const {MOVES, MOVE_NO, RESULTS, moveAt} = useShow();
+  const {MOVES, MOVE_NO, RESULTS, moveAt, cfg} = useShow();
   if (v >= RESULTS) return null;
   const i = moveAt(v);
   if (i < 0) return null;
-  // the previous card fades out completely before the new one is wiped in
-  const leaving = i > 0 && v < MOVES[i].t + 0.2;
+  // the previous card fades out completely before the new one is wiped in (an instant show just swaps them)
+  const leaving = !cfg.instant && i > 0 && v < MOVES[i].t + 0.2;
   const k = leaving ? i - 1 : i;
   const opacity = leaving ? 1 - ramp(v, MOVES[i].t, MOVES[i].t + 0.2) : 1;
   const age = leaving ? 99 : v - MOVES[i].t - (i > 0 ? 0.2 : 0);
