@@ -14,6 +14,7 @@ import {GENIY} from './geniy/show';
 import {GLAZA} from './glaza/show';
 import {MASHA} from './masha/show';
 import {GYDRI} from './gydri/show';
+import {HARTMAN} from './hartman/show';
 
 // The «Шахматный разбор» videos. Compositions get the key as a prop (props must stay plain JSON).
-export const CHESS_SHOWS: Record<string, Show> = {slobody: SLOBODY, kniga: KNIGA, minutochka: MINUTOCHKA, kotly: KOTLY, gelodi: GELODI, rifma: RIFMA, odety: ODETY, klim: KLIM, kredit: KREDIT, palto: PALTO, koshey: KOSHEY, geniy: GENIY, glaza: GLAZA, masha: MASHA, gydri: GYDRI};
+export const CHESS_SHOWS: Record<string, Show> = {slobody: SLOBODY, kniga: KNIGA, minutochka: MINUTOCHKA, kotly: KOTLY, gelodi: GELODI, rifma: RIFMA, odety: ODETY, klim: KLIM, kredit: KREDIT, palto: PALTO, koshey: KOSHEY, geniy: GENIY, glaza: GLAZA, masha: MASHA, gydri: GYDRI, hartman: HARTMAN};

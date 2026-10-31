@@ -52,6 +52,7 @@ const CHESS = [
   {id: 'GlazaChess', cover: 'GlazaCover', show: 'glaza'},
   {id: 'MashaChess', cover: 'MashaCover', show: 'masha'},
   {id: 'GydriChess', cover: 'GydriCover', show: 'gydri'},
+  {id: 'HartmanChess', cover: 'HartmanCover', show: 'hartman'},
 ];
 
 export const RemotionRoot = () => (
