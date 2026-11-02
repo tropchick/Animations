@@ -38,6 +38,7 @@ import {BusMeme} from './BusMeme';
 import {BusCover} from './BusCover';
 import {DURATION_S as BUS_S} from './bus/cues';
 import {GtaDelay} from './GtaDelay';
+import {GtaTop, GtaTopCover, GTATOP_S} from './gtatop/GtaTop';
 import {GtaCover} from './GtaCover';
 import {DURATION_S as GTA_S} from './gta/cues';
 
@@ -64,6 +65,8 @@ const CHESS = [
 
 export const RemotionRoot = () => (
   <>
+    <Composition id="GtaTop" component={GtaTop} durationInFrames={Math.round(GTATOP_S * FPS) + 1} fps={FPS} width={1080} height={1920} defaultProps={{withAudio: true}} />
+    <Composition id="GtaTopCover" component={GtaTopCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="OneViewRecord" component={OneViewRecord} durationInFrames={ONEVIEW_FRAMES} fps={FPS} width={1080} height={1920} defaultProps={{withAudio: false}} />
     <Composition id="OneViewCover" component={OneViewCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     {CHESS.map(({id, cover, show}) => (
