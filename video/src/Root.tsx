@@ -37,6 +37,9 @@ import {ONEVIEW_FRAMES, OneViewCover, OneViewRecord} from './oneview/OneView';
 import {BusMeme} from './BusMeme';
 import {BusCover} from './BusCover';
 import {DURATION_S as BUS_S} from './bus/cues';
+import {GtaDelay} from './GtaDelay';
+import {GtaCover} from './GtaCover';
+import {DURATION_S as GTA_S} from './gta/cues';
 
 // the «Шахматный разбор» videos: composition ids and their show
 const CHESS = [
@@ -97,6 +100,16 @@ export const RemotionRoot = () => (
       defaultProps={{withAudio: false}}
     />
     <Composition id="BusCover" component={BusCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="GtaDelay"
+      component={GtaDelay}
+      durationInFrames={Math.round(GTA_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="GtaCover" component={GtaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition
       id="ScpEp1"
       component={ScpEp1}
