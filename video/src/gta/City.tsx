@@ -105,7 +105,7 @@ const HouseBody: React.FC<{b: House; i: number; st: CityState}> = ({b, i, st}) =
   const snow = st.frostAt(b.z) > 0.6;
   const parts: React.ReactNode[] = [<Box key="body" size={[b.w, h, b.d]} position={[b.x, h / 2, zc]} color={c} />];
   if (st.ruin < 0.5) {
-    parts.push(<Box key="trim" size={[b.w + 0.3, 0.6, b.d + 0.3]} position={[b.x, h - 0.3, zc]} color={trim} />);
+    parts.push(<Box key="trim" size={[b.w + 0.3, 0.6, b.d + 0.3]} position={[b.x, h - 0.27, zc]} color={trim} />);
     if (!b.tower) {
       // art-deco front: a raised centre panel and a ground-floor awning
       parts.push(<Box key="panel" size={[b.w * 0.3, h * 0.92 + 1.2, 0.5]} position={[b.x, (h * 0.92 + 1.2) / 2, b.z - 0.2]} color={trim} />);
@@ -355,11 +355,12 @@ export const Billboard: React.FC<{
   st: CityState;
   tilt?: number; // pushed over inland (radians, top towards +z)
   sink?: number; // buried in ash (m)
-}> = ({cover = 0, paint = 0, year = '2027', lit = 1, st, tilt = 0, sink = 0}) => {
+  base?: string; // the year under the roller
+}> = ({cover = 0, paint = 0, year = '2027', lit = 1, st, tilt = 0, sink = 0, base = '2026'}) => {
   const W = 1400;
   const H = 600;
   const dead = st.ruin;
-  const tex = useCanvas(W, H, `${cover.toFixed(3)}-${paint.toFixed(3)}-${year}-${dead.toFixed(2)}`, (g) => drawBillboard(g, W, H, cover, paint, year, dead));
+  const tex = useCanvas(W, H, `${cover.toFixed(3)}-${paint.toFixed(3)}-${year}-${dead.toFixed(2)}-${base}`, (g) => drawBillboard(g, W, H, cover, paint, year, dead, base));
   const frame = tint('#2a2a33', st, BILL[2]);
   return (
     <group position={[BILL[0], BILL[1] - sink, BILL[2]]}>

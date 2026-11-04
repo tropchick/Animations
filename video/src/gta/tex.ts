@@ -61,7 +61,7 @@ export const roundRect = (g: CanvasRenderingContext2D, x: number, y: number, w: 
 
 // ---------- the billboard: «GTA VI» and the date, the worker rolls over 2026 and paints 2027 ----------
 
-export const drawBillboard = (g: CanvasRenderingContext2D, W: number, H: number, cover: number, paint: number, year: string, dead = 0) => {
+export const drawBillboard = (g: CanvasRenderingContext2D, W: number, H: number, cover: number, paint: number, year: string, dead = 0, base = '2026') => {
   const bg = g.createLinearGradient(0, 0, W, H);
   bg.addColorStop(0, '#2a0f3d');
   bg.addColorStop(0.55, '#5a1650');
@@ -90,27 +90,38 @@ export const drawBillboard = (g: CanvasRenderingContext2D, W: number, H: number,
   // the date
   g.font = `600 ${Math.round(H * 0.2)}px ${COND}`;
   const dayW = g.measureText('19.11.').width;
-  const yearW = g.measureText('2026').width;
+  const yearW = g.measureText(base).width;
   const x0 = W / 2 - (dayW + yearW) / 2;
-  const base = H * 0.87;
+  const baseY = H * 0.87;
   g.textAlign = 'left';
   g.fillStyle = '#ffffff';
-  g.fillText('19.11.', x0, base);
+  g.fillText('19.11.', x0, baseY);
   const yx = x0 + dayW;
-  g.fillText('2026', yx, base);
+  if (base === '2026') g.fillText(base, yx, baseY);
+  else {
+    // an earlier repaint: yellow, a little crooked, on the painted-over patch
+    g.fillStyle = '#7d1f55';
+    g.fillRect(yx - 8, baseY - H * 0.19, yearW + 16, H * 0.24);
+    g.save();
+    g.translate(yx, baseY);
+    g.rotate(-0.04);
+    g.fillStyle = '#ffe14a';
+    g.fillText(base, 4, 2);
+    g.restore();
+  }
   // the roller paints over the old year with the background colour
   if (cover > 0) {
     g.fillStyle = '#7d1f55';
-    const top = base - H * 0.19;
+    const top = baseY - H * 0.19;
     g.fillRect(yx - 8, top, (yearW + 16) * cover, H * 0.24);
   }
   // the new year, painted by hand, a little crooked and yellow
   if (paint > 0) {
     g.save();
     g.beginPath();
-    g.rect(yx - 10, base - H * 0.25, (yearW + 30) * paint, H * 0.32);
+    g.rect(yx - 10, baseY - H * 0.25, (yearW + 30) * paint, H * 0.32);
     g.clip();
-    g.translate(yx, base);
+    g.translate(yx, baseY);
     g.rotate(-0.04);
     g.fillStyle = '#ffe14a';
     g.fillText(year, 4, 2);

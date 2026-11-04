@@ -40,6 +40,8 @@ import {DURATION_S as BUS_S} from './bus/cues';
 import {GtaDelay} from './GtaDelay';
 import {GtaTop, GtaTopCover, GTATOP_S} from './gtatop/GtaTop';
 import {GtaCover} from './GtaCover';
+import {GtaChain} from './GtaChain';
+import {DURATION_S as GTA2_S} from './gta2/cues';
 import {DURATION_S as GTA_S} from './gta/cues';
 
 // the «Шахматный разбор» videos: composition ids and their show
@@ -113,6 +115,15 @@ export const RemotionRoot = () => (
       defaultProps={{withAudio: false}}
     />
     <Composition id="GtaCover" component={GtaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="GtaChain"
+      component={GtaChain}
+      durationInFrames={Math.round(GTA2_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
     <Composition
       id="ScpEp1"
       component={ScpEp1}
