@@ -41,6 +41,9 @@ import {GtaDelay} from './GtaDelay';
 import {GtaTop, GtaTopCover, GTATOP_S} from './gtatop/GtaTop';
 import {GtaCover} from './GtaCover';
 import {GtaChain} from './GtaChain';
+import {ShawaChain} from './ShawaChain';
+import {ShawaCover} from './ShawaCover';
+import {DURATION_S as SHAWA_S} from './shawa/cues';
 import {DURATION_S as GTA2_S} from './gta2/cues';
 import {DURATION_S as GTA_S} from './gta/cues';
 
@@ -115,6 +118,16 @@ export const RemotionRoot = () => (
       defaultProps={{withAudio: false}}
     />
     <Composition id="GtaCover" component={GtaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition id="ShawaCover" component={ShawaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="ShawaChain"
+      component={ShawaChain}
+      durationInFrames={Math.round(SHAWA_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
     <Composition
       id="GtaChain"
       component={GtaChain}
