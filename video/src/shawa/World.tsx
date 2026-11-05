@@ -3,30 +3,33 @@ import {Box, Cyl} from '../scene/parts';
 import {Person, PersonPose} from '../scene/Characters';
 import {CameraRig, View, handheld} from '../slime/camera';
 import {
+  BITE,
   BITES,
+  BOX_OPEN,
   BUBBLE1,
   BUBBLE2,
   CART,
-  COPY,
+  COUNT,
   DOOR,
+  DOORS,
   FLIPS,
-  GLASSES,
+  GASP,
+  GLANCE,
+  HANDOVER,
   HATCH,
   JAW,
   KNOCKS,
-  LOOK,
   ONE,
   RIP,
-  SHRUG,
-  SLIP,
+  SIGN,
+  STAMP,
+  SWAP,
   STACK,
   Shot,
   TAGS,
-  TO_CAM,
   TUG,
   V3,
   WALLET,
-  WRITE,
   clamp01,
   easeIn,
   easeOut,
@@ -43,6 +46,7 @@ import {
   ABoard,
   Bench,
   Bubble,
+  Case,
   BurgerShop,
   Cart,
   DAY,
@@ -50,14 +54,22 @@ import {
   DaySky,
   DeckChair,
   EVENING,
+  Flat,
   FoldingChair,
+  FrozenShawarma,
+  Facade,
   FramedTag,
+  Guard,
   Gulls,
   Guy,
+  Keys,
   Kiosk,
   MenuBoard,
+  Office,
   PhoneStand,
   Pier,
+  RateBooth,
+  RingBox,
   SIT,
   Sea,
   SecretDoor,
@@ -67,6 +79,7 @@ import {
   ShelfTag,
   SpitHouse,
   Street,
+  Van,
   Wallet,
   walk,
 } from './Sets';
@@ -456,148 +469,336 @@ const SCENES: Record<Shot, Scene> = {
         <DayLights />
         <Sea t={v} />
         <Pier />
-        <Yacht v={v} glasses={1} />
+        <Yacht v={v} />
         <Gulls t={v} center={[2, 8, -4]} r={7} />
       </>
     ),
   },
-  rewind: {
+  rate: {
     view: (v) => {
-      const s = rewindShot(v);
-      return SCENES[s.name].view(s.at);
+      if (v < 45.5) return mv(v, S('rate'), 45.0, [1.3, 1.05, 11.2], [0.6, 1.4, 9.0], [0, 2.9, 0.5], [0, 3.05, 0.5], 40);
+      return mv(v, 45.5, 46.5, [0.6, 1.4, 9.0], [1.25, 1.55, 4.3], [0, 3.05, 0.5], [0.5, 1.35, 1.3], [40, 42]);
     },
+    shakes: [[COUNT[1], 0.25]],
     render: (v) => {
-      const s = rewindShot(v);
-      return SCENES[s.name].render(s.at);
+      const k = smooth(ramp(v, COUNT[0], COUNT[1]));
+      const value = v >= COUNT[1] ? 8000000 : 1250 * Math.pow(8000000 / 1250, k);
+      const admire = smooth(ramp(v, 45.9, 46.6));
+      return (
+        <>
+          <DaySky />
+          <DayLights />
+          <Street len={60} />
+          <Facade position={[-6.5, 0, -3.5]} size={[8, 9, 2]} cols={5} rows={4} seed={3} />
+          <Facade position={[6.5, 0, -3.5]} size={[8, 7, 2]} cols={5} rows={3} wall="#c9d2d8" seed={5} />
+          <group position={[0, 0, -0.3]}>
+            <RateBooth value={value} up />
+          </group>
+          {/* the crowd watching the rate */}
+          {[[-1.9, 3.4], [-1.05, 2.9], [-0.3, 3.7], [2.4, 3.5], [3.0, 2.7], [-2.6, 2.6], [-0.6, 2.4]].map(([x, z], i) => (
+            <Guy
+              key={i}
+              position={[x, 0, z]}
+              rotation={Math.PI + (rnd(i + 3) - 0.5) * 0.4}
+              i={i + 1}
+              pose={{head: [-0.45 - 0.1 * rnd(i), 0], armR: i % 3 === 0 ? [1.4, -0.1] : [0.1, -0.08], elbowR: i % 3 === 0 ? 0.6 : 0, armL: [0.1, 0.08]}}
+              rightHand={i % 3 === 0 ? <Box size={[0.08, 0.15, 0.012]} position={[0, -0.02, 0.07]} rotation={[0.2, 0, 0]} color="#1a1a1e" /> : undefined}
+            />
+          ))}
+          {/* the investor at the window: a suit, a case and one shawarma */}
+          <Person
+            position={[0.3, 0, 1.5]}
+            rotation={0.55}
+            shirt="#2a2e3a"
+            pants="#22252e"
+            hair="#3a2a1e"
+            pose={{armR: [lerp(0.5, 1.0, admire), -0.1], elbowR: lerp(1.0, 1.3, admire), armL: [0.05, 0.06], head: [lerp(0.1, 0.4, admire), -0.1]}}
+            rightHand={<Shawarma rotation={[Math.PI, 0, 0]} position={[0, 0.03, 0.03]} scale={1.3} />}
+            leftHand={<group position={[0, -0.19, 0]}><Case /></group>}
+            bodyExtra={<Box size={[0.08, 0.4, 0.02]} position={[0, 1.33, 0.16]} color="#b02a2a" />}
+          />
+        </>
+      );
     },
   },
-  marker: {
+  bank: {
     view: (v) => {
-      const a: V3 = [TAG[0] + N[0] * 2.6 - 0.55, 1.55, TAG[2] + N[2] * 2.6 + 0.15];
-      const b: V3 = [TAG[0] + N[0] * 2.2 - 0.45, 1.5, TAG[2] + N[2] * 2.2 + 0.12];
-      return mv(v, S('marker'), E('marker'), a, b, [TAG[0] - 0.12, TAG[1] + 0.05, TAG[2]], [TAG[0] - 0.15, TAG[1] + 0.02, TAG[2]], [44, 40]);
+      if (v < 48.95) return mv(v, S('bank'), 48.95, [-1.08, 1.72, 1.9], [-1.0, 1.68, 1.62], [0.45, 1.25, -0.25], [0.45, 1.27, -0.25], 40);
+      return mv(v, 48.95, E('bank'), [-0.15, 2.08, 0.9], [-0.16, 2.0, 0.8], [-0.2, 0.8, 0.04], [-0.2, 0.8, 0.04], [40, 38]);
     },
-    shakes: [[SLIP, 0.35]],
+    shakes: [[STAMP, 0.25]],
     render: (v) => {
-      const write = ramp(v, WRITE[0], WRITE[1]);
-      const one = ramp(v, SLIP - 0.06, SLIP + 0.06);
-      // the seller stands right of the board and writes on it
-      const P: V3 = [TAG[0] + N[0] * 0.55 + 0.42, 0, TAG[2] + N[2] * 0.55 - 0.1];
-      const yaw = yawTo(P, TAG) + 0.2;
-      const writing = v >= WRITE[0] - 0.3 && v < WRITE[1] + 0.2;
-      const wob = writing ? Math.sin(v * 22) * 0.04 : 0;
-      const reach = writing ? lerp(-0.05, 0.28, write) : 0;
-      const slip = smooth(ramp(v, SLIP - 0.25, SLIP)) * (1 - smooth(ramp(v, SLIP + 0.3, SLIP + 0.8)));
-      const turn = smooth(ramp(v, WRITE[1] + 0.2, WRITE[1] + 0.7));
+      const sign = ramp(v, SIGN[0], SIGN[1]);
+      const writing = v >= SIGN[0] - 0.25 && v < SIGN[1] + 0.15;
+      const reach = smooth(ramp(v, STAMP - 0.45, STAMP - 0.04)) * (1 - smooth(ramp(v, STAMP + 0.2, STAMP + 0.7)));
+      return (
+        <>
+          <color attach="background" args={['#dfe6ee']} />
+          <hemisphereLight color="#ffffff" groundColor="#8a8070" intensity={1.3} />
+          <directionalLight position={[2, 5, 4]} intensity={1.4} />
+          <Office sign={sign} stamp={v >= STAMP} />
+          {/* the couple */}
+          <Guy
+            position={[0.2, -0.32, 0.75]}
+            rotation={Math.PI}
+            i={4}
+            pose={{
+              ...SIT,
+              armR: writing ? [0.85, 0.08 + 0.05 * Math.sin(v * 25)] : [0.5, -0.05],
+              elbowR: writing ? 0.55 : 0.9,
+              armL: [0.5, 0.05],
+              elbowL: 0.9,
+              head: [writing ? 0.5 : 0.25, 0],
+            }}
+            rightHand={writing ? <Cyl rTop={0.01} rBottom={0.01} height={0.13} position={[0, -0.05, 0.03]} rotation={[0.3, 0, 0]} color="#141414" /> : undefined}
+          />
+          <Person position={[-0.6, -0.32, 0.75]} rotation={Math.PI} shirt="#d06a8a" pants="#3a3550" hair="#6a3a22" longHair pose={{...SIT, armL: [0.3, 0.05], armR: [0.3, -0.05], elbowL: 1.0, elbowR: 1.0, head: [0.35, -0.35]}} />
+          {/* the manager */}
+          <Person
+            position={[-0.5, -0.32, -0.85]}
+            shirt="#f2f2f2"
+            pants="#2a2e3a"
+            hair="#2a1d15"
+            pose={{legL: 0.3, legR: 0.3, armR: [lerp(0.4, 1.13, reach), -0.04], elbowR: lerp(1.3, 0.0, reach), armL: [0.4, 0.1], elbowL: 1.3, head: [0.3, 0]}}
+            rightHand={
+              <group>
+                <Cyl rTop={0.014} rBottom={0.014} height={0.08} position={[0, -0.03, 0]} color="#2a2a30" />
+                <Box size={[0.07, 0.025, 0.05]} position={[0, -0.08, 0]} color="#b02020" />
+              </group>
+            }
+            bodyExtra={<Box size={[0.08, 0.4, 0.02]} position={[0, 1.33, 0.16]} color="#1f5fbf" />}
+          />
+        </>
+      );
+    },
+  },
+  propose: {
+    view: (v) => {
+      if (v < 52.95) return mv(v, S('propose'), 52.95, [0.08, 1.42, 0.9], [0.12, 1.38, 0.76], [0.35, 1.04, 0.04], [0.35, 1.03, 0.04], 40);
+      return mv(v, 52.95, E('propose'), [0.6, 1.3, 4.0], [0.58, 1.28, 3.55], [0.55, 1.1, 0], [0.55, 1.12, 0], 42);
+    },
+    render: (v) => {
+      const open = smooth(ramp(v, BOX_OPEN - 0.15, BOX_OPEN + 0.25));
+      const g = smooth(ramp(v, GASP - 0.15, GASP + 0.2));
+      return (
+        <>
+          <DaySky />
+          <DayLights />
+          <Box size={[60, 0.1, 60]} position={[0, -0.05, 0]} color="#7fb860" />
+          <Box size={[60, 0.02, 1.6]} position={[0, 0.01, 1.4]} color="#d8c8a8" shadow={false} />
+          {[-5, -1.5, 2.5, 6].map((x, i) => (
+            <Tree key={i} position={[x, 0, -3.5 - (i % 2) * 1.5]} size={1} seed={i + 7} />
+          ))}
+          <Bench position={[-3.6, 0, -1.2]} />
+          {/* she */}
+          <Person
+            position={[0, 0, 0]}
+            rotation={Math.PI / 2}
+            shirt="#e8a0b8"
+            pants="#3a3550"
+            hair="#6a3a22"
+            longHair
+            pose={{armL: [lerp(0.05, 1.0, g), lerp(0.06, 0.3, g)], armR: [lerp(0.05, 1.0, g), lerp(-0.06, -0.3, g)], elbowL: lerp(0.1, 2.1, g), elbowR: lerp(0.1, 2.1, g), head: [lerp(0.3, 0.1, g), 0], mouth: 0.8 * g, eyes: 1 + 0.6 * g}}
+          />
+          {/* he, on one knee */}
+          <Guy
+            position={[1.15, -0.4, 0]}
+            rotation={-Math.PI / 2}
+            i={6}
+            pose={{legL: -0.9, legR: 0.9, armR: [1.25, -0.35], elbowR: 0.3, armL: [1.1, 0.35], elbowL: 0.4, head: [-0.3, 0]}}
+            rightHand={
+              <group position={[0, 0, 0.07]} rotation={[Math.PI / 2, 0, 0]}>
+                <RingBox open={open} />
+              </group>
+            }
+          />
+        </>
+      );
+    },
+  },
+  flash: {
+    view: (v) => mv(v, S('flash'), E('flash'), [3.0, 1.7, 5.0], [2.6, 1.65, 4.5], [0.3, 1.35, 1.4], [0.3, 1.35, 1.4], [42, 40]),
+    render: (v) => {
+      const give = smooth(ramp(v, HANDOVER - 0.6, HANDOVER - 0.05));
+      const back = smooth(ramp(v, HANDOVER + 0.1, HANDOVER + 0.6));
+      const took = v >= HANDOVER;
+      const turn = smooth(ramp(v, HANDOVER + 0.5, HANDOVER + 1.1));
+      const roll = <Shawarma rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.06]} scale={1.3} />;
+      const sArm = took ? lerp(1.15, 0.5, back) : lerp(0.6, 1.15, give);
+      const hArm = took ? lerp(1.2, 0.55, back) : lerp(0.1, 1.2, give);
       return (
         <StallStreet v={v}>
-          <Kiosk t={v} seller={null} />
-          <ABoard position={BOARD} rotation={BOARD_YAW} write={write} one={one} />
-          <Seller
-            position={P}
-            rotation={yaw}
-            pose={{
-              armR: [writing ? 0.82 + wob : lerp(0.25, 0.75, slip), writing ? -0.45 - reach : lerp(-0.1, -0.6, slip)],
-              elbowR: writing ? 0.55 : lerp(0.3, 0.5, slip),
-              armL: [0.2, 0.1],
-              head: [writing ? 0.35 : 0.1, writing ? -0.2 : lerp(0, 1.0, turn)],
-            }}
-            rightHand={<Cyl rTop={0.012} rBottom={0.012} height={0.14} position={[0, -0.04, 0.03]} rotation={[0.3, 0, 0]} color="#141414" />}
+          <Kiosk
+            t={v}
+            seller={
+              <Seller
+                position={[0.3, 0.2, 0.5]}
+                pose={{armR: [sArm, -0.3], elbowR: took ? lerp(0.3, 0.9, back) : lerp(1.2, 0.3, give), armL: [0.5, 0.1], elbowL: 0.8, head: [0.15, 0]}}
+                rightHand={took ? undefined : roll}
+              />
+            }
+          />
+          <ABoard position={BOARD} rotation={BOARD_YAW} write={1} one={1} />
+          <Guy
+            position={[0.4, 0, 2.1]}
+            rotation={lerp(Math.PI, 1.25, turn)}
+            i={6}
+            pose={{armR: [hArm, -0.35 * (1 - back)], elbowR: took ? lerp(0.6, 1.6, back) : lerp(0.1, 0.6, give), armL: [0.1, 0.1], head: [took ? lerp(0.0, 0.35, back) * (1 - turn * 0.6) : 0.0, 0]}}
+            rightHand={took ? roll : undefined}
           />
         </StallStreet>
       );
     },
   },
-  copy: {
-    view: (v) => {
-      const xs = [BOARD[0], BOARD[0] + 3.6, BOARD[0] + 7.2, BOARD[0] + 10.8];
-      const tx = v < COPY[0] - 0.55 ? lerp(xs[0], xs[1], smooth(ramp(v, S('copy') + 0.3, COPY[0] - 0.55))) : v < COPY[1] - 0.45 ? lerp(xs[1], xs[2], smooth(ramp(v, COPY[0] + 0.15, COPY[1] - 0.45))) : lerp(xs[2], xs[3], smooth(ramp(v, COPY[1] + 0.15, COPY[2] - 0.4)));
-      return {pos: [tx + 0.9, 1.65, 6.6], target: [tx, 1.15, 2.1], fov: 40, far: 3000};
+  keys: {
+    view: (v) => mv(v, S('keys'), E('keys'), [0.25, 1.45, 4.8], [0.15, 1.45, 3.9], [0, 1.25, 0.2], [0, 1.28, 0.2], 40),
+    shakes: [[SWAP, 0.08]],
+    render: (v) => {
+      const out = smooth(ramp(v, SWAP - 0.6, SWAP - 0.05));
+      const back = smooth(ramp(v, SWAP + 0.1, SWAP + 0.6));
+      const lift = smooth(ramp(v, SWAP + 0.5, SWAP + 1.0));
+      const done = v >= SWAP;
+      const frozen = <FrozenShawarma rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.06]} scale={1.3} />;
+      const keys = <group position={[0, 0, -0.04]} rotation={[Math.PI / 2, 0, 0]}><Keys /></group>;
+      const reach = done ? 1 - back : out;
+      return (
+        <>
+          <color attach="background" args={['#e8e4dc']} />
+          <hemisphereLight color="#ffffff" groundColor="#a08a6a" intensity={1.3} />
+          <directionalLight position={[1, 4, 3]} intensity={1.3} />
+          <pointLight position={[0.6, 1.6, -1.8]} color="#cfe8ff" intensity={2} distance={5} decay={1.5} />
+          <Flat />
+          <Guy
+            position={[-0.55, 0, 0.2]}
+            rotation={Math.PI / 2}
+            i={6}
+            pose={{
+              armR: done ? [lerp(lerp(0.4, 0.6, reach), 2.0, lift), lerp(-0.35, -0.15, lift)] : [lerp(0.6, 0.4, reach), -0.35],
+              elbowR: done ? lerp(lerp(0.9, 1.1, reach), 0.5, lift) : lerp(1.3, 1.1, reach),
+              armL: [0.1, 0.1],
+              head: [lerp(0.1, -0.25, lift), lift * 0.3],
+              eyes: 1 + 0.3 * lift,
+            }}
+            rightHand={done ? keys : frozen}
+          />
+          <Person
+            position={[0.55, 0, 0.2]}
+            rotation={-Math.PI / 2}
+            shirt="#2a2e3a"
+            pants="#22252e"
+            hair="#4a3324"
+            pose={{
+              armR: [lerp(0.6, 0.4, reach), -0.35],
+              elbowR: done ? lerp(1.1, 1.5, back) : lerp(1.3, 1.1, reach),
+              armL: done ? [lerp(0.1, 0.55, back), 0.25] : [0.1, 0.1],
+              elbowL: done ? lerp(0, 1.3, back) : 0,
+              head: [done ? lerp(0.1, 0.45, back) : 0.1, 0],
+            }}
+            rightHand={done ? frozen : keys}
+            bodyExtra={<Box size={[0.08, 0.4, 0.02]} position={[0, 1.33, 0.16]} color="#8a2a2a" />}
+          />
+        </>
+      );
     },
-    render: (v) => (
-      <StallStreet v={v}>
-        <Kiosk t={v} seller={<Seller position={[0.3, 0.2, 0.15]} pose={{armL: [0.5, 0.1], armR: [0.5, -0.1], elbowL: 0.8, elbowR: 0.8}} />} />
-        <ABoard position={BOARD} rotation={BOARD_YAW} write={1} one={1} />
-        {[1, 2, 3].map((i) => {
-          const x = i * 3.6;
-          const at = COPY[i - 1];
-          const look = smooth(ramp(v, at - 1.0, at - 0.5));
-          return (
-            <group key={i}>
-              <Kiosk
-                position={[x, 0, 0]}
-                t={v + i}
-                color={['#e8f0e6', '#f0e6dc', '#e6eaf2'][i - 1]}
-                sign={['ШАВЕРМА', 'ШАУРМА 24', 'ШАУРМА'][i - 1]}
-                seller={<Seller position={[0.2, 0.2, 0.25]} shirt={['#f4f4f2', '#ffe8b0', '#d8eaff'][i - 1]} apron={['#2a7a4a', '#d6862a', '#3a5ad0'][i - 1]} pose={{head: [0, -0.9 * look], armL: [0.5, 0.1], armR: [0.5, -0.1], elbowL: 0.8, elbowR: 0.8}} />}
-              />
-              <ABoard position={[x + BOARD[0], 0, BOARD[2]]} rotation={BOARD_YAW} write={1} one={ramp(v, at - 0.08, at + 0.08)} />
-            </group>
-          );
-        })}
-      </StallStreet>
-    ),
   },
-  deck: {
+  van: {
     view: (v) => {
-      if (v < 53.3) return mv(v, S('deck'), 53.3, [0.95, 2.25, 4.45], [0.9, 2.2, 4.3], [0.68, 2.0, 3.0], [0.66, 2.02, 3.0], 40);
-      if (v < 55.2) return mv(v, 53.3, 55.2, [0.35, 2.64, 4.65], [0.3, 2.62, 4.55], [0.05, 2.5, 2.62], [0.05, 2.5, 2.62], [42, 42]);
-      return mv(v, 55.6, E('deck'), [0.3, 2.62, 4.55], [0.7, 2.9, 6.6], [0.05, 2.5, 2.62], [0.05, 2.25, 2.4], [42, 46]);
+      if (v < 64.55) return mv(v, S('van'), 64.55, [5.6, 1.7, 5.2], [5.1, 1.65, 4.7], [0.6, 1.5, 0.2], [0.6, 1.5, 0.3], [42, 40]);
+      return mv(v, 64.55, E('van'), [-0.5, 1.65, 6.8], [-0.35, 1.6, 6.1], [0.15, 1.2, 2.0], [0.15, 1.25, 2.0], 42);
     },
-    render: (v) => (
-      <>
-        <DaySky fog={[80, 900]} />
-        <DayLights />
-        <Sea t={v} />
-        <Yacht v={v} glasses={smooth(ramp(v, GLASSES, GLASSES + 0.3))} deck />
-        <Gulls t={v} center={[1, 7, -2]} r={6} />
-      </>
-    ),
+    shakes: [[DOORS, 0.3]],
+    render: (v) => {
+      const walkK = clamp01((v - S('van')) / 1.6);
+      const a: V3 = [-0.5, 0, 5.4];
+      const b: V3 = [0.75, 0, 2.75];
+      const put = smooth(ramp(v, 64.7, 65.0));
+      const placed = v >= 65.0;
+      const stepBack = smooth(ramp(v, 65.05, 65.45));
+      const p = lerp3(a, b, easeOut(walkK));
+      const pos: V3 = [p[0] + 0.7 * stepBack, 0, p[2] + 0.4 * stepBack];
+      const walking = walkK < 1;
+      const doors = 1 - smooth(ramp(v, DOORS - 0.4, DOORS));
+      const caseInHand = <group position={[0, -0.17, 0]}><Case /></group>;
+      return (
+        <>
+          <DaySky />
+          <DayLights />
+          <Street len={60} />
+          <Facade position={[-5, 0, -3.5]} size={[8, 9, 2]} cols={5} rows={4} seed={8} />
+          <Facade position={[5.5, 0, -3.5]} size={[8, 7, 2]} cols={5} rows={3} wall="#d8cbb8" seed={2} />
+          <Van position={[0, 0, 0]} doors={doors} />
+          {placed ? <group position={[0.45, 0.84, 1.7]}><Case /></group> : null}
+          <Guard position={[-1.55, 0, 2.6]} rotation={-0.5 + 0.3 * Math.sin(v * 1.3)} pose={{armL: [0.3, 0.2], armR: [0.3, -0.2], elbowL: 1.2, elbowR: 1.2, head: [0, 0.3 * Math.sin(v * 1.7)]}} i={1} />
+          <Guard
+            position={pos}
+            rotation={walking ? yawTo(a, b) : Math.PI}
+            pose={walking ? {...walk(v - S('van'), 1 - walkK * 0.5), armR: [0.05, -0.08], elbowR: 0} : {armR: [lerp(0.05, 0.95, put * (1 - stepBack)), -0.08], elbowR: 0.15 * put, armL: [0.05, 0.08]}}
+            rightHand={placed ? undefined : caseInHand}
+          />
+        </>
+      );
+    },
   },
-};
-
-// the rewind: earlier shots flash past backwards, ~2-3 frames each
-const REWIND: Shot[] = ['phone', 'wallet', 'door', 'tags', 'shop', 'windows', 'menu', 'queue', 'bench', 'stall'];
-const rewindShot = (v: number) => {
-  const k = clamp01((v - S('rewind')) / (E('rewind') - S('rewind')));
-  const i = Math.min(REWIND.length - 1, Math.floor(k * REWIND.length));
-  const name = REWIND[i];
-  const local = (k * REWIND.length) % 1;
-  const at = lerp(E(name) - 0.05, S(name) + 0.05, local);
-  return {name, at: name === 'stall' ? Math.max(0.6, at) : at};
+  inside: {
+    view: (v) => mv(v, S('inside'), E('inside'), [0.4, 1.35, 2.6], [0.3, 1.3, 2.2], [0.2, 1.05, 0], [0.18, 1.08, 0], 40),
+    shakes: [[BITE, 0.08]],
+    render: (v) => {
+      const glance = ramp(v, GLANCE[0], GLANCE[1]);
+      const yaw = v < GLANCE[1] ? 0.55 * Math.sin(glance * Math.PI * 2) : 0;
+      const b = smooth(ramp(v, BITE - 0.45, BITE)) * (1 - smooth(ramp(v, BITE + 0.12, BITE + 0.5)));
+      const chew = v > BITE + 0.4 ? 0.22 * (0.5 + 0.5 * Math.sin((v - BITE) * 14)) : 0;
+      const caught = smooth(ramp(v, 68.7, 68.95));
+      const len = v >= BITE ? 0.62 : 1;
+      return (
+        <>
+          <color attach="background" args={['#0e1012']} />
+          <hemisphereLight color="#8a9098" groundColor="#1a1a1e" intensity={0.55} />
+          <pointLight position={[0.2, 2.1, 0.6]} color="#ffe2b0" intensity={3.2} distance={4} decay={1.6} />
+          {/* the van's cargo box: back wall, floor, ceiling and the bench */}
+          <Box size={[3, 2.2, 0.06]} position={[0, 1.1, -0.45]} color="#3a4044" />
+          <Box size={[3, 0.06, 3]} position={[0, -0.03, 0.8]} color="#2a2e30" />
+          <Box size={[3, 0.06, 3]} position={[0, 2.2, 0.8]} color="#2e3236" />
+          <Box size={[1.8, 0.06, 0.5]} position={[0, 0.45, -0.1]} color="#4a4e52" />
+          <Box size={[1.8, 0.42, 0.04]} position={[0, 0.21, 0.13]} color="#3a3e42" />
+          <Box size={[0.2, 0.05, 0.12]} position={[0.2, 2.15, 0.6]} color="#fff2d8" emissive="#ffe2b0" emissiveIntensity={1.2} />
+          {/* the open case on the bench, an empty shawarma-shaped slot in the foam */}
+          <group position={[0.58, 0.63, -0.12]} rotation={[0, -0.3, 0]}>
+            <Case open={1} />
+            <Box size={[0.26, 0.07, 0.006]} position={[0, 0, 0.064]} rotation={[0, 0, 0.1]} color="#121214" shadow={false} />
+          </group>
+          <Guard
+            position={[0, -0.32, -0.1]}
+            pose={{
+              ...SIT,
+              armR: [lerp(0.7, 1.15, b), -0.32],
+              elbowR: lerp(0.9, 1.85, b),
+              armL: [0.5, 0.12],
+              elbowL: 0.7,
+              head: [lerp(lerp(0.2, 0.05, b), -0.05, caught), yaw],
+              mouth: Math.max(b * 0.6, chew * (1 - caught)),
+              eyes: 1 + 0.5 * caught,
+            }}
+            rightHand={<Shawarma len={len} rotation={[Math.PI, 0, 0]} position={[0, 0.04, 0.03]} scale={1.4} />}
+          />
+        </>
+      );
+    },
+  },
 };
 
 // ---------------------------------------------------------------- the yacht with the seller on it
 
-const Yacht: React.FC<{v: number; glasses: number; deck?: boolean}> = ({v, glasses, deck}) => {
-  const look = smooth(ramp(v, LOOK - 0.3, LOOK + 0.1)) * (1 - smooth(ramp(v, TO_CAM - 0.2, TO_CAM + 0.2)));
-  const toCam = smooth(ramp(v, TO_CAM - 0.2, TO_CAM + 0.2));
-  const shrug = smooth(ramp(v, SHRUG - 0.15, SHRUG + 0.2)) * (1 - smooth(ramp(v, SHRUG + 0.55, SHRUG + 0.9)));
-  const reach = smooth(ramp(v, GLASSES - 0.35, GLASSES)) * (1 - smooth(ramp(v, GLASSES + 0.3, GLASSES + 0.6)));
-  const pose: PersonPose = deck
-    ? {
-        ...SIT,
-        head: [lerp(-0.05, 0.45, look) + shrug * 0.05 + reach * 0.18, lerp(0, -0.75, look) * (1 - toCam) + toCam * 0.1],
-        armL: [lerp(0.55, 0.35, shrug), lerp(0.1, -0.75, shrug)],
-        armR: [lerp(0.55, 0.35, shrug), lerp(-0.1, 0.75, shrug)],
-        elbowL: lerp(0.6, 1.5, shrug),
-        elbowR: lerp(0.6, 1.5, shrug),
-        eyes: 1 + 0.25 * look,
-      }
-    : {...SIT, head: [0, 0.2], armL: [0.6, 0.6], armR: [0.6, -0.6], elbowL: 1.4, elbowR: 1.4};
-  return (
-    <YachtHull bob={v}>
-      <DeckChair position={[0, 1.16, 2.6]} />
-      <Seller position={[0, 1.16 + 0.475 - 0.8, 2.62]} pose={pose} glasses={glasses} />
-      <Box size={[0.5, 0.05, 0.5]} position={[0.75, 1.16 + 0.62, 3.05]} color="#f2f2f2" />
-      <Cyl rTop={0.04} rBottom={0.06} height={0.6} position={[0.75, 1.16 + 0.3, 3.05]} color="#d0d4da" />
-      <FramedTag position={[0.68, 1.16 + 0.83, 3.0]} rotation={[-0.2, 0.25, 0]} />
-      {/* a drink */}
-      <Cyl rTop={0.04} rBottom={0.03} height={0.14} position={[0.92, 1.16 + 0.715, 2.92]} color="#ff9a4a" />
-    </YachtHull>
-  );
-};
-
+const Yacht: React.FC<{v: number}> = ({v}) => (
+  <YachtHull bob={v}>
+    <DeckChair position={[0, 1.16, 2.6]} />
+    <Seller position={[0, 1.16 + 0.475 - 0.8, 2.62]} pose={{...SIT, head: [0, 0.2], armL: [0.6, 0.6], armR: [0.6, -0.6], elbowL: 1.4, elbowR: 1.4}} glasses={1} />
+    <Box size={[0.5, 0.05, 0.5]} position={[0.75, 1.16 + 0.62, 3.05]} color="#f2f2f2" />
+    <Cyl rTop={0.04} rBottom={0.06} height={0.6} position={[0.75, 1.16 + 0.3, 3.05]} color="#d0d4da" />
+    <FramedTag position={[0.68, 1.16 + 0.83, 3.0]} rotation={[-0.2, 0.25, 0]} />
+    {/* a drink */}
+    <Cyl rTop={0.04} rBottom={0.03} height={0.14} position={[0.92, 1.16 + 0.715, 2.92]} color="#ff9a4a" />
+  </YachtHull>
+);
 
 // ---------------------------------------------------------------- camera + world
 

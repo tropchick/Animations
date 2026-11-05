@@ -45,7 +45,7 @@
     "audio:gta2": "python3 audio/make_gta2_audio.py",
     "render:gta2": "python3 audio/make_gta2_audio.py && tools/render-chunks.sh GtaChain public/audio/gta6-chain.wav out/gta6-chain.mp4 1669",
     "audio:shawa": "python3 audio/make_shawa_audio.py",
-    "render:shawa": "python3 audio/make_shawa_audio.py && tools/render-chunks.sh ShawaChain public/audio/shawa-x5.wav out/shawa-x5.mp4 1759",
+    "render:shawa": "python3 audio/make_shawa_audio.py && tools/render-chunks.sh ShawaChain public/audio/shawa-x5.wav out/shawa-x5.mp4 2095",
     "cover:shawa": "remotion still ShawaCover out/shawa-x5-cover.jpg --gl=swangle --jpeg-quality=90",
     "cover:gta": "remotion still GtaCover out/gta6-delay-cover.jpg --gl=swangle --jpeg-quality=90",
     "zcheck": "node tools/zcheck.mjs",

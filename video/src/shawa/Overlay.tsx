@@ -22,11 +22,15 @@ const DATES: Partial<Record<Shot, string>> = {
   wallet: 'ДЕНЬ 14',
   phone: 'ДЕНЬ 14',
   yacht: 'ДЕНЬ 20',
-  marker: 'ДЕНЬ 1, 11:59',
-  copy: 'ДЕНЬ 1, 12:00',
-  deck: 'ДЕНЬ 30',
+  rate: 'ДЕНЬ 22',
+  bank: 'ДЕНЬ 25',
+  propose: 'ДЕНЬ 27',
+  flash: 'ДЕНЬ 1, 12:05',
+  keys: 'ДЕНЬ 30',
+  van: 'ДЕНЬ 30',
+  inside: 'ДЕНЬ 30',
 };
-const RED: Partial<Record<Shot, boolean>> = {marker: true, copy: true};
+const RED: Partial<Record<Shot, boolean>> = {flash: true};
 
 const DateStamp: React.FC<{v: number}> = ({v}) => {
   const s = shotAt(v);
@@ -104,25 +108,17 @@ const Caption: React.FC<{v: number; g: number}> = ({v, g}) => {
   );
 };
 
-// ---------- the tape rewind ----------
+// ---------- the flashback: a warm, faded look with a soft vignette ----------
 
-const Rewind: React.FC<{v: number}> = ({v}) => {
-  const a = shotStart('rewind');
-  const b = shotEnd('rewind');
-  if (v < a - 0.05 || v > b + 0.25) return null;
-  const k = clamp((v - a) / (b - a));
-  const after = v > b ? 1 - (v - b) / 0.25 : 1;
-  const lines = Array.from({length: 7}).map((_, i) => {
-    const y = ((i * 297 + v * 2600) % 1920 + 1920) % 1920;
-    return <div key={i} style={{position: 'absolute', left: 0, right: 0, top: y, height: 10 + (i % 3) * 8, background: 'rgba(255,255,255,0.35)', mixBlendMode: 'screen'}} />;
-  });
+const Flashback: React.FC<{v: number}> = ({v}) => {
+  const a = shotStart('flash');
+  const b = shotEnd('flash');
+  if (v < a || v >= b) return null;
+  const o = Math.min(1, (v - a) / 0.2, (b - v) / 0.15);
   return (
-    <AbsoluteFill style={{opacity: after}}>
-      {v <= b ? <AbsoluteFill style={{background: 'rgba(40,10,30,0.25)'}} /> : null}
-      {v <= b ? lines : null}
-      <div style={{position: 'absolute', left: 0, right: 0, top: 820, textAlign: 'center', fontFamily: COND, fontWeight: 600, fontSize: 150, color: '#fff', textShadow: '0 0 30px rgba(255,60,60,0.9)', opacity: v <= b ? 0.6 + 0.4 * Math.round((Math.sin(k * 30) + 1) / 2) : 1}}>
-        ◀◀
-      </div>
+    <AbsoluteFill style={{opacity: o, pointerEvents: 'none'}}>
+      <AbsoluteFill style={{background: 'rgba(150,110,60,0.22)', mixBlendMode: 'multiply'}} />
+      <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(30,15,5,0.55) 100%)'}} />
     </AbsoluteFill>
   );
 };
@@ -130,7 +126,7 @@ const Rewind: React.FC<{v: number}> = ({v}) => {
 export const Overlay: React.FC<{v: number}> = ({v}) => (
   <AbsoluteFill>
     <DateStamp v={v} />
-    <Rewind v={v} />
+    <Flashback v={v} />
     {GROUPS.map((_, g) => (
       <Caption key={g} v={v} g={g} />
     ))}

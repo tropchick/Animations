@@ -5,7 +5,7 @@ import {Person, PersonPose} from '../scene/Characters';
 import {useCanvas} from '../gta/tex';
 import {Sky, SkyCols} from '../gta/World';
 import {V3, clamp01, lerp, rnd} from './cues';
-import {drawBubble, drawFacade, drawKioskTag, drawMenu, drawPhoneTag, drawScreen, drawShelfTag, drawSign} from './tex';
+import {drawBubble, drawContract, drawFacade, drawKioskTag, drawMenu, drawMortgage, drawPhoneTag, drawRate, drawScreen, drawShelfTag, drawSign} from './tex';
 
 // ---------------------------------------------------------------- basics
 
@@ -584,3 +584,155 @@ export const Gulls: React.FC<{t: number; n?: number; center?: V3; r?: number}> =
 );
 
 export {Box, Cone, Cyl, Ico, clamp01};
+
+// ---------------------------------------------------------------- the ending: board, bank, proposal, flat, van
+
+export const RateBooth: React.FC<{value: number; up: boolean}> = ({value, up}) => {
+  // round so neighbouring frames share a texture, but small prices stay exact
+  const q = value < 10000 ? Math.round(value / 10) * 10 : Number(value.toPrecision(3));
+  return (
+    <group>
+      {/* the exchange booth: a small glass kiosk with the board on its roof */}
+      <Box size={[2.6, 2.4, 1.6]} position={[0, 1.2, 0]} color="#e6e8ec" />
+      <Box size={[1.6, 1.2, 0.04]} position={[0, 1.3, 0.81]} color="#9ab8d0" emissive="#5a7a90" emissiveIntensity={0.2} />
+      <Box size={[0.5, 0.06, 0.3]} position={[0, 0.82, 0.95]} color="#b8bcc4" />
+      <Box size={[3.0, 1.6, 0.16]} position={[0, 3.25, 0.5]} color="#1a1c22" />
+      <Pic size={[2.86, 1.46]} res={[1100, 560]} k={`rate${q}${up ? 1 : 0}`} draw={(g, W, H) => drawRate(g, W, H, q, up)} position={[0, 3.25, 0.586]} lit={false} glow={1} />
+      {[-1.3, 1.3].map((x) => <Box key={x} size={[0.1, 0.9, 0.1]} position={[x, 2.85, 0.5]} color="#5a5e66" />)}
+    </group>
+  );
+};
+
+export const Office: React.FC<{sign: number; stamp: boolean}> = ({sign, stamp}) => {
+  const s = Math.round(sign * 20) / 20;
+  return (
+    <group>
+      <Box size={[12, 0.1, 12]} position={[0, -0.05, 0]} color="#c8c2b8" />
+      <Box size={[12, 3.4, 0.2]} position={[0, 1.7, -2.6]} color="#dfe6ee" />
+      <Box size={[4.2, 0.5, 0.04]} position={[0, 2.5, -2.48]} color="#1f5fbf" />
+      <Pic size={[4.0, 0.42]} res={[1000, 105]} k="banksign" draw={(g, W, H) => drawSign(g, W, H, 'БАНК', '#1f5fbf', '#ffffff')} position={[0, 2.5, -2.455]} />
+      {/* desk */}
+      <Box size={[1.9, 0.06, 0.9]} position={[0, 0.76, 0]} color="#8a6a4a" />
+      <Box size={[1.85, 0.72, 0.06]} position={[0, 0.37, -0.4]} color="#7a5a3a" />
+      {[-0.88, 0.88].map((x) => <Box key={x} size={[0.06, 0.73, 0.85]} position={[x, 0.365, 0]} color="#7a5a3a" />)}
+      {/* the screen faces the couple */}
+      <Box size={[0.08, 0.3, 0.08]} position={[0.45, 0.94, -0.25]} color="#2a2a30" />
+      <Box size={[0.8, 0.5, 0.04]} position={[0.45, 1.3, -0.25]} rotation={[0, -0.25, 0]} color="#1a1a1e" />
+      <group position={[0.45, 1.3, -0.25]} rotation={[0, -0.25, 0]}>
+        <Pic size={[0.74, 0.44]} res={[740, 440]} k="mort" draw={drawMortgage} position={[0, 0, 0.026]} lit={false} glow={1} />
+      </group>
+      {/* the contract lies flat in front of the couple */}
+      <Pic size={[0.3, 0.42]} res={[300, 420]} k={`ctr${s}${stamp ? 1 : 0}`} draw={(g, W, H) => drawContract(g, W, H, s, stamp)} position={[-0.2, 0.795, 0.02]} rotation={[-Math.PI / 2, 0, 0.1]} />
+      {/* chairs for the couple */}
+      {[-0.6, 0.2].map((x) => (
+        <group key={x} position={[x, 0, 0.75]}>
+          <Box size={[0.48, 0.06, 0.46]} position={[0, 0.45, 0]} color="#3a3a44" />
+          <Box size={[0.48, 0.5, 0.06]} position={[0, 0.72, 0.24]} color="#3a3a44" />
+          {[-0.2, 0.2].map((xx) => [-0.18, 0.18].map((z) => <Box key={`${xx}${z}`} size={[0.04, 0.42, 0.04]} position={[xx, 0.21, z]} color="#9aa0a8" />))}
+        </group>
+      ))}
+      <Box size={[0.6, 1.6, 0.6]} position={[-2.8, 0.8, -2.0]} color="#3a6a3a" />
+    </group>
+  );
+};
+
+export const RingBox: React.FC<{open: number}> = ({open}) => (
+  <group>
+    <Box size={[0.09, 0.05, 0.09]} position={[0, 0.025, 0]} color="#b0182a" />
+    <Box size={[0.075, 0.012, 0.075]} position={[0, 0.051, 0]} color="#f2e8d8" shadow={false} />
+    {open > 0.2 ? <Shawarma position={[0, 0.058, 0]} rotation={[0, 0, Math.PI / 2]} scale={0.26} /> : null}
+    <group position={[0, 0.05, -0.045]} rotation={[-open * 1.9, 0, 0]}>
+      <Box size={[0.092, 0.035, 0.092]} position={[0, 0.0175, 0.046]} color="#c01c30" />
+    </group>
+  </group>
+);
+
+export const Flat: React.FC = () => (
+  <group>
+    <Box size={[8, 0.1, 8]} position={[0, -0.05, 0]} color="#c8a878" />
+    <Box size={[8, 3, 0.2]} position={[0, 1.5, -2.6]} color="#f2f0ea" />
+    <Box size={[0.2, 3, 8]} position={[-2.6, 1.5, 0]} color="#ecebe6" />
+    {/* big window with the city */}
+    <Box size={[2.6, 1.7, 0.04]} position={[0.6, 1.55, -2.48]} color="#bfe0f6" emissive="#9ad0f0" emissiveIntensity={0.6} />
+    <Box size={[0.06, 1.7, 0.06]} position={[0.6, 1.55, -2.45]} color="#ffffff" />
+    <Box size={[2.6, 0.06, 0.06]} position={[0.6, 1.55, -2.45]} color="#ffffff" />
+    <Box size={[2.7, 0.08, 0.2]} position={[0.6, 0.66, -2.4]} color="#ffffff" />
+    {/* boxes from the move */}
+    <Box size={[0.5, 0.4, 0.5]} position={[-1.9, 0.2, -1.6]} color="#c89a5a" />
+    <Box size={[0.4, 0.32, 0.4]} position={[-1.85, 0.56, -1.55]} rotation={[0, 0.3, 0]} color="#d8aa6a" />
+  </group>
+);
+
+// a ring of keys (the hand prop)
+export const Keys: React.FC = () => (
+  <group>
+    <mesh rotation={[Math.PI / 2, 0, 0]}>
+      <torusGeometry args={[0.025, 0.005, 6, 12]} />
+      <meshStandardMaterial color="#d8c050" flatShading />
+    </mesh>
+    <Box size={[0.012, 0.06, 0.004]} position={[0.01, -0.045, 0]} color="#d8c050" />
+    <Box size={[0.012, 0.06, 0.004]} position={[-0.012, -0.043, 0.006]} rotation={[0, 0, 0.3]} color="#c8ccd2" />
+  </group>
+);
+
+export const FrozenShawarma: React.FC<{position?: V3; rotation?: V3; scale?: number}> = ({position, rotation, scale = 1}) => (
+  <group position={position} rotation={rotation} scale={scale}>
+    <Shawarma />
+    <Cyl rTop={0.058} rBottom={0.058} height={0.3} position={[0, 0.07, 0]} color="#dfefff" opacity={0.45} segments={8} />
+  </group>
+);
+
+export const Van: React.FC<{position?: V3; rotation?: number; doors: number}> = ({position = [0, 0, 0], rotation = 0, doors}) => (
+  <group position={position} rotation={[0, rotation, 0]}>
+    {/* body: the back faces +z */}
+    {/* the cargo box is hollow so the open doors show the inside */}
+    <Box size={[0.06, 2.2, 4.0]} position={[-1.07, 1.55, 0]} color="#3d5a46" />
+    <Box size={[0.06, 2.2, 4.0]} position={[1.07, 1.55, 0]} color="#3d5a46" />
+    <Box size={[2.2, 0.06, 4.0]} position={[0, 2.62, 0]} color="#3d5a46" />
+    <Box size={[2.1, 1.5, 1.4]} position={[0, 1.2, -2.7]} color="#3d5a46" />
+    <Box size={[1.9, 0.6, 0.04]} position={[0, 1.65, -3.42]} color="#22303a" />
+    <Box size={[2.24, 0.25, 4.04]} position={[0, 0.55, 0]} color="#2a3a30" />
+    <Pic size={[3.0, 0.4]} res={[900, 120]} k="vanname" draw={(g, W, H) => drawSign(g, W, H, 'ИНКАССАЦИЯ', '#3d5a46', '#f2e8c8')} position={[1.112, 1.9, 0]} rotation={[0, Math.PI / 2, 0]} />
+    <Pic size={[3.0, 0.4]} res={[900, 120]} k="vanname" draw={(g, W, H) => drawSign(g, W, H, 'ИНКАССАЦИЯ', '#3d5a46', '#f2e8c8')} position={[-1.112, 1.9, 0]} rotation={[0, -Math.PI / 2, 0]} />
+    {[[-0.8, -2.6], [0.8, -2.6], [-0.8, 1.2], [0.8, 1.2]].map(([x, z]) => (
+      <Cyl key={`${x}${z}`} rTop={0.42} rBottom={0.42} height={0.3} position={[x * 1.3, 0.42, z]} rotation={[0, 0, Math.PI / 2]} color="#1a1a1a" segments={10} />
+    ))}
+    {/* inside, seen through the open doors */}
+    <Box size={[2.0, 2.0, 0.05]} position={[0, 1.55, -1.9]} color="#2a2e30" />
+    <Box size={[2.0, 0.05, 3.8]} position={[0, 0.66, 0]} color="#3a3e40" />
+    {/* rear doors hinged at the outer edges */}
+    <group position={[-1.1, 0, 2.03]} rotation={[0, -doors * 1.7, 0]}>
+      <Box size={[1.08, 2.1, 0.06]} position={[0.54, 1.55, 0]} color="#456650" />
+      <Box size={[0.4, 0.25, 0.02]} position={[0.54, 2.05, 0.035]} color="#22303a" />
+    </group>
+    <group position={[1.1, 0, 2.03]} rotation={[0, doors * 1.7, 0]}>
+      <Box size={[1.08, 2.1, 0.06]} position={[-0.54, 1.55, 0]} color="#456650" />
+      <Box size={[0.4, 0.25, 0.02]} position={[-0.54, 2.05, 0.035]} color="#22303a" />
+    </group>
+  </group>
+);
+
+// a cash-in-transit guard: helmet, vest
+export const Guard: React.FC<{position: V3; rotation?: number; pose?: PersonPose; rightHand?: React.ReactNode; leftHand?: React.ReactNode; i?: number}> = ({position, rotation = 0, pose, rightHand, leftHand, i = 0}) => (
+  <Person
+    position={position}
+    rotation={rotation}
+    shirt="#3a4250"
+    pants="#2a2e36"
+    hair="#2a1d15"
+    skin={i % 2 ? '#d8b090' : '#efd2b3'}
+    pose={pose}
+    rightHand={rightHand}
+    leftHand={leftHand}
+    headExtra={<Box size={[0.36, 0.14, 0.36]} position={[0, 0.39, -0.005]} color="#2a3a30" />}
+    bodyExtra={<Box size={[0.58, 0.56, 0.36]} position={[0, 1.22, 0]} color="#4a5a48" />}
+  />
+);
+
+export const Case: React.FC<{open?: number}> = ({open = 0}) => (
+  <group>
+    <Box size={[0.42, 0.3, 0.1]} position={[0, 0, 0]} color="#c8ccd2" />
+    <Box size={[0.12, 0.03, 0.03]} position={[0, 0.17, 0]} color="#3a3a40" />
+    {open > 0 ? <Box size={[0.38, 0.26, 0.012]} position={[0, 0, 0.056]} color="#2a2a30" /> : null}
+  </group>
+);

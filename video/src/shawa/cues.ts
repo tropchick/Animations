@@ -11,7 +11,7 @@ export const DURATION_S = cues.duration;
 
 export type Shot =
   | 'stall' | 'bench' | 'queue' | 'menu' | 'windows' | 'shop' | 'tags' | 'door' | 'wallet' | 'phone' | 'yacht'
-  | 'rewind' | 'marker' | 'copy' | 'deck';
+  | 'rate' | 'bank' | 'propose' | 'flash' | 'keys' | 'van' | 'inside';
 
 export const SHOTS = cues.shots.map(([name, from], i) => ({
   name: name as Shot,
@@ -44,10 +44,13 @@ export const DOOR = cues.door;
 export const WALLET = cues.wallet;
 export const STACK = cues.stack as number[];
 export const HORN = cues.horn;
-export const WRITE = cues.write as [number, number];
-export const SLIP = cues.slip;
-export const COPY = cues.copy as number[];
-export const LOOK = cues.look;
-export const TO_CAM = cues.toCam;
-export const SHRUG = cues.shrug;
-export const GLASSES = cues.glasses;
+export const COUNT = cues.count as [number, number];
+export const SIGN = cues.sign as [number, number];
+export const STAMP = cues.stamp;
+export const BOX_OPEN = cues.boxOpen;
+export const GASP = cues.gasp;
+export const HANDOVER = cues.handover;
+export const SWAP = cues.swap;
+export const DOORS = cues.doors;
+export const GLANCE = cues.glance as [number, number];
+export const BITE = cues.bite;

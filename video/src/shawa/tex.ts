@@ -238,3 +238,82 @@ export const drawFacade = (g: CanvasRenderingContext2D, W: number, H: number, co
     }
   }
 };
+
+// the exchange-office board: «1 ШАУРМА» and the rate counting up
+export const drawRate = (g: CanvasRenderingContext2D, W: number, H: number, value: number, up: boolean) => {
+  g.fillStyle = '#0c0f14';
+  g.fillRect(0, 0, W, H);
+  g.fillStyle = '#ffb02e';
+  g.font = `600 ${Math.round(H * 0.16)}px ${COND}`;
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText('КУРС', W / 2, H * 0.13);
+  g.fillStyle = '#f2ece0';
+  g.font = `600 ${Math.round(H * 0.17)}px ${COND}`;
+  g.fillText('1 ШАУРМА', W / 2, H * 0.36);
+  const txt = `${Math.round(value).toLocaleString('ru-RU').replace(/ /g, ' ')} ₽`;
+  g.fillStyle = '#ff4a4a';
+  let size = Math.round(H * 0.3);
+  g.font = `600 ${size}px ${COND}`;
+  while (g.measureText(txt + ' ▲').width > W * 0.92) {
+    size -= 2;
+    g.font = `600 ${size}px ${COND}`;
+  }
+  g.fillText(txt + (up ? ' ▲' : ''), W / 2, H * 0.72);
+};
+
+// the bank manager's screen and the contract
+export const drawMortgage = (g: CanvasRenderingContext2D, W: number, H: number) => {
+  g.fillStyle = '#eef3fa';
+  g.fillRect(0, 0, W, H);
+  g.fillStyle = '#1f5fbf';
+  g.fillRect(0, 0, W, H * 0.22);
+  g.fillStyle = '#ffffff';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.font = `600 ${Math.round(H * 0.14)}px ${COND}`;
+  g.fillText('ИПОТЕКА', W / 2, H * 0.11);
+  g.fillStyle = '#1a1a1a';
+  g.font = `600 ${Math.round(H * 0.2)}px ${COND}`;
+  g.fillText('1 ШАУРМА', W / 2, H * 0.44);
+  g.fillStyle = '#c21d1d';
+  g.font = `600 ${Math.round(H * 0.17)}px ${COND}`;
+  g.fillText('30 ЛЕТ', W / 2, H * 0.72);
+  g.fillStyle = '#5a6270';
+  g.font = `500 ${Math.round(H * 0.115)}px ${COND}`;
+  g.fillText('платёж до 2056 года', W / 2, H * 0.9);
+};
+
+export const drawContract = (g: CanvasRenderingContext2D, W: number, H: number, sign: number, stamp: boolean) => {
+  g.fillStyle = '#fbfaf6';
+  g.fillRect(0, 0, W, H);
+  g.fillStyle = '#1a1a1a';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.font = `600 ${Math.round(H * 0.08)}px ${COND}`;
+  g.fillText('ДОГОВОР', W / 2, H * 0.08);
+  g.fillStyle = '#9aa0a8';
+  for (let i = 0; i < 9; i++) g.fillRect(W * 0.1, H * (0.17 + i * 0.06), W * (0.8 - (i % 3) * 0.12), H * 0.015);
+  // the signature: a scribble drawn as far as sign goes
+  g.strokeStyle = '#1f3fa0';
+  g.lineWidth = H * 0.012;
+  g.beginPath();
+  const n = Math.floor(40 * Math.max(0, Math.min(1, sign)));
+  for (let i = 0; i <= n; i++) {
+    const x = W * (0.5 + 0.38 * (i / 40));
+    const y = H * (0.82 + 0.04 * Math.sin(i * 1.3) - 0.02 * Math.sin(i * 0.4));
+    if (i === 0) g.moveTo(x, y);
+    else g.lineTo(x, y);
+  }
+  g.stroke();
+  if (stamp) {
+    g.strokeStyle = 'rgba(40,70,200,0.85)';
+    g.lineWidth = H * 0.014;
+    g.beginPath();
+    g.arc(W * 0.27, H * 0.82, H * 0.09, 0, Math.PI * 2);
+    g.stroke();
+    g.fillStyle = 'rgba(40,70,200,0.85)';
+    g.font = `600 ${Math.round(H * 0.04)}px ${COND}`;
+    g.fillText('ОДОБРЕНО', W * 0.27, H * 0.82);
+  }
+};

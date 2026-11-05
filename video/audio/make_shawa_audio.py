@@ -1,6 +1,6 @@
 """Soundtrack and timing cues for «Что если шаурма подорожает в 5 раз?» (low poly, Russian VO, causal chain).
 
-Voice: ONE take, ElevenLabs Eleven v4, «VASKO - Deep, Warm and Pleasant» (flow 66nNylMXrJlbLMN2nwC7):
+Voice: ONE take for the story and ONE take for the ending (audio/voice/shawa-vo2.mp3, words shawa-words2.json), ElevenLabs Eleven v4, «VASKO - Deep, Warm and Pleasant» (flow 66nNylMXrJlbLMN2nwC7):
 audio/voice/shawa-vo.mp3, word times audio/voice/shawa-words.json (faster-whisper medium).
 All other sounds are synthesized here.
 
@@ -20,18 +20,20 @@ Sync map (story time of the on-screen event <-> sound):
   WALLET     the wallet opens                              <-> leather flap + jingle
   STACK      each shawarma lands on the pile               <-> soft thud
   HORN       the yacht horn                                <-> horn
-  REWIND     tape rewinds to day 1                         <-> rewind chirps, music cut
-  WRITE      the seller writes 250                         <-> marker squeaks
-  SLIP       the marker slips and leaves the «1»           <-> sharp squeak
-  COPY       the neighbours retag to 1250                  <-> squeak each
-  SHRUG / GLASSES                                          <-> cloth + click
+  COUNT      the exchange board counts up to 8 000 000     <-> fast clicks, hit at the end
+  SIGN/STAMP the couple signs, the manager stamps          <-> pen scratch, stamp thump
+  BOX_OPEN   the ring box opens on a shawarma              <-> creak + ting
+  HANDOVER   day 1: the guy gets his shawarma              <-> rustle
+  SWAP       day 30: shawarma for the keys                 <-> keys jingle
+  DOORS      the van doors shut                            <-> clank + thump, music cut
+  BITE       the guard bites                               <-> crunch
 """
 
 import json
 
 import numpy as np
 
-from slime_lib import ROOT, SR, Mix, brown, click, drone, fade_edges, filt, load, thump, ting, tt_, white
+from slime_lib import ROOT, SR, Mix, breath, brown, click, drone, fade_edges, filt, load, step, thump, ting, tt_, white
 
 OFF = 1 / 30
 
@@ -47,12 +49,15 @@ SHOTS = [
     ("wallet", 34.3),
     ("phone", 36.4),
     ("yacht", 39.4),
-    ("rewind", 42.4),
-    ("marker", 43.2),
-    ("copy", 48.6),
-    ("deck", 52.0),
+    ("rate", 42.4),
+    ("bank", 47.9),
+    ("propose", 51.8),
+    ("flash", 55.0),
+    ("keys", 59.5),
+    ("van", 63.0),
+    ("inside", 66.3),
 ]
-DUR = 58.6
+DUR = 69.8
 
 ONE = (1.95, 2.35)
 JAW = 3.38
@@ -70,13 +75,16 @@ DOOR = 33.6
 WALLET = 34.55
 STACK = [36.9, 37.15, 37.4, 37.65, 37.9, 38.15, 38.4, 38.65]
 HORN = 39.75
-WRITE = (43.7, 45.7)
-SLIP = 47.0
-COPY = [49.6, 50.5, 51.3]
-LOOK = 53.6
-TO_CAM = 54.6
-SHRUG = 55.5
-GLASSES = 56.6
+COUNT = (42.5, 44.35)  # the board counts up to 8 000 000
+SIGN = (48.9, 49.9)  # the pen runs over the contract
+STAMP = 50.55
+BOX_OPEN = 52.55
+GASP = 53.2
+HANDOVER = 57.6  # day 1: the seller hands him the shawarma
+SWAP = 61.5  # day 30: shawarma to the realtor, keys to him
+DOORS = 65.75  # the van doors shut
+GLANCE = (66.6, 67.4)
+BITE = 67.75
 
 # ---------------------------------------------------------------- the voice
 VO = load(ROOT / "audio/voice/shawa-vo.mp3")
@@ -85,7 +93,16 @@ WH = json.loads((ROOT / "audio/voice/shawa-words.json").read_text())["vo"]
 for w in WH:
     if w[2] == "Во":
         w[0] = 28.45
-# take (start, end), where it goes on the timeline, the caption text
+VO2 = load(ROOT / "audio/voice/shawa-vo2.mp3")
+WH2 = json.loads((ROOT / "audio/voice/shawa-words2.json").read_text())["vo"]
+# whisper: dashes as words and «всё -таки» in two
+WH2 = [w for w in WH2 if w[2] not in ("–", "—", "-")]
+for k in range(len(WH2) - 1, 0, -1):
+    if WH2[k][2].startswith("-"):
+        WH2[k - 1] = [WH2[k - 1][0], WH2[k][1], WH2[k - 1][2] + WH2[k][2]]
+        del WH2[k]
+TAKES = {1: (VO, WH), 2: (VO2, WH2)}
+# take (start, end), where it goes on the timeline, the caption text[, take]
 PIECES = [
     (0.00, 3.80, 0.30, "Сегодня вся шаурма в стране подорожала в пять раз."),
     (4.44, 7.44, 4.70, "Студенты скидываются вчетвером на одну шаурму."),
@@ -100,16 +117,21 @@ PIECES = [
     (33.62, 35.42, 34.50, "Шаурма становится валютой."),
     (35.62, 38.26, 36.50, "Телефон теперь стоит 80 шаурм."),
     (38.70, 40.88, 39.60, "Шаурмисты покупают яхты."),
-    (42.22, 47.18, 43.40, "А всё началось с того, что у одного шаурмиста соскользнул маркер."),
-    (47.70, 50.50, 48.80, "Остальные просто подняли цены вслед за ним."),
-    (51.74, 54.32, 52.40, "Через месяц он заметил ошибку."),
-    (54.96, 56.80, 55.40, "Но исправлять не стал."),
+    (0.00, 2.76, 42.60, "Курс шаурмы — уже 8 миллионов.", 2),
+    (3.20, 4.96, 45.80, "Её покупают как вложение.", 2),
+    (5.62, 8.94, 48.10, "Банки выдают шаурму в ипотеку — на 30 лет.", 2),
+    (9.58, 11.90, 51.95, "Предложение теперь делают не с кольцом.", 2),
+    (13.46, 17.32, 55.40, "А парень из очереди в первый день всё-таки купил одну шаурму.", 2),
+    (17.90, 20.50, 59.70, "Через месяц он обменял её на квартиру.", 2),
+    (21.40, 23.70, 63.40, "Шаурму в банк везли инкассаторы.", 2),
+    (24.54, 25.78, 66.65, "Довезли не всю.", 2),
 ]
+PIECES = [p if len(p) == 5 else (*p, 1) for p in PIECES]
 GROUPS = [[k] for k in range(len(PIECES))]
 
 
 
-def edge(t, d, thr=0.004, quiet=0.06):
+def edge(t, d, VO, thr=0.004, quiet=0.06):
     """From t, step in direction d (−1 back, +1 forward) until there is `quiet` seconds of silence; keep 30 ms of it."""
     w = int(0.01 * SR)
     k = 0
@@ -130,14 +152,15 @@ mix = Mix(DUR + OFF + 0.6)
 O = OFF
 voice = np.zeros(mix.n)
 words = []  # [start, end, token, piece]
-for k, (a, b, at, text) in enumerate(PIECES):
+for k, (a, b, at, text, take) in enumerate(PIECES):
+    VOx, WHx = TAKES[take]
     # whisper puts word starts a little late: walk back to real silence so no word loses its start
-    a0, b0 = edge(a, -1), edge(b, 1)
-    seg = fade_edges(VO[int(a0 * SR): int(b0 * SR)], 10)
+    a0, b0 = edge(a, -1, VOx), edge(b, 1, VOx)
+    seg = fade_edges(VOx[int(a0 * SR): int(b0 * SR)], 10)
     i = int((O + at - (a - a0)) * SR)
     voice[i: i + len(seg)] += seg[: mix.n - i]
     toks = [t for t in text.split(" ") if t != "—"]
-    ws = [w for w in WH if a - 0.1 <= w[0] < b - 0.15]
+    ws = [w for w in WHx if a - 0.1 <= w[0] < b - 0.15]
     starts = [max(at, at + w[0] - a) for w in ws]
     if len(starts) != len(toks):
         print("token mismatch in piece", k, [w[2] for w in ws], toks)
@@ -374,28 +397,52 @@ mix.add(horn(1.5), O + HORN, 0.5)
 mix.add(gull(0.45, 1500), O + 40.9, 0.15, pan=-0.5)
 mix.add(gull(0.35, 1700), O + 41.4, 0.12, pan=0.4)
 
-# rewind
-mix.add(rewind(0.8), O + 42.4, 0.35)
+# the exchange board counts up: fast clicks, then a hit on 8 000 000
+n_cl = 26
+for k in range(n_cl):
+    at = COUNT[0] + (COUNT[1] - COUNT[0]) * (k / n_cl) ** 0.7
+    mix.add(click(0.03, 1800 + 40 * k), O + at, 0.12, pan=0.2)
+mix.add(thump(60, 32, 1.2, decay=3, click=0.5), O + COUNT[1], 0.4)
+mix.add(ting(1760, 0.8), O + COUNT[1], 0.12)
+mix.add(murmur(5.4), O + 42.4, 0.1)
 
-# flashback: the seller writes, the marker slips
-for k in range(3):
-    a = WRITE[0] + k * (WRITE[1] - WRITE[0]) / 3
-    mix.add(squeak(0.45, 2300 - 100 * k, 1800), O + a, 0.16, pan=0.1)
-mix.add(squeak(0.18, 3000, 2000, rough=0.3), O + SLIP, 0.35, pan=0.1)
-mix.add(murmur(9.0), O + 43.2, 0.06)
-for k, at in enumerate(COPY):
-    mix.add(squeak(0.3, 2500 + 150 * k, 1900), O + at, 0.18, pan=-0.4 + 0.4 * k)
+# the bank: office hum, pen, stamp
+mix.add(filt(brown(int(3.9 * SR)), "lowpass", 250) * 0.5, O + 47.9, 0.12)
+mix.add(squeak(SIGN[1] - SIGN[0], 1500, 1300, rough=0.9), O + SIGN[0], 0.08)
+mix.add(thump(140, 70, 0.4, decay=14, click=1.0), O + STAMP, 0.45)
 
-# the deck: waves, gulls, then quiet
-mix.add(waves(DUR - 52.0 + 0.5), O + 52.0, 0.22)
-for k, (at, f, p) in enumerate([(52.6, 1500, -0.5), (53.0, 1650, -0.4), (54.9, 1450, 0.5), (56.9, 1600, 0.3), (57.3, 1750, 0.35), (58.0, 1500, -0.3)]):
-    mix.add(gull(0.4 + 0.1 * (k % 2), f), O + at, 0.13, pan=p)
-mix.add(cloth(0.3), O + SHRUG, 0.25)
-mix.add(click(0.04, 2200), O + GLASSES + 0.25, 0.25)
+# the proposal: box creak, then a gasp-like breath
+mix.add(creak(0.4), O + BOX_OPEN - 0.1, 0.18)
+mix.add(ting(2093, 1.2), O + BOX_OPEN + 0.05, 0.08)
+mix.add(breath(0.6, inhale=True), O + GASP, 0.25)
 
-# ---------------------------------------------------------------- music: light bouncy bed, faster towards the yachts, cut at the rewind
+# day 1 flashback at the kiosk: street murmur, paper rustle
+mix.add(murmur(4.5), O + 55.0, 0.12)
+mix.add(cloth(0.3), O + HANDOVER, 0.25)
+
+# day 30 flat: echoey empty room, keys jingle
+mix.add(cloth(0.3), O + SWAP - 0.2, 0.2)
+mix.add(jingle(), O + SWAP, 0.3)
+
+# the van: engine idle, steps, doors slam
+tt = tt_(3.4)
+idle = filt(np.sign(np.sin(2 * np.pi * 32 * tt)) * 0.4 + brown(len(tt)) * 0.6, "lowpass", 220) * np.clip(tt / 0.3, 0, 1)
+mix.add(idle, O + 63.0, 0.25)
+for k in range(4):
+    mix.add(step(), O + 63.4 + k * 0.42, 0.18, pan=-0.2 + 0.1 * k)
+mix.add(clank(0.8, 260), O + DOORS, 0.5)
+mix.add(thump(70, 35, 0.9, decay=5, click=0.8), O + DOORS, 0.45)
+
+# inside: muffled engine, quiet, the bite
+tt = tt_(DUR - 66.3 + 0.5)
+mix.add(filt(np.sign(np.sin(2 * np.pi * 30 * tt)) * 0.3 + brown(len(tt)) * 0.7, "lowpass", 140), O + 66.3, 0.22)
+mix.add(cloth(0.25), O + GLANCE[0], 0.12, pan=-0.3)
+mix.add(cloth(0.25), O + GLANCE[1] - 0.25, 0.12, pan=0.3)
+mix.add(crunch(0.3), O + BITE, 0.4)
+
+# ---------------------------------------------------------------- music: light bouncy bed, faster towards the end, cut when the van doors shut
 t = mix.t - O
-bpm = np.interp(t, [0, 16, 39.4, 42.4], [104, 112, 128, 132])
+bpm = np.interp(t, [0, 16, 39.4, 66.0], [104, 112, 124, 136])
 beat = np.cumsum(bpm / 60 / SR)  # beats
 bass_notes = [55.0, 55.0, 65.4, 49.0]  # A1 A1 C2 G1
 bar = (beat // 4).astype(int) % 4
@@ -410,9 +457,9 @@ pl_f = pl_notes[eighth]
 ph8 = (beat * 2) % 1
 pluck = np.sin(2 * np.pi * np.cumsum(pl_f) / SR) * np.exp(-ph8 * 9) * 0.25
 bed = (bass * 0.5 + hat + pluck * np.interp(t, [0, 8, 16], [0.4, 0.7, 1.0]))
-level = np.interp(t, [0, 0.4, 16, 39.4, 42.35, 42.4], [0.0, 0.6, 0.75, 1.0, 1.0, 0.0])
+level = np.interp(t, [0, 0.4, 16, 39.4, DOORS - 0.05, DOORS], [0.0, 0.6, 0.75, 1.0, 1.0, 0.0])
 duck = np.ones(mix.n)
-for a, b, at, _ in PIECES:
+for a, b, at, _, _t in PIECES:
     duck -= 0.5 * mix.env(O + at - 0.1, O + at + (b - a) + 0.15, 0.12, 0.3)
 duck = np.clip(duck, 0.4, 1)
 bed = filt(bed, "lowpass", 5000) * level * duck * 0.22
@@ -427,11 +474,11 @@ cues = {
     "shots": [[n, s] for n, s in SHOTS],
     "words": words,
     "groups": GROUPS,
-    "pieces": [[at, at + (b - a)] for a, b, at, _ in PIECES],
+    "pieces": [[at, at + (b - a)] for a, b, at, _, _t in PIECES],
     "one": list(ONE), "jaw": JAW, "bites": BITES, "flips": FLIPS, "cart": CART, "tug": list(TUG), "rip": RIP,
     "tags": TAGS, "knocks": KNOCKS, "hatch": HATCH, "bubble1": BUBBLE1, "bubble2": BUBBLE2, "door": DOOR,
-    "wallet": WALLET, "stack": STACK, "horn": HORN, "write": list(WRITE), "slip": SLIP, "copy": COPY,
-    "look": LOOK, "toCam": TO_CAM, "shrug": SHRUG, "glasses": GLASSES,
+    "wallet": WALLET, "stack": STACK, "horn": HORN, "count": list(COUNT), "sign": list(SIGN), "stamp": STAMP,
+    "boxOpen": BOX_OPEN, "gasp": GASP, "handover": HANDOVER, "swap": SWAP, "doors": DOORS, "glance": list(GLANCE), "bite": BITE,
 }
 (ROOT / "src/shawa").mkdir(exist_ok=True)
 (ROOT / "src/shawa/cues.json").write_text(json.dumps(cues, ensure_ascii=False))
