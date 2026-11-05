@@ -107,13 +107,34 @@ PIECES = [
 ]
 GROUPS = [[k] for k in range(len(PIECES))]
 
+
+
+def edge(t, d, thr=0.004, quiet=0.06):
+    """From t, step in direction d (−1 back, +1 forward) until there is `quiet` seconds of silence; keep 30 ms of it."""
+    w = int(0.01 * SR)
+    k = 0
+    run = 0
+    while k < 60:  # never more than 0.6 s
+        c = t + d * k * 0.01
+        x = VO[max(0, int(c * SR) - (w if d < 0 else 0)): max(0, int(c * SR) + (0 if d < 0 else w))]
+        if len(x) == 0:
+            return max(0.0, c)
+        run = run + 1 if np.sqrt((x ** 2).mean()) < thr else 0
+        if run * 0.01 >= quiet:
+            return max(0.0, c - d * (quiet - 0.03))
+        k += 1
+    return max(0.0, t + d * 0.6)
+
+
 mix = Mix(DUR + OFF + 0.6)
 O = OFF
 voice = np.zeros(mix.n)
 words = []  # [start, end, token, piece]
 for k, (a, b, at, text) in enumerate(PIECES):
-    seg = fade_edges(VO[int((a - 0.04) * SR): int((b + 0.12) * SR)], 10)
-    i = int((O + at - 0.04) * SR)
+    # whisper puts word starts a little late: walk back to real silence so no word loses its start
+    a0, b0 = edge(a, -1), edge(b, 1)
+    seg = fade_edges(VO[int(a0 * SR): int(b0 * SR)], 10)
+    i = int((O + at - (a - a0)) * SR)
     voice[i: i + len(seg)] += seg[: mix.n - i]
     toks = [t for t in text.split(" ") if t != "—"]
     ws = [w for w in WH if a - 0.1 <= w[0] < b - 0.15]
