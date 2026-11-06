@@ -45,6 +45,9 @@ import {ShawaChain} from './ShawaChain';
 import {DvizhChain} from './DvizhChain';
 import {DvizhCover} from './DvizhCover';
 import {DURATION_S as DVIZH_S} from './dvizh/cues';
+import {SunOut} from './SunOut';
+import {SunCover} from './SunCover';
+import {DURATION_S as SUN_S} from './sun/cues';
 import {ShawaCover} from './ShawaCover';
 import {DURATION_S as SHAWA_S} from './shawa/cues';
 import {DURATION_S as GTA2_S} from './gta2/cues';
@@ -123,6 +126,16 @@ export const RemotionRoot = () => (
     <Composition id="GtaCover" component={GtaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="ShawaCover" component={ShawaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="DvizhCover" component={DvizhCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition id="SunCover" component={SunCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="SunOut"
+      component={SunOut}
+      durationInFrames={Math.round(SUN_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
     <Composition
       id="DvizhChain"
       component={DvizhChain}
