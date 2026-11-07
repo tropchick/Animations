@@ -7,7 +7,7 @@ import {COND, YELLOW} from './gta/Overlay';
 export const AiCover: React.FC = () => (
   <AbsoluteFill style={{backgroundColor: '#000'}}>
     <Quad v={0} pv={4} zoom={0} appear={5} big />
-    <div style={{position: 'absolute', left: 30, right: 30, top: 790, textAlign: 'center'}}>
+    <div style={{position: 'absolute', left: 30, right: 30, top: 845, textAlign: 'center'}}>
       <div
         style={{
           display: 'inline-block',

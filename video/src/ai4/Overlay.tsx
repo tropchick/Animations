@@ -55,7 +55,7 @@ const HookTag: React.FC<{v: number}> = ({v}) => {
   const pop = Math.exp(-t * 7);
   const red = i === 3;
   return (
-    <div style={{position: 'absolute', left: 0, right: 0, top: 520, textAlign: 'center'}}>
+    <div style={{position: 'absolute', left: 0, right: 0, top: 458, textAlign: 'center'}}>
       <div
         style={{
           display: 'inline-block',

@@ -17,8 +17,9 @@ export const Canvas: React.FC<{w: number; h: number; children: React.ReactNode}>
   </ThreeCanvas>
 );
 
+// in the big layouts (cover, end) the bottom row's labels sit at the bottom, clear of the question in the middle
 const Label: React.FC<{n: number; big?: boolean}> = ({n, big = false}) => (
-  <div style={{position: 'absolute', left: 0, right: 0, top: big ? 30 : 24, textAlign: 'center'}}>
+  <div style={{position: 'absolute', left: 0, right: 0, ...(big && n >= 3 ? {bottom: 34} : {top: big ? 30 : 24}), textAlign: 'center'}}>
     <div
       style={{
         display: 'inline-flex',

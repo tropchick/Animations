@@ -12,7 +12,7 @@ import {Phone} from '../lastman/people';
 // Worlds 1, 2 and 4: the room is on the 5th floor (FY = 12). World 3: on the ground, the front wall is glass (a zoo enclosure).
 export const FY = 12;
 export const flatY = (w: number) => (w === 3 ? 0 : FY);
-export const WIN = {x0: -0.4, x1: 1.4, y0: 0.9, y1: 2.3, z: 4.4};
+export const WIN = {x0: -0.9, x1: 1.7, y0: 0.5, y1: 2.55, z: 4.4};
 export const CLOCK: V3 = [-0.42, 0.62, 0.36];
 export const BED = {x: -1.5, hipY: 0.66, hipZ: 1.45};
 export const FRIDGE: V3 = [1.95, 0, 0.42];
@@ -132,7 +132,7 @@ export const Room: React.FC<{w: number; v: number; alarm?: boolean; locked?: boo
         <Box size={[0.73, 0.012, 0.012]} position={[0, 1.25, 0.335]} color="#9aa2ac" shadow={false} />
         <Box size={[0.04, 0.4, 0.05]} position={[-0.3, 1.5, 0.36]} color="#9aa2ac" />
         <Box size={[0.04, 0.3, 0.05]} position={[-0.3, 0.95, 0.36]} color="#9aa2ac" />
-        <Pic size={[0.44, 0.22]} map={fridgeTex(locked)} position={[0.1, 1.5, 0.336]} />
+        <Pic size={[0.5, 0.25]} map={fridgeTex(locked)} position={[0.12, 1.52, 0.336]} />
       </group>
       <Box size={[1.0, 0.9, 0.6]} position={[1.0, 0.45, 0.32]} color={w === 1 ? '#ffffff' : w === 4 ? '#2a1c18' : '#c8a070'} />
       <Box size={[1.04, 0.04, 0.64]} position={[1.0, 0.92, 0.32]} color={w === 4 ? '#4a3a32' : '#e8e4dc'} />
@@ -296,11 +296,12 @@ export const Zoo: React.FC<{v: number; kidWave?: number; tap?: number}> = ({v, k
     {/* the enclosure building around the room */}
     <Box size={[5.8, 0.4, 5.4]} position={[0, 3.0, 2.3]} color="#c8b89a" />
     <Box size={[0.3, 3.2, 5.4]} position={[-2.85, 1.6, 2.3]} color="#c8b89a" />
-    {/* the sign */}
-    <group position={[-2.0, 0, 5.6]}>
-      <Box size={[0.08, 1.1, 0.08]} position={[0, 0.55, 0]} color="#5a4a3a" />
-      <Box size={[1.2, 0.8, 0.06]} position={[0, 1.4, 0]} rotation={[-0.15, 0.25, 0]} color="#5a4a3a" />
-      <Pic size={[1.12, 0.75]} map={signTex()} position={[0.008, 1.405, 0.033]} rotation={[-0.15, 0.25, 0]} lit />
+    {/* the sign: hangs on the glass, top left, like at any zoo */}
+    <group position={[-1.2, 2.2, 4.66]}>
+      <Box size={[0.02, 0.36, 0.02]} position={[-0.45, 0.55, -0.06]} color="#5a4a3a" />
+      <Box size={[0.02, 0.36, 0.02]} position={[0.45, 0.55, -0.06]} color="#5a4a3a" />
+      <Box size={[1.2, 0.8, 0.04]} color="#5a4a3a" />
+      <Pic size={[1.12, 0.75]} map={signTex()} position={[0, 0, 0.022]} lit />
     </group>
     {/* the panda enclosure to the right, behind a low fence */}
     <group position={[8.5, 0, 2.5]}>

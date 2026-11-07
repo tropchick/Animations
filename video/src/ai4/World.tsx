@@ -28,9 +28,9 @@ const wakeView = (v: number, alarm: number, slap: number, end: View): View => {
 };
 
 // the window shot: behind Dima, looking out
-const DIMA_WIN: V3 = [0.75, 0, 3.85];
+const DIMA_WIN: V3 = [0.75, 0, 3.8];
 // over Dima's left shoulder, through the window
-const windowView = (k: number, far: V3): View => mv(k, [0.52, 1.96, 2.62], [0.58, 1.92, 2.95], add3(far, [-3, -1, 0]), far, 54);
+const windowView = (k: number, far: V3): View => mv(k, [0.3, 1.5, 0.95], [0.3, 1.52, 1.2], add3(far, [-3, -1, 0]), far, 56);
 
 // hook cuts: each shows the strongest moment of one world
 export const HOOK = {
@@ -57,17 +57,17 @@ export const viewOf = (s: ShotState, v: number): View => {
         return mv(hk, [0.2, 1.7, 3.2], [0.35, 1.68, 3.9], add3(top, [0, -14, 0]), add3(top, [0, -6, 0]), [16, 12]);
       }
       if (i === 1) return mv(hk, add3(PIGEON_AT, [0.55, 0.32, 1.05]), add3(PIGEON_AT, [0.22, 0.26, 0.62]), add3(PIGEON_AT, [0.04, 0.24, 0.06]), add3(PIGEON_AT, [0.06, 0.25, 0.06]), 38);
-      if (i === 2) return mv(hk, [-0.25, 1.1, 7.0], [-0.35, 1.05, 6.4], [-0.3, 1.15, 4.0], [-0.35, 1.2, 4.0], 50);
+      if (i === 2) return mv(hk, [-0.3, 0.68, 7.2], [-0.38, 0.72, 6.75], [-0.38, 1.28, 3.8], [-0.4, 1.3, 3.8], 50);
       return mv(hk, [0.85, 0.36, 2.95], [0.65, 0.28, 2.5], [0.1, 0.06, 1.3], [0.1, 0.07, 1.3], 44);
     }
     case 'w1wake':
       return wakeView(v, EV.alarm[0], EV.slap[0], mv(k, [0.5, 1.6, 3.4], [0.2, 1.55, 3.2], [-1.3, 1.25, 1.3], [-1.35, 1.3, 1.4], 50));
     case 'w1window':
-      return windowView(k, [-4, 6, 300]);
+      return windowView(k, [0.3, 8, 300]);
     case 'w1bunker':
       return mv(k, [1.25, 2.75, 3.1], [0.95, 2.5, 2.3], [0.1, 1.5, -3.6], [0.0, 1.6, -3.6], 60);
     case 'w1screen':
-      return mv(k, [0.25, 1.85, 1.0], [0.05, 1.8, 0.45], add3(SCREEN, [0.05, 0.02, 0]), add3(SCREEN, [0, 0, 0]), 46);
+      return mv(k, [0.25, 1.85, 1.0], [0.05, 1.8, 0.55], add3(SCREEN, [0.05, -0.11, 0]), add3(SCREEN, [0, -0.14, 0]), 46);
     case 'w2wake':
       return wakeView(v, EV.alarm[1], EV.slap[1], mv(k, [0.5, 1.6, 3.4], [0.4, 1.55, 3.3], [-1.3, 1.1, 1.3], [-1.35, 1.2, 1.4], 50));
     case 'w2bus': {
@@ -88,29 +88,34 @@ export const viewOf = (s: ShotState, v: number): View => {
       const out = mv(ramp(v, EV.pull[0], EV.pull[1] + 0.4), [0.55, 1.55, 3.3], [0.3, 1.8, 10.2], [-1.3, 1.1, 1.3], [-0.2, 1.3, 2.6], [50, 46]);
       return blend(base, out, ramp(v, EV.pull[0], EV.pull[0] + 0.01));
     }
-    case 'w3sign':
-      return mv(k, [5.8, 1.6, 9.6], [2.6, 1.6, 9.8], [8.9, 0.7, 2.5], [-1.0, 1.3, 4.5], 48);
+    case 'w3sign': {
+      // the sign and the knock on the glass, then a whip pan to the panda next door on «панд»
+      const human = mv(ramp(v, s.from, EV.tap + 0.4), [-0.3, 1.45, 8.9], [-0.4, 1.42, 8.4], [-0.7, 1.62, 4.4], [-0.72, 1.6, 4.4], 48);
+      const panda = mv(ramp(v, EV.tap + 0.6, s.to), [5.4, 1.3, 7.9], [5.8, 1.25, 7.5], [8.7, 0.6, 2.6], [8.8, 0.55, 2.6], 44);
+      return blend(human, panda, smooth(ramp(v, EV.tap + 0.35, EV.tap + 0.85)));
+    }
     case 'w3feed':
       return mv(k, [0.0, 1.55, 1.7], [0.6, 1.4, 2.2], [2.4, 0.95, 3.6], [2.2, 0.85, 3.6], 54);
     case 'w3fence':
       return mv(k, add3(YARD, [2.4, 1.4, 7.2]), add3(YARD, [1.8, 1.6, 6.6]), add3(YARD, [0, 1.8, 2.6]), add3(YARD, [0, 1.9, 2.2]), 50);
     case 'w3wave':
-      return mv(k, [1.6, 0.95, 8.2], [1.3, 1.0, 7.6], [-0.4, 1.15, 4.5], [-0.45, 1.2, 4.4], 52);
+      return mv(k, [-1.0, 0.95, 7.8], [-0.9, 0.98, 7.35], [-0.4, 1.15, 4.4], [-0.42, 1.18, 4.4], 52);
     case 'w4wake': {
-      const clock = mv(ramp(v, s.from, EV.wake4), [-0.82, 0.8, 1.02], [-0.78, 0.78, 0.98], [-0.42, 0.66, 0.36], [-0.42, 0.65, 0.37], 46, 0.04);
-      const wide = {pos: [0.5, 1.55, 3.3] as V3, target: [-1.35, 1.1, 1.35] as V3, fov: 50};
+      const clock = mv(ramp(v, s.from, EV.wake4 + 0.25), [-0.82, 0.8, 1.02], [-0.76, 0.77, 0.95], [-0.42, 0.66, 0.36], [-0.42, 0.65, 0.37], 46, 0.04);
+      if (v < EV.wake4 + 0.25) return clock;
+      const wide = mv(ramp(v, EV.wake4 + 0.25, EV.nosig), [0.5, 1.55, 3.3], [0.35, 1.55, 3.1], [-1.35, 1.1, 1.35], [-1.38, 1.15, 1.4], 50);
       const phone = {pos: [-1.05, 1.56, 1.25] as V3, target: [-1.42, 1.3, 1.92] as V3, fov: 36};
-      return blend(blend(clock, wide, smooth(ramp(v, EV.wake4 - 0.2, EV.wake4 + 0.8))), phone, smooth(ramp(v, EV.nosig - 1.2, EV.nosig - 0.1)));
+      return blend(wide, phone, smooth(ramp(v, EV.nosig - 0.95, EV.nosig - 0.05)));
     }
     case 'w4window':
-      return windowView(k, [3, 3, 40]);
+      return windowView(k, [0.3, 2, 40]);
     case 'w4fridge':
       {
         const pan = smooth(ramp(v, EV.lock - 0.35, EV.lock + 0.35));
-        return blend(mv(k, [0.3, 1.6, 3.5], [0.4, 1.55, 3.3], [2.0, 1.35, 0.8], [2.05, 1.35, 0.8], 50), {pos: [0.4, 1.55, 3.3], target: [2.45, 1.15, 2.3], fov: 50}, pan);
+        return blend(mv(k, [0.7, 1.62, 3.55], [0.78, 1.6, 3.35], [1.72, 1.4, 0.8], [1.75, 1.4, 0.8], 50), {pos: [1.35, 1.42, 3.05], target: [2.48, 1.18, 2.25], fov: 50}, pan);
       }
     case 'w4vacuum':
-      return mv(k, [-0.05, 0.28, 3.85], [-0.1, 0.24, 3.7], [0.25, 0.1, 1.6], [0.05, 0.1, 1.95], 60);
+      return mv(k, [-0.05, 0.26, 3.9], [-0.1, 0.22, 3.78], [0.3, 0.1, 1.5], [0.05, 0.08, 2.2], 60);
   }
   return {pos: [0, 1.6, 3], target: [0, 1, 0], fov: 50};
 };
@@ -298,7 +303,7 @@ export const SetFor: React.FC<{name: Shot; v: number}> = ({name, v}) => {
         <>
           <Room w={4} v={v} locked={v >= EV.lock} />
           <Dark v={v} y={FY} />
-          <Dima position={[FRIDGE[0] - 0.8, 0, FRIDGE[2] + 0.93]} rotation={Math.PI - 0.7 - 0.6 * turn} pose={{armL: [1.25 - 0.3 * tug, 0.05], elbowL: 0.25, head: [0, 0.5 * turn]}} />
+          <Dima position={[FRIDGE[0] - 0.85, 0, FRIDGE[2] + 0.98]} rotation={Math.PI - 0.7 - 0.6 * turn} pose={{armR: [1.3 - 0.3 * tug, -0.05], elbowR: 0.2, head: [0, 0.5 * turn], eyes: 1 + 0.3 * turn}} />
         </>
       );
     }
@@ -311,8 +316,8 @@ export const SetFor: React.FC<{name: Shot; v: number}> = ({name, v}) => {
         <>
           <Room w={4} v={v} locked />
           <Dark v={v} y={FY} />
-          <Vacuum position={[lerp(0.6, -0.05, go), 0, lerp(0.7, 2.25, go)]} rotation={lerp(0.6, -0.36, turnK) - 0.1 * Math.sin(v * 3) * (1 - go)} eye={eye} />
-          <Dima position={[-0.38, 0, lerp(3.05, 3.3, step)]} rotation={Math.PI + 0.3} pose={{legL: -0.35 * hop(v, EV.turn[1] - 0.2, 0.5), head: [0.5, 0], eyes: 1.4}} />
+          <Vacuum position={[lerp(0.7, 0.0, go), 0, lerp(0.9, 2.7, go)]} rotation={lerp(0.6, -0.36, turnK) - 0.1 * Math.sin(v * 3) * (1 - go)} eye={eye} />
+          <Dima position={[-0.36, 0, lerp(3.12, 3.32, step)]} rotation={Math.PI + 0.3} pose={{legL: -0.35 * hop(v, EV.turn[1] - 0.2, 0.5), head: [0.5, 0], eyes: 1.4}} />
         </>
       );
     }
@@ -323,10 +328,10 @@ export const SetFor: React.FC<{name: Shot; v: number}> = ({name, v}) => {
 // ---------------------------------------------------------------- the four windows (intro and end) and the hook cuts
 
 export const PANEL_VIEW: Record<number, (v: number) => View> = {
-  1: (v) => windowView(clamp01(v / 12), [-4, 6, 300]),
-  2: (v) => windowView(clamp01(v / 12), [4, -2, 120]),
+  1: (v) => windowView(clamp01(v / 12), [0.3, 8, 300]),
+  2: (v) => windowView(clamp01(v / 12), [0.3, 0, 120]),
   3: (v) => mv(clamp01(v / 12), [2.2, 1.3, 8.2], [1.9, 1.35, 7.6], [-0.2, 1.2, 4.4], [-0.25, 1.25, 4.3], 50),
-  4: (v) => windowView(clamp01(v / 12), [3, 3, 40]),
+  4: (v) => windowView(clamp01(v / 12), [0.3, 2, 40]),
 };
 
 export const PanelSet: React.FC<{w: number; v: number}> = ({w, v}) => {
@@ -396,7 +401,7 @@ export const World: React.FC<{v: number}> = ({v}) => {
 // push 0..1 flies the camera towards the window (the zoom into world 4)
 export const Panel: React.FC<{w: number; v: number; push?: number}> = ({w, v, push = 0}) => (
   <>
-    <CameraRig view={push > 0 ? blend(PANEL_VIEW[w](v), {pos: [0.45, 1.66, 3.75], target: [4, 7, 40], fov: 50}, smooth(push)) : PANEL_VIEW[w](v)} />
+    <CameraRig view={push > 0 ? blend(PANEL_VIEW[w](v), {pos: [1.3, 1.85, 4.15], target: [3, 4, 40], fov: 50}, smooth(push)) : PANEL_VIEW[w](v)} />
     <PanelSet w={w} v={v} />
   </>
 );
