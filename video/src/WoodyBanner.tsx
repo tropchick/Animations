@@ -135,8 +135,30 @@ export const WoodyBanner: React.FC<{withAudio?: boolean}> = ({withAudio = true})
   // shield glow (behind the cowboy, clipped to the panel)
   const flash = Math.exp(-Math.max(0, t - CUE.vpn) * 3.5) * (t >= CUE.vpn ? 1 : 0);
   const glowA = clamp(t / 0.6) * (0.35 + 0.12 * Math.sin(t * 2 * Math.PI * 1.3) + 0.55 * flash);
-  const shieldX = COW.left + cX + 428 - P.x;
-  const shieldY = cowTop + cY + 200 - P.y;
+  // puppet parts (coordinates in the cut-out picture, 676×1124, drawn at 0.8)
+  const K = 0.8;
+  const HEAD_PIV = [285, 430];
+  const ARM_PIV = [462, 555];
+  // head: idle sway, a nod on every stressed word, tilt towards the text at the end
+  const nods = [CUE.woody, CUE.n99, CUE.month, CUE.shawa, CUE.link];
+  const nod = nods.reduce((acc, c) => acc + bump(t - c, 0.28), 0);
+  const headRot = Math.sin(t * 2 * Math.PI * 0.55 + 1) * 1.4 + 2.6 * nod + 4 * easeOut((t - CUE.link - 0.1) / 0.35);
+  const headY = 5 * nod;
+  // arm with the shield: raises the shield on «ВПН», shakes it on «99», small sway otherwise
+  const armRaise = 8 * back((t - CUE.vpn + 0.05) / 0.35, 2) * (1 - easeOut((t - CUE.vpn - 0.7) / 0.5));
+  const armShake = 5 * wob(t - CUE.n99 - 0.1, 5, 4.5) + 4 * wob(t - CUE.cheaper - 0.1, 4, 5);
+  const armRot = Math.sin(t * 2 * Math.PI * 0.5) * 1.5 + armRaise + armShake;
+  // blinks (k = how closed, 0..1) and a wink with the eye next to the text at the end
+  const blinkAt = (c: number, len = 0.16) => bump(t - c, len);
+  const blink = Math.max(blinkAt(1.2), blinkAt(3.0), blinkAt(4.9));
+  const wink = clamp(Math.max(blink, (t - CUE.link - 0.35) / 0.08) * (t < CUE.link + 0.35 ? 0 : 1)) * (1 - clamp((t - CUE.link - 0.85) / 0.1));
+  const winkR = Math.max(blink, wink);
+  const ra = (armRot * Math.PI) / 180;
+  const sc = [535 - ARM_PIV[0], 250 - ARM_PIV[1]];
+  const shieldPx = ARM_PIV[0] + sc[0] * Math.cos(ra) - sc[1] * Math.sin(ra);
+  const shieldPy = ARM_PIV[1] + sc[0] * Math.sin(ra) + sc[1] * Math.cos(ra);
+  const shieldX = COW.left + cX + shieldPx * K - P.x;
+  const shieldY = cowTop + cY + shieldPy * K - P.y;
 
   // logo letters
   const logo = 'WOODY VPN'.split('');
@@ -395,13 +417,54 @@ export const WoodyBanner: React.FC<{withAudio?: boolean}> = ({withAudio = true})
             transform: `rotate(${cRot}deg) scale(${2 - squash}, ${squash})`,
           }}
         >
-          <Img src={staticFile('woody/cowboy.png')} style={{width: COW.w, height: COW.h}} />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              transformOrigin: `${HEAD_PIV[0] * K}px ${HEAD_PIV[1] * K}px`,
+              transform: `translateY(${headY}px) rotate(${headRot}deg)`,
+            }}
+          >
+            <Img src={staticFile('woody/head.png')} style={{position: 'absolute', width: COW.w, height: COW.h}} />
+            <svg width={COW.w} height={COW.h} viewBox="0 0 676 1124" style={{position: 'absolute', left: 0, top: 0}}>
+              <defs>
+                <clipPath id="eyeL">
+                  <ellipse cx={239} cy={228} rx={30} ry={27} />
+                </clipPath>
+                <clipPath id="eyeR">
+                  <ellipse cx={321} cy={225} rx={27} ry={26} />
+                </clipPath>
+              </defs>
+              {[
+                {id: 'eyeL', cy: 228, ry: 27, x: 205, w: 70, k: blink, col: '#b4704d'},
+                {id: 'eyeR', cy: 225, ry: 26, x: 290, w: 64, k: winkR, col: '#e09c7c'},
+              ].map((e) =>
+                e.k > 0.01 ? (
+                  <g key={e.id} clipPath={`url(#${e.id})`}>
+                    <rect x={e.x} y={e.cy - e.ry - 2} width={e.w} height={(2 * e.ry + 4) * e.k} fill={e.col} />
+                    <rect x={e.x} y={e.cy - e.ry - 2 + (2 * e.ry + 4) * e.k - 4} width={e.w} height={5} fill="#3a1d12" />
+                  </g>
+                ) : null,
+              )}
+            </svg>
+          </div>
+          <Img src={staticFile('woody/body.png')} style={{position: 'absolute', width: COW.w, height: COW.h}} />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              transformOrigin: `${ARM_PIV[0] * K}px ${ARM_PIV[1] * K}px`,
+              transform: `rotate(${armRot}deg)`,
+            }}
+          >
+            <Img src={staticFile('woody/arm.png')} style={{position: 'absolute', width: COW.w, height: COW.h}} />
+          </div>
         </div>
 
         {/* sparkles */}
         {sp >= 0
           ? [0, 1, 2, 3, 4].map((i) => {
-              const a = (i / 5) * Math.PI * 2 + 0.4;
+              const a = -1.9 + i * 0.6; // fan out to the right/top, away from the face
               const r = 120 + 140 * easeOut(sp);
               const size = 54 * Math.sin(Math.min(1, sp * 1.4) * Math.PI);
               return (
