@@ -14,7 +14,7 @@ Sync map (video time of the on-screen event <-> sound):
   cheaper stamp slams (+0.14)                      <-> thump + clank
   shawa  burrito emoji pops                        <-> pop
   link   button jumps up                           <-> whoosh + ting
-Under it a quiet western pluck riff.
+No music (user, 2026-11-07): voice + sound effects only.
 """
 
 import subprocess
@@ -49,12 +49,6 @@ def pop(freq=900, dur=0.12):
     return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 30)
 
 
-def pluck(freq, dur=0.9):
-    tt = tt_(dur)
-    s = sum(np.sin(2 * np.pi * freq * k * tt) * np.exp(-tt * (4 + 3 * k)) / k ** 1.3 for k in (1, 2, 3, 4, 5))
-    return s * np.clip(tt / 0.002, 0, 1)
-
-
 midi = lambda m: 440 * 2 ** ((m - 69) / 12)
 
 mix.add(whoosh(0.5, 300, 3000), 0.0, gain=0.25)
@@ -75,15 +69,6 @@ mix.add(pop(1100), SHAWA, gain=0.25)
 mix.add(whoosh(0.3, 500, 4000), LINK - 0.05, gain=0.18)
 mix.add(ting(midi(96), 1.0), LINK + 0.3, gain=0.08)
 mix.add(click(0.04, 2500), LINK + 0.3, gain=0.15)
-
-# quiet western riff: E minor pluck, ducked under the voice
-riff = [(0, 40), (0.25, 47), (0.5, 52), (0.75, 55), (1.0, 52), (1.25, 47)]
-t = 0.2
-while t < DUR - 0.5:
-    for dt, m in riff:
-        mix.add(pluck(midi(m + 12)), t + dt, gain=0.045, pan=-0.2)
-    t += 1.5
-mix.add(pluck(midi(52), 1.5), DUR - 0.9, gain=0.06)
 
 fade = np.clip((DUR - mix.t) / 0.25, 0, 1)
 mix.l *= fade
