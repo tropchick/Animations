@@ -300,7 +300,7 @@ export const Hand: React.FC<{position?: V3; rotation?: V3; shape?: HandShape; si
 export const Phone: React.FC<{position?: V3; rotation?: V3; screen: THREE.Texture; glow?: number}> = ({position, rotation, screen, glow = 1}) => (
   <group position={position} rotation={rotation}>
     <Box size={[0.078, 0.158, 0.009]} color="#111216" />
-    <mesh position={[0, 0, 0.0052]}>
+    <mesh position={[0, 0, 0.0068]}>
       <planeGeometry args={[0.07, 0.148]} />
       <meshBasicMaterial map={screen} toneMapped={false} color={new THREE.Color(glow, glow, glow)} />
     </mesh>

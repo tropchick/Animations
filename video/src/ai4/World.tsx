@@ -401,7 +401,7 @@ export const World: React.FC<{v: number}> = ({v}) => {
 // push 0..1 flies the camera towards the window (the zoom into world 4)
 export const Panel: React.FC<{w: number; v: number; push?: number}> = ({w, v, push = 0}) => (
   <>
-    <CameraRig view={push > 0 ? blend(PANEL_VIEW[w](v), {pos: [1.3, 1.85, 4.15], target: [3, 4, 40], fov: 50}, smooth(push)) : PANEL_VIEW[w](v)} />
+    <CameraRig view={push > 0 ? blend(PANEL_VIEW[w](v), {pos: [-0.35, 1.85, 4.15], target: [-2, 4, 40], fov: 50}, smooth(push)) : PANEL_VIEW[w](v)} />
     <PanelSet w={w} v={v} />
   </>
 );

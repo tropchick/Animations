@@ -96,7 +96,7 @@ export const Room: React.FC<{w: number; v: number; alarm?: boolean; locked?: boo
         <>
           <Box size={[5.2, 0.12, 0.2]} position={[0, 2.74, 4.5]} color="#9aa2ac" />
           <Box size={[5.2, 0.12, 0.2]} position={[0, 0.06, 4.5]} color="#9aa2ac" />
-          {[-2.55, 2.55].map((x) => (
+          {[-2.52, 2.52].map((x) => (
             <Box key={x} size={[0.1, 2.8, 0.2]} position={[x, 1.4, 4.5]} color="#9aa2ac" />
           ))}
           <mesh position={[0, 1.4, 4.5]}>
