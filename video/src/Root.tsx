@@ -47,6 +47,8 @@ import {DvizhCover} from './DvizhCover';
 import {DURATION_S as DVIZH_S} from './dvizh/cues';
 import {SunOut} from './SunOut';
 import {SnowSpring} from './SnowSpring';
+import {WoodyBanner} from './WoodyBanner';
+import {FRAMES as WOODY_FRAMES} from './woody/cues';
 import {SnowCover} from './SnowCover';
 import {STORY_FRAMES as SNOW_FRAMES} from './snow/data';
 import {SunCover} from './SunCover';
@@ -140,6 +142,15 @@ export const RemotionRoot = () => (
       fps={FPS}
       width={1080}
       height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition
+      id="WoodyBanner"
+      component={WoodyBanner}
+      durationInFrames={WOODY_FRAMES}
+      fps={FPS}
+      width={1920}
+      height={960}
       defaultProps={{withAudio: false}}
     />
     <Composition id="LastManCover" component={LastManCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />

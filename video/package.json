@@ -110,12 +110,16 @@
     "cover:snow": "remotion still SnowCover out/snow-spring-cover.jpg --gl=swangle --jpeg-quality=90",
     "audio:lastman": "python3 audio/make_lastman_audio.py",
     "render:lastman": "python3 audio/make_lastman_audio.py && tools/render-chunks.sh LastMan public/audio/last-man.wav out/last-man.mp4 3106",
-    "cover:lastman": "remotion still LastManCover out/last-man-cover.jpg --gl=swangle --jpeg-quality=90"
+    "cover:lastman": "remotion still LastManCover out/last-man-cover.jpg --gl=swangle --jpeg-quality=90",
+    "audio:woody": "python3 audio/make_woody_audio.py",
+    "render:woody": "python3 audio/make_woody_audio.py && tools/render-chunks.sh WoodyBanner public/audio/woody-banner.wav out/woody-banner.mp4 210"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/oswald": "^5.3.0",
+    "@fontsource/rubik": "^5.3.0",
+    "@fontsource/rye": "^5.3.0",
     "@fontsource/spectral": "^5.3.0",
     "@react-three/fiber": "^9.8.2",
     "@remotion/cli": "^4.0.538",
