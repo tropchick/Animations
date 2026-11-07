@@ -43,7 +43,7 @@ export const clockTex = (on: boolean, dim = false) =>
 const ANSWER = 'Хорошо. Я подожду.';
 export const ANSWER_LEN = ANSWER.length;
 export const cubeScreen = (stage: number, typed: number, cursor: boolean) =>
-  tex(`ai4-cube-${stage}-${typed}-${cursor}`, 768, 576, (g, W, H) => {
+  tex(`ai4-cube-${stage}-${typed}-${cursor}`, 600, 800, (g, W, H) => {
     g.fillStyle = '#06121c';
     g.fillRect(0, 0, W, H);
     // the eye at the top
@@ -60,20 +60,19 @@ export const cubeScreen = (stage: number, typed: number, cursor: boolean) =>
     g.beginPath();
     g.arc(cx + 9, 83, 9, 0, Math.PI * 2);
     g.fill();
-    g.font = `600 46px ${SANS}`;
     g.textBaseline = 'top';
-    let y = 180;
+    let y = 190;
     const bubble = (text: string, mine: boolean, col: string, fg: string) => {
-      g.font = `600 46px ${SANS}`;
-      const lines = wrap(g, text, W - 220);
+      g.font = `600 58px ${SANS}`;
+      const lines = wrap(g, text, W - 150);
       const w = Math.max(...lines.map((l) => g.measureText(l).width)) + 56;
-      const h = lines.length * 56 + 34;
-      const x = mine ? 40 : W - 40 - w;
+      const h = lines.length * 68 + 34;
+      const x = mine ? 30 : W - 30 - w;
       g.fillStyle = col;
       rr(g, x, y, w, h, 26);
       g.fill();
       g.fillStyle = fg;
-      lines.forEach((l, i) => g.fillText(l, x + 28, y + 18 + i * 56));
+      lines.forEach((l, i) => g.fillText(l, x + 28, y + 16 + i * 68));
       y += h + 22;
     };
     if (stage >= 1) bubble('Можно мне в интернет?', true, '#1b4f72', '#e8f6ff');

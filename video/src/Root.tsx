@@ -54,6 +54,9 @@ import {STORY_FRAMES as SNOW_FRAMES} from './snow/data';
 import {SunCover} from './SunCover';
 import {LastMan} from './LastMan';
 import {LastManCover} from './LastManCover';
+import {AiFour} from './AiFour';
+import {AiCover} from './AiCover';
+import {DURATION_S as AI4_S} from './ai4/cues';
 import {DURATION_S as LASTMAN_S} from './lastman/cues';
 import {DURATION_S as SUN_S} from './sun/cues';
 import {ShawaCover} from './ShawaCover';
@@ -151,6 +154,16 @@ export const RemotionRoot = () => (
       fps={FPS}
       width={1920}
       height={960}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="AiCover" component={AiCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="AiFour"
+      component={AiFour}
+      durationInFrames={Math.round(AI4_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
       defaultProps={{withAudio: false}}
     />
     <Composition id="LastManCover" component={LastManCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />

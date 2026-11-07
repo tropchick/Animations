@@ -78,11 +78,14 @@ export const RoboArm: React.FC<{base: V3; yaw: number; reach: number; drop: numb
 // ---------------------------------------------------------------- the robot vacuum (world 4)
 export const Vacuum: React.FC<{position: V3; rotation?: number; eye: number}> = ({position, rotation = 0, eye}) => (
   <group position={position} rotation={[0, rotation, 0]}>
-    <Cyl rTop={0.17} rBottom={0.17} height={0.08} segments={16} position={[0, 0.045, 0]} color="#2a2c32" />
-    <Cyl rTop={0.12} rBottom={0.12} height={0.012} segments={16} position={[0, 0.091, 0]} color="#3a3d44" shadow={false} />
-    <Box size={[0.12, 0.03, 0.03]} position={[0, 0.06, 0.16]} color="#1a1a1e" />
-    <Box size={[0.05, 0.025, 0.012]} position={[0, 0.07, 0.176]} color="#ff2a2a" emissive="#ff2020" emissiveIntensity={0.3 + 2.5 * eye} shadow={false} />
-    {eye > 0.05 ? <pointLight position={[0, 0.08, 0.3]} intensity={1.5 * eye} distance={1.6} color="#ff2a2a" /> : null}
+    <Cyl rTop={0.17} rBottom={0.17} height={0.08} segments={16} position={[0, 0.045, 0]} color="#d8dce2" />
+    <Cyl rTop={0.13} rBottom={0.13} height={0.012} segments={16} position={[0, 0.091, 0]} color="#3a3d44" shadow={false} />
+    <Cyl rTop={0.04} rBottom={0.04} height={0.02} segments={12} position={[0, 0.1, -0.03]} color="#5a5e66" shadow={false} />
+    <Box size={[0.2, 0.04, 0.04]} position={[0, 0.055, 0.155]} color="#1a1a1e" />
+    {[-1, 1].map((s) => (
+      <Box key={s} size={[0.035, 0.022, 0.012]} position={[s * 0.045, 0.06, 0.177]} color="#ff2a2a" emissive="#ff2020" emissiveIntensity={0.2 + 4 * eye} shadow={false} />
+    ))}
+    {eye > 0.05 ? <pointLight position={[0, 0.07, 0.32]} intensity={0.5 * eye} distance={0.9} color="#ff2a2a" /> : null}
   </group>
 );
 
@@ -151,7 +154,8 @@ export const Lamp: React.FC<{position: V3; blue: number}> = ({position, blue}) =
     <Cyl rTop={0.06} rBottom={0.08} height={5} position={[0, 2.5, 0]} color="#4a4e56" />
     <Box size={[0.9, 0.08, 0.1]} position={[0.4, 5, 0]} color="#4a4e56" />
     <Box size={[0.4, 0.12, 0.25]} position={[0.8, 4.92, 0]} color="#f2f0e0" emissive="#fff6d0" emissiveIntensity={0.3} />
-    <Ico radius={0.06} position={[0.06, 3.2, 0.07]} color="#5fe0ff" emissive="#5fe0ff" emissiveIntensity={0.2 + 3 * blue} shadow={false} />
+    <Ico radius={0.13} position={[0.0, 3.2, 0.12]} color="#5fe0ff" emissive="#5fe0ff" emissiveIntensity={0.1 + 4 * blue} shadow={false} />
+    {blue > 0.05 ? <Ico radius={0.42} position={[0.0, 3.2, 0.12]} color="#5fe0ff" emissive="#5fe0ff" emissiveIntensity={2} opacity={0.3 * blue} shadow={false} /> : null}
   </group>
 );
 

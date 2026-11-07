@@ -89,23 +89,24 @@ TAIL = 2.4
 
 # shots: (name, piece it starts with, offset from that piece's start)
 SHOTS = [
-    ("quad", 0, None),
-    ("w1wake", 3, -1.0),
+    ("hook", 0, None),
+    ("quad", 1, -0.25),
+    ("w1wake", 3, -0.75),
     ("w1window", 5, -0.15),
     ("w1bunker", 6, -0.15),
     ("w1screen", 8, -0.15),
-    ("w2wake", 10, -1.1),
+    ("w2wake", 10, -0.75),
     ("w2bus", 11, -0.15),
     ("w2brick", 13, -0.15),
     ("w2tv", 14, -0.15),
     ("w2pull", 16, -0.15),
     ("w2pigeon", 17, -0.15),
-    ("w3wake", 18, -1.1),
+    ("w3wake", 18, -0.75),
     ("w3sign", 20, -0.15),
     ("w3feed", 21, -0.15),
     ("w3fence", 22, -0.15),
     ("w3wave", 23, -0.15),
-    ("w4wake", 25, -1.5),
+    ("w4wake", 25, -1.15),
     ("w4window", 28, -0.15),
     ("w4fridge", 29, -0.15),
     ("w4vacuum", 30, -0.15),
@@ -188,9 +189,13 @@ for name, k, off in SHOTS:
 S = {n: s for n, s in shots}
 
 # ---------------------------------------------------------------- events (story time)
-ALARMS = {w: S[f"w{w}wake"] + 0.15 for w in (1, 2, 3)}
-SLAPS = {w: ALARMS[w] + 0.95 for w in (1, 2, 3)}
+ALARMS = {w: S[f"w{w}wake"] + 0.1 for w in (1, 2, 3)}
+SLAPS = {w: ALARMS[w] + 0.9 for w in (1, 2, 3)}
+NO = next(w[0] for w in words if w[3] == 8 and "нет" in w[2])
+HOOK_END = P(1) - 0.25
+HOOK_CUTS = [round(HOOK_END * i / 4, 3) for i in range(4)]
 EV = {
+    "hookCuts": HOOK_CUTS,
     "zoom": [P(2) - 0.1, P(2) + 1.3],
     "alarm": [ALARMS[1], ALARMS[2], ALARMS[3]],
     "slap": [SLAPS[1], SLAPS[2], SLAPS[3]],
@@ -198,8 +203,8 @@ EV = {
     "train": S["w1window"] + 0.2,
     "rocket": P(5) + 1.0,
     "ask": P(7) + 0.2,
-    "no": P(8) + 1.0,
-    "type": [P(9) + 0.05, P(9) + 1.4],
+    "no": NO,
+    "type": [NO + 0.55, PE(9) + 0.1],
     "run": [S["w2bus"], P(12) + 0.2],
     "doors": PE(12) + 0.05,
     "gust": P(13) + 0.35,
@@ -334,8 +339,17 @@ def birds(dur):
     return s
 
 
-# intro: a soft whoosh over the four windows, a low hit when the last one fills the screen
-mix.add(whoosh(1.4, 200, 1500), O + 0.0, 0.15)
+# the hook: four fast cuts, each slammed in with a hit, then each world's own sound
+for i, c in enumerate(HOOK_CUTS):
+    mix.add(thump(70, 34, 0.9, decay=5, click=0.9), O + c, 0.55)
+    mix.add(whoosh(0.35, 800, 6000), O + c - 0.3 if c > 0 else O, 0.2)
+mix.add(rumble(HOOK_CUTS[1] - 0.1), O + 0.05, 0.4)  # 1: the rocket goes up
+mix.add(blip(1250, 0.18), O + HOOK_CUTS[1] + 0.6, 0.3)  # 2: the pigeon's eye
+for k in range(3):  # 3: the robot kid knocks on the glass
+    mix.add(thump(400, 300, 0.12, decay=40, click=1.0), O + HOOK_CUTS[2] + 0.35 + k * 0.2, 0.25)
+mix.add(motor(HOOK_END - HOOK_CUTS[3]), O + HOOK_CUTS[3] + 0.1, 0.3)  # 4: the vacuum wakes up
+mix.add(filt(brown(int((HOOK_END - HOOK_CUTS[3]) * SR)), "lowpass", 80) * 2, O + HOOK_CUTS[3], 0.3)
+mix.add(whoosh(0.6, 200, 1500), O + HOOK_END - 0.3, 0.2)
 mix.add(thump(50, 28, 1.6, decay=2.2, click=0.2), O + EV["zoom"][0] + 0.5, 0.45)
 mix.add(whoosh(1.3, 150, 900), O + EV["zoom"][0], 0.2)
 

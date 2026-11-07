@@ -9,7 +9,7 @@ import {clamp01} from '../lastman/cues';
 export const DURATION_S = cues.duration;
 
 export type Shot =
-  | 'quad' | 'w1wake' | 'w1window' | 'w1bunker' | 'w1screen'
+  | 'hook' | 'quad' | 'w1wake' | 'w1window' | 'w1bunker' | 'w1screen'
   | 'w2wake' | 'w2bus' | 'w2brick' | 'w2tv' | 'w2pull' | 'w2pigeon'
   | 'w3wake' | 'w3sign' | 'w3feed' | 'w3fence' | 'w3wave'
   | 'w4wake' | 'w4window' | 'w4fridge' | 'w4vacuum' | 'quadEnd';

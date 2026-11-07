@@ -23,7 +23,7 @@ const PALETTE: Record<number, {wall: string; floor: string; bed: string; blanket
   1: {wall: '#eef1f4', floor: '#d8dde2', bed: '#f4f6f8', blanket: '#7ac8e8'},
   2: {wall: '#e6d6bc', floor: '#a87a52', bed: '#8a5a3a', blanket: '#3a5a9a'},
   3: {wall: '#e6d6bc', floor: '#a87a52', bed: '#8a5a3a', blanket: '#3a5a9a'},
-  4: {wall: '#5a3a3a', floor: '#3a2622', bed: '#3a2622', blanket: '#3a2a3a'},
+  4: {wall: '#8a6a66', floor: '#5a3e36', bed: '#5a3e36', blanket: '#4a3a5a'},
 };
 
 // sitting up in bed: sit 0 = lying on the back, 1 = sitting; legs stay flat under the blanket
@@ -43,7 +43,6 @@ const Window: React.FC<{w: number}> = ({w}) => {
       <Box size={[x1 - x0 + 0.12, 0.08, 0.3]} position={[cx, y1 + 0.02, z + 0.12]} color={fr} />
       <Box size={[0.08, y1 - y0 + 0.12, 0.3]} position={[x0 - 0.02, (y0 + y1) / 2, z + 0.12]} color={fr} />
       <Box size={[0.08, y1 - y0 + 0.12, 0.3]} position={[x1 + 0.02, (y0 + y1) / 2, z + 0.12]} color={fr} />
-      <Box size={[0.06, y1 - y0, 0.06]} position={[cx, (y0 + y1) / 2, z + 0.2]} color={fr} />
       <Box size={[x1 - x0 + 0.3, 0.04, 0.32]} position={[cx, y0 - 0.04, z - 0.12]} color={fr} />
       <mesh position={[cx, (y0 + y1) / 2, z + 0.22]}>
         <planeGeometry args={[x1 - x0, y1 - y0]} />
@@ -90,13 +89,14 @@ export const Room: React.FC<{w: number; v: number; alarm?: boolean; locked?: boo
       {/* the door itself, with a lock that glows red in world 4 */}
       <Box size={[0.06, 2.05, 0.95]} position={[2.53, 1.025, 2.6]} color={w === 4 ? '#2a1a1a' : '#8a5a3a'} />
       <Box size={[0.04, 0.05, 0.14]} position={[2.48, 1.0, 2.25]} color="#c8c8c8" />
-      <Box size={[0.03, 0.12, 0.07]} position={[2.485, 1.18, 2.25]} color={locked ? '#ff2a2a' : '#444'} emissive={locked ? '#ff2020' : '#000'} emissiveIntensity={locked ? 3 : 0} shadow={false} />
+      <Box size={[0.03, 0.18, 0.09]} position={[2.485, 1.18, 2.25]} color={locked ? '#ff2a2a' : '#444'} emissive={locked ? '#ff2020' : '#000'} emissiveIntensity={locked ? 4 : 0} shadow={false} />
+      {locked ? <pointLight position={[2.3, 1.2, 2.25]} intensity={3} distance={2} color="#ff3020" /> : null}
       {/* front wall: concrete with a window, or one big glass pane in the zoo */}
       {glassFront ? (
         <>
           <Box size={[5.2, 0.12, 0.2]} position={[0, 2.74, 4.5]} color="#9aa2ac" />
           <Box size={[5.2, 0.12, 0.2]} position={[0, 0.06, 4.5]} color="#9aa2ac" />
-          {[-2.55, 0, 2.55].map((x) => (
+          {[-2.55, 2.55].map((x) => (
             <Box key={x} size={[0.1, 2.8, 0.2]} position={[x, 1.4, 4.5]} color="#9aa2ac" />
           ))}
           <mesh position={[0, 1.4, 4.5]}>
@@ -132,7 +132,7 @@ export const Room: React.FC<{w: number; v: number; alarm?: boolean; locked?: boo
         <Box size={[0.73, 0.012, 0.012]} position={[0, 1.25, 0.335]} color="#9aa2ac" shadow={false} />
         <Box size={[0.04, 0.4, 0.05]} position={[-0.3, 1.5, 0.36]} color="#9aa2ac" />
         <Box size={[0.04, 0.3, 0.05]} position={[-0.3, 0.95, 0.36]} color="#9aa2ac" />
-        <Pic size={[0.3, 0.15]} map={fridgeTex(locked)} position={[0.12, 1.5, 0.336]} />
+        <Pic size={[0.44, 0.22]} map={fridgeTex(locked)} position={[0.1, 1.5, 0.336]} />
       </group>
       <Box size={[1.0, 0.9, 0.6]} position={[1.0, 0.45, 0.32]} color={w === 1 ? '#ffffff' : w === 4 ? '#2a1c18' : '#c8a070'} />
       <Box size={[1.04, 0.04, 0.64]} position={[1.0, 0.92, 0.32]} color={w === 4 ? '#4a3a32' : '#e8e4dc'} />
@@ -143,8 +143,9 @@ export const Room: React.FC<{w: number; v: number; alarm?: boolean; locked?: boo
       {/* lights */}
       {w === 4 ? (
         <>
-          <ambientLight intensity={0.25} color="#ff8a7a" />
-          <pointLight position={[0.5, 1.8, 5.5]} intensity={14} distance={9} color="#ff4030" />
+          <hemisphereLight color="#ffb0a0" groundColor="#401818" intensity={0.75} />
+          <pointLight position={[0.5, 1.8, 5.2]} intensity={34} distance={11} color="#ff4a34" />
+          <pointLight position={[-1.0, 2.3, 2.4]} intensity={3} distance={6} color="#8090ff" />
         </>
       ) : (
         <>
@@ -198,6 +199,8 @@ export const Future: React.FC<{v: number; y: number}> = ({v, y}) => {
       {Array.from({length: 16}).map((_, i) => {
         const x = -110 + (i % 8) * 30 + rnd(i) * 8;
         const z = 80 + Math.floor(i / 8) * 55 + rnd(i, 2) * 10;
+        // keep a clear corridor from the window to the rocket pad
+        if (Math.abs(x + 0.078 * z) < 16) return null;
         const h = 40 + rnd(i, 3) * 70;
         const r = 5 + rnd(i, 4) * 4;
         return (
@@ -221,8 +224,8 @@ export const Future: React.FC<{v: number; y: number}> = ({v, y}) => {
         <Cyl rTop={1.1} rBottom={1.1} height={2.4} segments={10} position={[20, 0, 0]} rotation={[Math.PI / 2, 0, 0]} color="#ffffff" />
       </group>
       {/* the rocket pad far away on the left */}
-      <Rocket position={[-150, 0, 420]} lift={lift} t={v} fire={fire} />
-      <Smoke base={[-150, 0, 420]} lift={lift} t={Math.max(0, v - EV.rocket)} />
+      <Rocket position={[-40, 0, 520]} lift={lift} t={v} fire={fire} />
+      <Smoke base={[-40, 0, 520]} lift={lift} t={Math.max(0, v - EV.rocket)} />
       {/* flying cars */}
       {[0, 1, 2].map((i) => (
         <group key={i} position={[-80 + ((v * (12 + i * 5) + i * 60) % 180), 30 + i * 9, 70 + i * 25]}>
@@ -270,7 +273,12 @@ export const Dark: React.FC<{v: number; y: number}> = ({v, y}) => (
       const r = 8 + 10 * rnd(i, 2);
       const cx = (i % 2 ? 14 : -10) + Math.cos(a) * r;
       const cz = 32 + (i % 3) * 8 + Math.sin(a) * r * 0.5;
-      return <Drone key={i} position={[cx, 13 + 6 * rnd(i, 3) + Math.sin(v * 2 + i) * 0.5, cz]} rotation={[0.1, a, 0]} t={v + i} light />;
+      return (
+        <group key={i} position={[cx * 0.8, 11 + 7 * rnd(i, 3) + Math.sin(v * 2 + i) * 0.5, cz * 0.6]} scale={3}>
+          <Drone position={[0, 0, 0]} rotation={[0.1, a, 0]} t={v + i} light />
+          <Ico radius={0.06} position={[0, -0.02, 0.15]} color="#ff2a2a" emissive="#ff2020" emissiveIntensity={4} shadow={false} />
+        </group>
+      );
     })}
   </group>
 );
@@ -312,9 +320,9 @@ export const Zoo: React.FC<{v: number; kidWave?: number; tap?: number}> = ({v, k
       <Tree key={x} position={[x, 0, 12 + (i % 2) * 3]} s={1.1} seed={i + 4} />
     ))}
     {/* robots: a parent and two kids at the glass, more passing by */}
-    <Robot position={[0.9, 0, 6.3]} rotation={Math.PI} t={v} head={0.1 * Math.sin(v)} armR={0.3} />
-    <Robot position={[-0.2, 0, 5.4]} rotation={Math.PI} scale={0.6} t={v + 1} armR={kidWave > 0 ? 2.6 + 0.35 * Math.sin(v * 9) * kidWave : 1.4 * tap} />
-    <Robot position={[1.9, 0, 5.6]} rotation={Math.PI + 0.3} scale={0.55} t={v + 2} head={-0.3} />
+    <Robot position={[-1.7, 0, 6.4]} rotation={Math.PI + 0.25} t={v} head={0.1 * Math.sin(v)} armR={0.3} />
+    <Robot position={[-0.5, 0, 5.2]} rotation={Math.PI} scale={0.6} t={v + 1} armR={kidWave > 0 ? 2.6 + 0.35 * Math.sin(v * 9) * kidWave : 0.4 + 1.1 * tap} />
+    <Robot position={[2.6, 0, 5.5]} rotation={Math.PI + 0.3} scale={0.55} t={v + 2} head={-0.3} />
     {[0, 1].map((i) => (
       <Robot key={i} position={[-14 + ((v * 1.1 + i * 9) % 30), 0, 9 + i * 1.6]} rotation={Math.PI / 2} scale={i ? 0.6 : 1} t={v + i * 3} />
     ))}
