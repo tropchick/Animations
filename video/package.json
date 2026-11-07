@@ -107,7 +107,10 @@
     "cover:masha": "remotion still MashaCover out/masha-chess-cover.jpg --scale=0.6666666666666666 --jpeg-quality=90",
     "audio:snow": "esbuild src/snow/dump.ts --bundle --platform=node --outfile=out/snow-dump.cjs --log-level=warning && node out/snow-dump.cjs > src/snow/timeline.json && python3 audio/make_snow_audio.py",
     "render:snow": "npm run audio:snow && tools/render-chunks.sh SnowSpring public/audio/snow-spring.wav out/snow-spring.mp4 $(node -e \"console.log(require('./src/snow/timeline.json').frames)\")",
-    "cover:snow": "remotion still SnowCover out/snow-spring-cover.jpg --gl=swangle --jpeg-quality=90"
+    "cover:snow": "remotion still SnowCover out/snow-spring-cover.jpg --gl=swangle --jpeg-quality=90",
+    "audio:lastman": "python3 audio/make_lastman_audio.py",
+    "render:lastman": "python3 audio/make_lastman_audio.py && tools/render-chunks.sh LastMan public/audio/last-man.wav out/last-man.mp4 3106",
+    "cover:lastman": "remotion still LastManCover out/last-man-cover.jpg --gl=swangle --jpeg-quality=90"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

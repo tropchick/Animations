@@ -50,6 +50,9 @@ import {SnowSpring} from './SnowSpring';
 import {SnowCover} from './SnowCover';
 import {STORY_FRAMES as SNOW_FRAMES} from './snow/data';
 import {SunCover} from './SunCover';
+import {LastMan} from './LastMan';
+import {LastManCover} from './LastManCover';
+import {DURATION_S as LASTMAN_S} from './lastman/cues';
 import {DURATION_S as SUN_S} from './sun/cues';
 import {ShawaCover} from './ShawaCover';
 import {DURATION_S as SHAWA_S} from './shawa/cues';
@@ -134,6 +137,16 @@ export const RemotionRoot = () => (
       id="SnowSpring"
       component={SnowSpring}
       durationInFrames={SNOW_FRAMES + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="LastManCover" component={LastManCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="LastMan"
+      component={LastMan}
+      durationInFrames={Math.round(LASTMAN_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}
