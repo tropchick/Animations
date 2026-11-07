@@ -122,6 +122,64 @@ CAPS = [
     [100.9, 103.5, "Ответишь?", "end"],
 ]
 
+# ---------------------------------------------------------------- the narrator (one take, cut into lines)
+# audio/voice/lastman-narrator.mp3: ElevenLabs v4, library voice «Mikhail» (Natural, Sarcastic, Tired), one take.
+# Word times from faster-whisper in audio/voice/lastman-narrator-words.json. Each line is cut at the quietest
+# point between lines and starts where its caption starts.
+# (index of the line's first word in the take, caption start)
+NARR_LINES = [
+    ("Один", 12.0), ("Ты", 15.0), ("Через", 17.8), ("Теперь", 21.8), ("Даже", 25.7), ("Правительство", 27.9),
+    ("В", 30.8), ("Нужно", 33.05), ("Ты", 35.2), ("Её", 38.2), ("А", 41.0), ("Метро", 45.0), ("Мир", 48.8),
+    ("Это", 52.3), ("Тебя", 58.8), ("Дроны", 61.4), ("Но", 64.4), ("Бабушка", 67.5), ("Но", 73.3), ("К", 77.5),
+    ("Учёные", 80.3), ("Клон", 83.35), ("Пока", 86.5), ("Месяц", 90.5), ("Ответишь.", 100.9),
+]
+
+
+def narrator_lines():
+    take = load(ROOT / "audio/voice/lastman-narrator.mp3")
+    words = json.load(open(ROOT / "audio/voice/lastman-narrator-words.json"))
+    starts, k = [], 0
+    for first, _ in NARR_LINES:  # find each line's first word in order
+        while words[k][2] != first:
+            k += 1
+        starts.append(k)
+        k += 1
+    env = np.abs(take)
+    win = int(0.02 * SR)
+    env = np.convolve(env, np.ones(win) / win, "same")
+    cuts = [max(0.0, words[0][0] - 0.15)]
+    for i in range(1, len(starts)):
+        a = words[starts[i] - 1][1] - 0.1  # previous line's last word end (whisper is a bit late/early)
+        b = words[starts[i]][0] + 0.1
+        ia, ib = int(a * SR), int(b * SR)
+        cuts.append((ia + int(np.argmin(env[ia:ib]))) / SR if ib > ia else (a + b) / 2)
+    cuts.append(len(take) / SR)
+    out = []
+    for i, (_, at) in enumerate(NARR_LINES):
+        seg = take[int(cuts[i] * SR):int(cuts[i + 1] * SR)]
+        # trim silence at both ends
+        e = np.convolve(np.abs(seg), np.ones(win) / win, "same")
+        on = np.where(e > 0.02 * e.max())[0]
+        seg = seg[max(0, on[0] - int(0.03 * SR)):min(len(seg), on[-1] + int(0.08 * SR))]
+        n = int(0.01 * SR)
+        seg[:n] *= np.linspace(0, 1, n)
+        seg[-n:] *= np.linspace(1, 0, n)
+        out.append((at, seg))
+    return out
+
+
+NARR = narrator_lines()
+# the story captions (and the end card line) are the narrator's lines, in order: start with the voice, stay while it speaks
+spoken = [c for c in CAPS if c[3] in ("cap", "end")]
+assert len(spoken) == len(NARR)
+for c, (at, seg) in zip(spoken, NARR):
+    c[0] = at
+for i, c in enumerate(CAPS):
+    if c[3] in ("cap", "end"):
+        at, seg = NARR[spoken.index(c)]
+        nxt = CAPS[i + 1][0] - 0.12 if i + 1 < len(CAPS) else DUR
+        c[1] = min(max(c[1], at + len(seg) / SR + 0.2), nxt)
+
 # ---------------------------------------------------------------- events
 SLAP = 1.6
 RADIO_ON = 3.55
@@ -363,7 +421,10 @@ for name, at, g in lines:
         v = filt(filt(v, "highpass", 350, 2), "lowpass", 3400, 2)
     mix.add(v, O + at, g)
     duck -= 0.55 * mix.env(O + at - 0.1, O + at + len(v) / SR + 0.1, 0.1, 0.3)
-duck = np.clip(duck, 0.35, 1)
+for at, seg in NARR:
+    mix.add(seg, O + at, 1.0)
+    duck -= 0.6 * mix.env(O + at - 0.08, O + at + len(seg) / SR + 0.05, 0.08, 0.25)
+duck = np.clip(duck, 0.3, 1)
 
 # ---------------------------------------------------------------- music: a driving, slightly cheeky beat
 bpm = np.interp(t, [0, 60.9, 61.3, 67.0, 67.4], [118, 118, 132, 132, 112])
