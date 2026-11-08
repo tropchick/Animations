@@ -15,7 +15,7 @@ export const BearCover: React.FC = () => {
         </ThreeCanvas>
       </AbsoluteFill>
       <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 58%, rgba(40,20,0,0.4) 100%)'}} />
-      <div style={{position: 'absolute', left: 60, right: 60, top: 240, textAlign: 'center'}}>
+      <div style={{position: 'absolute', left: 60, right: 60, top: 205, textAlign: 'center'}}>
         <div
           style={{
             display: 'inline-block',

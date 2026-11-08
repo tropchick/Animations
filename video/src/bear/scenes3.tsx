@@ -1,4 +1,5 @@
 import React from 'react';
+import * as THREE from 'three';
 import {Bear, BearPose, GoldChain, Headphones, Sunglasses} from './Bear';
 import {ANYA, HOST, Human, HumanPose, MOM, girl, walkPose} from './People';
 import {AnyaRoom, Crowd, Den, Fan, River, Studio, blobFans, queueFans} from './Sets';
@@ -8,7 +9,7 @@ import {Ball, Cyl, Glow} from './kit';
 import {drawBannerTall} from './tex';
 import {BITE, FLASHES, JAW, LEAN, TITLE, UNWRAP, V3, lerp, lerp3, lip, ramp, rnd, shotEnd, shotStart} from './cues';
 import {Scene, aim, blink, ease, ease5, follow, local, mv, yawTo} from './common';
-import {at, bearHand, bearHead, humanHand, humanHead} from './rig';
+import {at, bearHand, bearHead, humanArmTo, humanHand, humanHead} from './rig';
 import type {View} from '../slime/camera';
 
 const S = shotStart;
@@ -294,12 +295,14 @@ const bearWalk = (v: number): BearPose => {
   };
 };
 // fans trailing behind him, phones up
+// (they stream past on the far side of her, so the crowd flows around her while he walks by in front)
 const ENTOURAGE: [number, number][] = [
-  [-0.6, -0.95],
-  [0.45, -1.25],
-  [-0.15, -1.7],
-  [0.6, -2.0],
-  [-0.5, -2.35],
+  [1.95, -0.7],
+  [2.55, -1.15],
+  [2.15, -1.65],
+  [2.8, -2.05],
+  [2.3, -2.5],
+  [1.9, -3.0],
 ];
 const passAnya = (v: number): HumanPose => {
   const hope = 1 - ease(v, PASS_AT + 0.2, PASS_AT + 0.7);
@@ -346,7 +349,7 @@ export const passScene: Scene = {
 
 const PB: V3 = [0.32, 0, -1.38];
 const PH: V3 = [-1.4, 0, -0.32];
-const PH_YAW = yawTo(PH, [PB[0], 0, PB[2] + 0.6]);
+const PH_YAW = yawTo(PH, [PB[0], 0, PB[2] + 1.4]);
 const B_MIC: V3 = [0.2, 1.42, -0.5];
 const Q1 = 66.6;
 const Q2 = 68.85;
@@ -381,7 +384,7 @@ const hostPose = (v: number): HumanPose => {
   return {
     sit: 1,
     lean: 0.12 + 0.3 * lean,
-    head: [-0.05 - 0.05 * lean, 0, 0.05 * Math.sin(v * 1.7)],
+    head: [-0.05 - 0.05 * lean, 0.18, 0.05 * Math.sin(v * 1.7)],
     armR: [-0.85, 0.15, 0],
     elbowR: -1.0,
     armL: [-0.85, 0.15, 0],
@@ -399,7 +402,7 @@ const PodcastSet: React.FC<{v: number}> = ({v}) => (
     <directionalLight position={[-3, 2.5, 3]} color="#c8a0ff" intensity={0.6} />
     <pointLight position={[0, 2.3, -2.4]} color="#ff4fd8" intensity={6} distance={5} decay={1.6} />
     {/* a soft key on the host's face */}
-    <pointLight position={[-0.45, 2.0, 0.35]} color="#ffd9b8" intensity={3.2} distance={3.0} decay={1.6} />
+    <pointLight position={[-0.45, 2.0, 0.35]} color="#ffd9b8" intensity={4.6} distance={3.0} decay={1.6} />
     <color attach="background" args={['#120d18']} />
     <Studio v={v} />
     <Bear position={PB} rotation={0} pose={podBear(v)} head={<Headphones />} />
@@ -428,14 +431,14 @@ export const leanScene: Scene = {
   view: (v): View => {
     if (v < Q2) {
       // the two of them; the host leans in and asks, the camera creeps closer
-      const m = mv(v, S('lean'), Q2, [-0.8, 1.6, 4.9], [-0.85, 1.5, 4.0], [0, 0, 0], [0, 0, 0], [42, 41]);
-      const mid = lerp3(hostHead(v), podHead(v), 0.44);
-      return {...m, target: aim(m.pos, mid, m.fov, 760, 540)};
+      const m = mv(v, S('lean'), Q2, [-0.8, 1.6, 4.9], [-0.85, 1.5, 4.0], [0, 0, 0], [0, 0, 0], [45, 43]);
+      const mid = lerp3(hostHead(v), podHead(v), 0.47);
+      return {...m, target: aim(m.pos, mid, m.fov, 760, 515)};
     }
     // the question lands on him: slow push in on his face
     return follow(v, Q2, E('lean'), [0.62, 1.6, 1.7], [0.5, 1.62, 1.15], podHead(v), [34, 30], 700, 540);
   },
-  probe: (v) => ({bearHead: podHead(v), host: hostHead(v)}),
+  probe: (v) => ({bearHead: podHead(v), earR: at(bearHead(PB, 0, podBear(v)), [0.42, 0.31, -0.04]), host: hostHead(v)}),
   render: (v) => <PodcastSet v={v} />,
 };
 
@@ -584,27 +587,76 @@ export const answerScene: Scene = {
 const LOG: V3 = [0, 0.2, 0];
 const END_A: V3 = [0.05, 0, 0.18];
 const OUT = 78.35;
-const endAnya = (v: number): HumanPose => {
-  const open = ease(v, UNWRAP[0], UNWRAP[1]);
-  const bite = ease(v, BITE - 0.25, BITE) * (1 - ease(v, BITE + 0.1, BITE + 0.45));
-  const chew = v > BITE ? Math.max(0, Math.sin((v - BITE) * 14)) * Math.exp(-(v - BITE) * 0.5) : 0;
+const RAISE = 77.72; // the bar starts up to her mouth
+const AT_MOUTH = BITE - 0.09; // just in front of her lips, mouth open
+const AWAY = BITE + 0.32; // lowered again, chewing
+const TEAR = (UNWRAP[0] + UNWRAP[1]) / 2; // the wrapper rips open
+
+// her body and face; the arms are solved afterwards so the hands stay on the bar
+const endBody = (v: number): HumanPose => {
+  const up = ease(v, RAISE, AT_MOUTH) * (1 - ease(v, BITE + 0.05, AWAY));
+  const gape = ease(v, RAISE + 0.08, AT_MOUTH) * (1 - ease(v, BITE - 0.05, BITE));
+  const chew = v > BITE + 0.08 ? Math.max(0, Math.sin((v - BITE - 0.08) * 13)) * Math.exp(-(v - BITE) * 0.6) : 0;
+  const happy = ease(v, BITE + 0.3, BITE + 0.65);
   return {
     sit: 1,
     lean: 0.12,
-    head: [0.12 - 0.1 * bite, -0.05, 0.06],
-    armR: [lerp(-0.9, -1.25, bite), 0.1, lerp(0.35, 0.55, bite)],
-    elbowR: lerp(-1.25, -1.9, bite),
-    armL: [lerp(-0.85, -0.7, open), 0.12, lerp(0.35, 0.2, open)],
-    elbowL: -1.2,
+    head: [0.15 - 0.13 * up - 0.06 * happy, -0.05 + 0.05 * happy, 0.06 + 0.05 * happy],
     face: {
-      smile: v > BITE + 0.4 ? 0.55 : 0.15,
-      happy: v > BITE + 0.4 ? 0.5 : 0,
-      mouth: 0.45 * bite + 0.18 * chew,
-      look: v < BITE ? [0, -0.35] : [0.1, 0.05],
-      lid: v > BITE + 0.4 ? 0.3 + blink(v, 2) * 0.6 : blink(v, 2),
-      blush: 0.35,
+      smile: lerp(0.12, 0.62, happy),
+      happy: 0.55 * happy,
+      mouth: 0.5 * gape + 0.16 * chew,
+      look: v < RAISE ? [0.02, -0.42] : v < BITE ? [0.02, -0.2] : [0.08, 0.04],
+      lid: Math.min(1, 0.38 * happy + blink(v, 2)),
+      blush: 0.35 + 0.15 * happy,
     },
   };
+};
+
+// an orientation for the bar: its long axis (+x, the wrapper end) along `x`, its label facing `z`
+const barFrame = (x: V3, z: V3) => {
+  const X = new THREE.Vector3(...x).normalize();
+  const Z = new THREE.Vector3(...z).normalize();
+  Z.sub(X.clone().multiplyScalar(Z.dot(X))).normalize();
+  const Y = new THREE.Vector3().crossVectors(Z, X);
+  return new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(X, Y, Z));
+};
+const Q_HOLD = barFrame([0.95, 0.08, -0.3], [0.3, 0.25, 1]);
+const Q_BITE = barFrame([0.6, -0.62, 0.5], [0.5, 0.15, 1]);
+const Q_POST = barFrame([0.9, -0.28, 0.25], [0.35, 0.2, 1]);
+
+const endMouth = (v: number) => at(humanHead(NOPACK, END_A, 0, endBody(v)), [0, -0.085, 0.14]);
+
+// the bar in the world: held at her chest, torn open, raised to her lips, bitten, lowered
+const endBarM = (v: number) => {
+  const mouth = endMouth(v);
+  const up = ease(v, RAISE, AT_MOUTH);
+  const down = ease(v, BITE + 0.05, AWAY);
+  const tear = Math.sin(Math.PI * ramp(v, UNWRAP[0], TEAR + 0.12));
+  const qHold = Q_HOLD.clone().multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, -0.16 * tear + 0.02 * Math.sin(v * 2.1))));
+  const q = qHold.slerp(Q_BITE, up).slerp(Q_POST, down);
+  // the open end moves in to touch her lips (depth > 0 is between them)
+  const depth = lerp(-0.03, 0.012, ease(v, AT_MOUTH, BITE));
+  const dir = new THREE.Vector3(-1, 0, 0).applyQuaternion(Q_BITE);
+  const end = new THREE.Vector3(...mouth).addScaledVector(dir, depth);
+  const atMouth = end.clone().addScaledVector(dir, -0.075);
+  const hold = new THREE.Vector3(mouth[0] + 0.03, mouth[1] - 0.24 + 0.004 * Math.sin(v * 2.1), mouth[2] + 0.17);
+  const post = new THREE.Vector3(mouth[0] + 0.07, mouth[1] - 0.19, mouth[2] + 0.17);
+  const c = hold.lerp(atMouth, up).lerp(post, down);
+  return new THREE.Matrix4().compose(c, q, new THREE.Vector3(1, 1, 1));
+};
+
+const endAnya = (v: number): HumanPose => {
+  const body = endBody(v);
+  const bar = endBarM(v);
+  // right hand on the wrapper end; left hand on the far end, then it rips the wrapper and rests in her lap
+  const r = humanArmTo(NOPACK, END_A, 0, body, 1, at(bar, [0.085, -0.012, -0.02]));
+  const k1 = ease(v, UNWRAP[0], TEAR + 0.05);
+  const k2 = ease(v, TEAR + 0.05, UNWRAP[1] + 0.1);
+  const onBar = at(bar, [lerp(-0.06, -0.13, k1), lerp(-0.012, 0.04, k1), lerp(-0.02, 0.03, k1)]);
+  const lap: V3 = [END_A[0] - 0.1, 0.62, END_A[2] + 0.24];
+  const l = humanArmTo(NOPACK, END_A, 0, body, -1, lerp3(onBar, lap, k2));
+  return {...body, armR: r.arm, elbowR: r.elbow, armL: l.arm, elbowL: l.elbow};
 };
 
 // three birds crossing the sunset
@@ -630,16 +682,32 @@ const Birds: React.FC<{v: number}> = ({v}) => (
 
 export const endScene: Scene = {
   view: (v): View => {
-    const h = at(humanHead(NOPACK, END_A, 0, endAnya(v)));
-    if (v < OUT) return follow(v, S('end'), OUT, [0.5, 1.15, 1.75], [0.42, 1.12, 1.45], h, [34, 32], 780, 560);
+    const h = at(humanHead(NOPACK, END_A, 0, endBody(v)));
+    if (v < OUT) return follow(v, S('end'), OUT, [0.6, 1.13, 1.95], [0.5, 1.1, 1.62], h, [38, 35], 650, 560);
     // pull back: the log, the forest, the last light; the question appears
-    const m = mv(v, OUT, E('end') + 0.6, [0.42, 1.12, 1.45], [1.3, 2.0, 5.6], h, h, [32, 40]);
-    return {...m, target: aim(m.pos, [h[0], h[1] - 0.2 * ease(v, OUT, E('end')), h[2]], m.fov, lerp(780, 1100, ease(v, OUT, E('end'))), 560)};
+    const m = mv(v, OUT, E('end') + 0.6, [0.5, 1.1, 1.62], [1.3, 2.0, 5.6], h, h, [35, 40]);
+    return {...m, target: aim(m.pos, [h[0], h[1] - 0.2 * ease(v, OUT, E('end')), h[2]], m.fov, lerp(650, 1100, ease(v, OUT, E('end'))), 560)};
   },
-  probe: (v) => ({face: at(humanHead(NOPACK, END_A, 0, endAnya(v)))}),
+  probe: (v) => {
+    const bar = endBarM(v);
+    const p = endAnya(v);
+    return {
+      face: at(humanHead(NOPACK, END_A, 0, p)),
+      mouth: endMouth(v),
+      barEnd: at(bar, [v > BITE ? 0.075 - 0.15 * 0.65 : -0.075, 0, 0]),
+      barMid: at(bar),
+      handR: at(humanHand(NOPACK, END_A, 0, p, 1)),
+      handL: at(humanHand(NOPACK, END_A, 0, p, -1)),
+    };
+  },
   render: (v) => {
     const open = ease(v, UNWRAP[0], UNWRAP[1]);
     const bitten = v > BITE ? 1 : 0;
+    const bar = endBarM(v);
+    const pos = new THREE.Vector3();
+    const q = new THREE.Quaternion();
+    bar.decompose(pos, q, new THREE.Vector3());
+    const e = new THREE.Euler().setFromQuaternion(q);
     return (
       <>
         <ForestLight center={[0, 0, 0]} sun={[-10, 3.2, -12]} shadowBox={6} k={0.85} />
@@ -648,14 +716,24 @@ export const endScene: Scene = {
         {/* the sun sits low in a gap in the trees, right behind her */}
         <Glow position={[-11, 3.6, -38]} size={18} color="#ffb060" k={0.95} fog={false} />
         <Glow position={[-11, 3.2, -38]} size={6} color="#fff0c0" k={0.9} fog={false} />
+        {/* warm bounce from the sunlit clearing, so her face and the bar read against the glow */}
+        <pointLight position={[0.7, 1.25, 1.3]} color="#ffc896" intensity={1.1} distance={3.2} decay={1.6} />
         <Ground />
         <LeafLitter center={[0, 0, 0]} r={7} n={900} />
         <ForestPatch center={[0, 0, -4]} r0={3.2} r1={16} n={28} seed={44} avoid={(x, z) => (z > -2.2 && Math.abs(x) < 4.2) || Math.abs(x + 0.28 * (0.2 - z) - 0.05) < 2.6} />
         <TreeWall n={150} r0={18} r1={42} seed={13} arc={[4.73, 10.41]} />
         <Log position={LOG} rot={0} len={1.9} />
-        <Human o={NOPACK} position={END_A} rotation={0} pose={endAnya(v)} handR={<HoneyBar position={[0, -0.02, 0.04]} rotation={[0, 0, Math.PI / 2 + 0.3]} open={open} bitten={bitten} />} />
-        <FallingLeaves v={v} center={[0, 0, 0]} box={[7, 5, 7]} n={60} speed={0.8} />
-        <Motes v={v} center={[0, 0.8, 0.5]} box={[4, 2.5, 4]} n={30} />
+        <Human
+          o={NOPACK}
+          position={END_A}
+          rotation={0}
+          pose={endAnya(v)}
+          handL={v > TEAR ? <Ball position={[0, -0.01, 0.03]} scale={[0.024, 0.02, 0.014]} color="#f3a520" look={{rough: 0.45}} /> : null}
+        />
+        <HoneyBar position={[pos.x, pos.y, pos.z]} rotation={[e.x, e.y, e.z]} open={open} bitten={bitten} />
+        {/* leaves drift down behind her, never across her face */}
+        <FallingLeaves v={v} center={[0, 0, -2.7]} box={[8, 5, 4.4]} n={60} speed={0.8} />
+        <Motes v={v} center={[0, 1.0, -0.6]} box={[4, 2, 2.4]} n={30} />
         <Birds v={v} />
       </>
     );

@@ -32,7 +32,7 @@ export const Pic: React.FC<{
 export const Phone: React.FC<{position?: V3; rotation?: V3; scale?: number; color?: string; children?: React.ReactNode}> = ({position, rotation, scale = 1, color = '#1c1d24', children}) => (
   <group position={position} rotation={rotation} scale={scale}>
     <RBox size={[0.075, 0.155, 0.009]} r={0.009} color={color} look={{rough: 0.3, metal: 0.4}} />
-    <group position={[0, 0, 0.0047]}>{children}</group>
+    <group position={[0, 0, 0.0058]}>{children}</group>
     {/* camera bump on the back */}
     <RBox position={[-0.018, 0.055, -0.006]} size={[0.026, 0.03, 0.004]} r={0.006} color="#2a2b33" look={{rough: 0.3}} />
   </group>
@@ -68,10 +68,10 @@ export const HoneyBar: React.FC<{position?: V3; rotation?: V3; scale?: number; o
       {open < 0.5 ? (
         <>
           <RBox size={[0.15, 0.045, 0.02]} r={0.008} color="#f3a520" look={{rough: 0.4}} />
-          <mesh position={[0, 0, 0.0105]} material={m}>
+          <mesh position={[0, 0, 0.0115]} material={m}>
             <planeGeometry args={[0.135, 0.04]} />
           </mesh>
-          <mesh position={[0, 0, -0.0105]} rotation={[0, Math.PI, 0]} material={m}>
+          <mesh position={[0, 0, -0.0115]} rotation={[0, Math.PI, 0]} material={m}>
             <planeGeometry args={[0.135, 0.04]} />
           </mesh>
           {/* crimped ends */}
@@ -81,15 +81,20 @@ export const HoneyBar: React.FC<{position?: V3; rotation?: V3; scale?: number; o
         </>
       ) : (
         <>
-          {/* the bar itself, honey-oat colour, with the wrapper peeled back */}
-          <RBox position={[-(0.15 - len) / 2, 0, 0]} size={[len, 0.04, 0.018]} r={0.008} color="#c98a3e" look={{rough: 0.9}} />
-          {[0, 1, 2, 3].map((k) => (
-            <Ball key={k} position={[-0.05 + k * 0.03 - (0.15 - len) / 2, 0.018, 0.004 * (k % 2)]} scale={[0.008, 0.005, 0.008]} color="#e8c070" shadow={false} />
-          ))}
+          {/* the bar itself, honey-oat colour, with the wrapper peeled back; a bite takes the open (−x) end */}
+          <RBox position={[(0.15 - len) / 2, 0, 0]} size={[len, 0.04, 0.018]} r={0.008} color="#c98a3e" look={{rough: 0.9}} />
+          {[0, 1, 2, 3]
+            .filter((k) => -0.05 + k * 0.03 > 0.075 - len + 0.008)
+            .map((k) => (
+              <Ball key={k} position={[-0.05 + k * 0.03, 0.018, 0.004 * (k % 2)]} scale={[0.008, 0.005, 0.008]} color="#e8c070" shadow={false} />
+            ))}
           <group position={[0.04, 0, 0]}>
             <RBox position={[0.03, 0, 0]} size={[0.07, 0.047, 0.022]} r={0.008} color="#f3a520" look={{rough: 0.4}} />
+            {/* the torn wrapper peels back in two flaps, front and back, like a banana skin */}
             {([1, -1] as const).map((s) => (
-              <RBox key={s} position={[-0.02, 0.022 * s, 0]} rotation={[0, 0, 0.6 * s * open]} size={[0.05, 0.004, 0.02]} r={0.001} color="#f6b52a" />
+              <group key={s} position={[-0.005, 0, 0.0125 * s]} rotation={[0, s * (0.35 + 0.65 * open), 0]}>
+                <RBox position={[-0.019, 0, 0]} size={[0.038, 0.043, 0.003]} r={0.0012} color="#f6b52a" look={{rough: 0.4}} />
+              </group>
             ))}
           </group>
         </>
@@ -185,7 +190,7 @@ export const Plate: React.FC<{position?: V3; food?: number; col?: string}> = ({p
 export const Pot: React.FC<{position?: V3}> = ({position}) => (
   <group position={position}>
     <Cyl position={[0, 0.1, 0]} rt={0.16} rb={0.14} h={0.2} seg={28} color="#c23a2a" look={{rough: 0.35}} />
-    <Cyl position={[0, 0.196, 0]} rt={0.145} rb={0.145} h={0.01} seg={28} color="#a8441c" />
+    <Cyl position={[0, 0.2045, 0]} rt={0.145} rb={0.145} h={0.01} seg={28} color="#a8441c" />
     {([1, -1] as const).map((s) => (
       <Ring key={s} position={[0.175 * s, 0.15, 0]} rotation={[0, Math.PI / 2, 0]} r={0.03} tube={0.008} color="#2a2020" />
     ))}

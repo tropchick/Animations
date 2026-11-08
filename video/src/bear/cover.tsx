@@ -29,15 +29,16 @@ const ANYA_POSE: HumanPose = {
 };
 
 const BEAR_POSE: BearPose = {
-  lean: -0.1,
+  // leaning in over her so his open, grinning mouth clears his belly from the low camera
+  lean: 0.16,
   twist: 0.0,
-  head: [0.45, 0.04, 0.12],
-  jaw: 0.62,
+  head: [0.2, 0.04, 0.12],
+  jaw: 1.08,
   armL: [-2.85, 0.38],
   armR: [-2.85, 0.38],
   elbowL: -0.3,
   elbowR: -0.3,
-  face: {smile: 1.0, happy: 0.2, brow: 0.11, lid: 0, look: [0.06, -0.08], blush: 0.45},
+  face: {smile: 1.0, happy: 0.5, brow: 0.11, lid: 0, look: [0.06, -0.08], blush: 0.45},
   ears: 0.7,
 };
 
