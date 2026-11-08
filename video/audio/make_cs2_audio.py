@@ -110,7 +110,7 @@ SHOTS = [
     ("orbit", P[13].s - 0.1),
     ("xray", P[13].s + 1.5),
     ("mirror", P[14].s - 0.1),
-    ("back", P[17].s - 0.1),
+    ("back", P[17].s + 0.4),
     ("phone", P[18].s + 0.6),
 ]
 
@@ -127,8 +127,8 @@ LIFTOFF = P[12].s + 0.25
 XRAY = P[13].s + 1.8
 DETECT = P[15].s + 0.1
 STAMP = P[16].s + 0.35
-FALL = STAMP + 0.7
-GREEN = P[17].s + 0.25
+FALL = STAMP + 0.45
+GREEN = P[17].s + 0.75
 KILLS = [P[17].s + 1.2 + 0.45 * k for k in range(4)]
 NOTIFY = P[18].s + 1.0
 FINAL = max(P[18].e + 0.4, NOTIFY + 1.6)
