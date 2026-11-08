@@ -39,4 +39,4 @@ python3 tools/three-audit.py ../renders/three-stories.mp4 out/three-review/final
 
 A draft uses the same resumable chunk renderer with `SCALE=0.6666666666666666`. The chunk key automatically invalidates after source/audio/scale changes. Do not run other heavy jobs while it renders. The audit decodes the actual MP4, exports every second and both sides of every shot boundary (also the impact contact frames), then calls `tools/sheet.sh` for four complete pages.
 
-Sync map: `../../../../scripts/three-stories-sync.md`. Review: `../../../../scripts/three-stories-review.md`.
+Sync map: `../../../scripts/three-stories-sync.md`. Review: `../../../scripts/three-stories-review.md`.

@@ -1,0 +1,176 @@
+{
+  "file": "/home/user/Animations/renders/three-stories.mp4",
+  "sample_rate": 48000,
+  "passed": true,
+  "max_shift_ms": 0.0,
+  "events": [
+    {
+      "event": "Касание в хуке",
+      "video_s": 0.7333333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99988
+    },
+    {
+      "event": "Окна в хуке",
+      "video_s": 3.0033333333333334,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99913
+    },
+    {
+      "event": "Луч в хуке",
+      "video_s": 4.583333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99962
+    },
+    {
+      "event": "Штамп «Правда»",
+      "video_s": 5.533333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99979
+    },
+    {
+      "event": "Нарастание тоннеля",
+      "video_s": 12.933333333333334,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99863
+    },
+    {
+      "event": "Череп касается бетона",
+      "video_s": 13.433333333333334,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99973
+    },
+    {
+      "event": "Крошка бетона",
+      "video_s": 13.563333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99889
+    },
+    {
+      "event": "Крошка бетона",
+      "video_s": 13.733333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99847
+    },
+    {
+      "event": "Крошка бетона",
+      "video_s": 13.953333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99972
+    },
+    {
+      "event": "Крошка бетона",
+      "video_s": 14.173333333333334,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99983
+    },
+    {
+      "event": "Торможение и рывок салона",
+      "video_s": 17.683333333333334,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99985
+    },
+    {
+      "event": "Кепка падает",
+      "video_s": 18.583333333333336,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99925
+    },
+    {
+      "event": "Дальний гром",
+      "video_s": 23.183333333333334,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99999
+    },
+    {
+      "event": "Посуда скользит",
+      "video_s": 26.583333333333336,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99997
+    },
+    {
+      "event": "Стекло в диван",
+      "video_s": 29.083333333333336,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99636
+    },
+    {
+      "event": "Отрыв стен",
+      "video_s": 29.533333333333335,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99952
+    },
+    {
+      "event": "Отрыв крыши",
+      "video_s": 30.033333333333335,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99961
+    },
+    {
+      "event": "Лампа в макушку",
+      "video_s": 31.933333333333334,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99975
+    },
+    {
+      "event": "Босой шаг по гравию",
+      "video_s": 37.83333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99878
+    },
+    {
+      "event": "Босой шаг по гравию",
+      "video_s": 38.303333333333335,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99878
+    },
+    {
+      "event": "Щелчок лючка",
+      "video_s": 42.28333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99742
+    },
+    {
+      "event": "Пучок входит в затылок",
+      "video_s": 45.93333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99965
+    },
+    {
+      "event": "Белая вспышка",
+      "video_s": 47.26333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.9994
+    },
+    {
+      "event": "Диплом в руках",
+      "video_s": 53.53333333333333,
+      "aac_lag_samples": 0,
+      "aac_lag_frames": 0.0,
+      "correlation": 0.99326
+    }
+  ]
+}

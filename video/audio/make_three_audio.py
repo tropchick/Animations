@@ -28,14 +28,25 @@ for a,b,w in raw_words:
  if w=='Бессознание':
   ws.extend([[a+shift,a+shift+.22,'Без'],[a+shift+.22,b+shift,'сознания']])
  else: ws.append([a+shift,b+shift,fix.get(w,w)])
-# Short, stable phrase plates: no line reflows while highlighting words.
-words=[];g=0;buf=[]
-for i,(a,b,w) in enumerate(ws):
- buf.append([a,b,w,g])
- stop=w[-1:] in '.?!,' or len(buf)>=5 or (i+1<len(ws) and ws[i+1][0]-b>.30)
- if stop:
-  words.extend(buf);buf=[];g+=1
-if buf: words.extend(buf)
+# Semantic phrase boundaries, preserving faster-whisper timing for every token.
+phrases=[
+ 'Что если высунуть голову в тоннеле?', 'Попасть в торнадо?', 'Сунуть голову в ускоритель?',
+ 'Всё по реальным случаям.', 'Автобус 60 в час.', 'Витя высунул голову.', 'Въезд в тоннель.',
+ 'Это как упасть', 'головой вниз с пятого этажа.', 'Череп не выдерживает.',
+ 'Такой удар почти всегда смертельный.', 'Миссури 2006.', 'Торнадо сносит вагончик',
+ 'вместе с Мэттом.', 'Стекло летит как дробь.', 'Лампа прямо в макушку.',
+ 'Без сознания его несёт', '400 метров.', 'Ни одного перелома,', 'только пять скоб на голове.',
+ 'Мировой рекорд.', 'Протвино 1978.', 'Физик Бугорский', 'заглядывает в ускоритель.',
+ 'Пучок протонов проходит', 'сквозь голову.', 'Вспышка ярче тысячи солнц.', 'Боли нет.',
+ 'Половину лица парализовало.', 'Но он выжил', 'и защитил диссертацию.'
+]
+words=[];idx=0
+for g,phrase in enumerate(phrases):
+ for token in phrase.split():
+  a,b,actual=ws[idx]
+  assert token==actual,(idx,token,actual)
+  words.append([a,b,actual,g]);idx+=1
+assert idx==len(ws)
 json_data={'duration':DUR,'offset':OFF,'voiceGap':{'source':GAP_AT,'silence':GAP},'words':words,'groups':sorted(set(w[3] for w in words))}
 (ROOT/'src/three/cues.json').write_text(json.dumps(json_data,ensure_ascii=False,indent=2))
 m=Mix(DUR+OFF)
