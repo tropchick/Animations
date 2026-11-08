@@ -35,7 +35,7 @@ export const Ground: React.FC = () => (
     {([1, -1] as const).map((s) => (
       <group key={s}>
         <Block position={[0, 0.07, s * (ROAD_W / 2 + WALK_W / 2)]} size={[200, 0.14, WALK_W]} color={WALK} look={{rough: 0.95}} />
-        <Block position={[0, 0.075, s * (ROAD_W / 2 + 0.09)]} size={[200, 0.15, 0.18]} color={CURB} look={{rough: 0.9}} />
+        <Block position={[0, 0.075, s * (ROAD_W / 2 + 0.08)]} size={[200, 0.15, 0.18]} color={CURB} look={{rough: 0.9}} />
       </group>
     ))}
     {/* the cross street cuts the south sidewalk: patch it with asphalt */}

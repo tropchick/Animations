@@ -22,7 +22,7 @@ export const QuietFloor: React.FC<{withAudio?: boolean; cam?: View; at?: number;
     );
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
-      <AbsoluteFill style={{filter: 'saturate(1.1) contrast(1.06)'}}>
+      <AbsoluteFill style={{filter: 'brightness(1.12) saturate(1.1) contrast(1.06)'}}>
         <ThreeCanvas width={width} height={height} flat shadows gl={{logarithmicDepthBuffer: true, antialias: true}} camera={{fov: 40, position: [0, 1.6, 2]}}>
           <World v={v} view={cam ? () => cam : undefined} />
         </ThreeCanvas>

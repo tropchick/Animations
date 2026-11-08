@@ -169,7 +169,7 @@ export const Radio: React.FC<{position: V3; rotation?: V3; on?: number; v?: numb
         <planeGeometry args={[0.2, 0.07]} />
       </mesh>
     )}
-    <Block position={[-0.08 + 0.02 * Math.sin(v * 0.2), 0.03, 0.144]} size={[0.006, 0.07, 0.002]} color="#c8281e" shadow={false} />
+    <Block position={[-0.163 + 0.004 * Math.sin(v * 0.2), 0.03, 0.144]} size={[0.005, 0.07, 0.002]} color="#c8281e" shadow={false} />
     {[0.12, 0.19].map((x) => (
       <Cyl key={x} position={[x, 0.02, 0.15]} rotation={[Math.PI / 2, 0, 0]} rt={0.025} rb={0.028} h={0.03} seg={16} color="#1e1e1e" />
     ))}
@@ -404,7 +404,7 @@ export const House: React.FC<{position?: V3; s?: HouseState}> = ({position = [0,
         <Block position={[0, DOOR_H / 2, 0]} size={[DOOR[1] - DOOR[0] - 0.02, DOOR_H - 0.01, 0.06]} color="#4a3428" />
         <Ball position={[0.36, 1.0, 0.05]} scale={0.03} color="#c8a050" look={{metal: 0.7, rough: 0.3}} />
         <Ball position={[0.36, 1.0, -0.05]} scale={0.03} color="#c8a050" look={{metal: 0.7, rough: 0.3}} />
-        <Block position={[0, DOOR_H + 0.05, 0]} size={[1.2, 0.1, T + 0.04]} color="#d8d2c4" />
+        <Block position={[0, DOOR_H + 0.04, 0]} size={[1.2, 0.1, T + 0.04]} color="#d8d2c4" />
       </group>
       <Block position={[0, 0.12, FRONT + 0.75]} size={[2.0, 0.24, 1.5]} color="#6a6460" />
       <Sign text="ТИХАЯ, 9" position={[1.0, 2.85, FRONT + 0.012]} size={[0.9, 0.3]} bg="#1f4a8a" fg="#ffffff" glow={0.4} />

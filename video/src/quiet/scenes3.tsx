@@ -298,7 +298,7 @@ export const wallScene: Scene = {
     const t = tIn('wall', v);
     const L = shotLen('wall');
     const mid = H([WALL_TEXT.pos[0], WALL_TEXT.pos[1], WALL_TEXT.pos[2]]);
-    if (t < WA_CUT) return mv(t, 0, WA_CUT, H([-0.6, F2 + 1.35, 2.45]), H([-0.3, F2 + 1.3, 2.3]), mid, mid, 50);
+    if (t < WA_CUT) return mv(t, 0, WA_CUT, H([-0.6, F2 + 1.75, 2.45]), H([-0.3, F2 + 1.7, 2.3]), mid, mid, 50);
     return mv(t, WA_CUT, L, H([1.75, F2 + 1.05, 1.05]), H([1.6, F2 + 1.03, 1.15]), H([0.9, F2 + 1.0, 1.7]), H([0.9, F2 + 1.0, 1.7]), [34, 28]);
   },
   render: (v) => {
