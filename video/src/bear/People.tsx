@@ -26,6 +26,8 @@ export type Outfit = {
   tie?: string;
   backpack?: boolean;
   scale?: number;
+  sclera?: string; // eye whites (zombies: milky grey)
+  noBlush?: boolean;
 };
 
 export const ANYA: Outfit = {
@@ -140,7 +142,8 @@ export const faceStyle = (o: Outfit, R: number): FaceStyle => ({
   nose: {color: o.skin, r: [R * 0.085, R * 0.07, R * 0.08], up: -0.27},
   embed: 0.36,
   irisK: 0.62,
-  blush: '#ff8a80',
+  blush: o.noBlush ? undefined : '#ff8a80',
+  sclera: o.sclera,
 });
 
 export const Hair: React.FC<{o: Outfit; R: number; p: HumanPose}> = ({o, R, p}) => {
