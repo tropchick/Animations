@@ -11,6 +11,10 @@ import {SlimeEp2} from './SlimeEp2';
 import {DURATION_S as SLIME2_S} from './slime/ep2/cues';
 import {LastEp1} from './LastEp1';
 import {LastDebug} from './last/Debug';
+import {BearLab} from './BearLab';
+import {BearChain} from './BearChain';
+import {BearCover} from './BearCover';
+import {DURATION_S as BEAR_S} from './bear/cues';
 import {LastCover} from './LastCover';
 import {DURATION_S as LAST1_S} from './last/cues';
 import {SlimeEp3} from './SlimeEp3';
@@ -318,6 +322,9 @@ export const RemotionRoot = () => (
     />
     <Composition id="LastCover" component={LastCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="LastDebug" component={LastDebug} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{v: 0}} />
+    <Composition id="BearLab" component={BearLab} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{}} />
+    <Composition id="BearCover" component={BearCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition id="BearChain" component={BearChain} durationInFrames={Math.round(BEAR_S * FPS) + 1} fps={FPS} width={1080} height={1920} defaultProps={{withAudio: false}} />
     <Composition
       id="SlimeCover3"
       component={SlimeCover}

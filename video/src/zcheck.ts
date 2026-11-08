@@ -202,6 +202,7 @@ const analyse = (scene: THREE.Scene, cam: THREE.PerspectiveCamera, renderer: THR
   const seen = new Set<string>();
   const hits = new Map<string, ZHit>();
   const ray = new THREE.Raycaster();
+  ray.camera = cam; // sprites (glows) need the camera to be raycast
   for (const [key, list] of buckets) {
     // the same plane may straddle two offset buckets: compare with the next one up as well
     const [nk, dk, cell] = key.split('|');
