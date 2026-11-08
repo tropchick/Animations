@@ -1,11 +1,12 @@
 import React,{useMemo} from 'react';
 import * as THREE from 'three';
+import {useCurrentFrame} from 'remotion';
 import {useThree} from '@react-three/fiber';
 import {Ball,Block,Cyl,Pill,RBox,Ring,Glow,mat,G} from '../bear/kit';
-import {Human,Outfit,HumanPose,HOST,MANAGER,walkPose} from '../bear/People';
+import {Human as BearHuman,Outfit,HumanPose,HOST,MANAGER,walkPose} from '../bear/People';
 import {humanHead,humanArmTo,at} from '../bear/rig';
 import {V3,mix,ease,hash} from './timing';
-export {Ball,Block,Cyl,Pill,RBox,Ring,Glow,mat,G,Human,walkPose,humanHead,humanArmTo,at};
+export {Ball,Block,Cyl,Pill,RBox,Ring,Glow,mat,G,walkPose,humanHead,humanArmTo,at};
 export type {HumanPose,Outfit};
 export const VITYA:Outfit={...HOST,top:'#d98032',hair:'#563626',beard:undefined,legs:'#344861',iris:'#536b71'};
 export const MATT:Outfit={...HOST,top:'#89b5a0',hair:'#8d5a34',beard:undefined,legs:'#d8c2a4',shoes:'#e3b18f',topStyle:'cardigan',shirt:'#eadcc4'};
@@ -21,3 +22,6 @@ export const Label:React.FC<{text:string;position:V3;w?:number;h?:number;fg?:str
 export const Dust:React.FC<{t:number;origin:V3;count?:number;color?:string;scale?:number}>=({t,origin,count=22,color='#c2c7bc',scale=1})=>t<0?null:<group position={origin}>{Array.from({length:count},(_,i)=>{const h=hash(i+5),a=hash(i+21)*6.28;const age=Math.min(t,2);return <Ball key={i} position={[Math.cos(a)*age*(.3+h)*scale,Math.sin(a)*age*.5*scale-age*age*.2,(h-.4)*age*scale]} scale={(.02+hash(i+90)*.055)*scale*(1+age*.8)} color={color} look={{opacity:Math.max(0,.45-age*.2),basic:true}} shadow={false} seg={12}/>})}</group>;
 export const Rain:React.FC<{t:number;count?:number}>=({t,count=60})=><group>{Array.from({length:count},(_,i)=><Pill key={i} position={[(hash(i)-.5)*15,((hash(i+10)*8-t*7)%8+8)%8,(hash(i+100)-.5)*12]} rotation={[0,0,-.22]} r={.005} len={.12+hash(i+50)*.12} color="#b4dcdf" look={{basic:true,opacity:.35}} shadow={false}/>)}</group>;
 export const Ground:React.FC<{color?:string}>=({color='#586c56'})=><RBox position={[0,-.15,0]} size={[80,.2,80]} r={.01} color={color}/>;
+
+export const blink=(t:number,phase=0)=>{const q=((t+phase)%3.7+3.7)%3.7;return q<.18?Math.sin(q/.18*Math.PI)**2:0};
+export const Human:React.FC<React.ComponentProps<typeof BearHuman>>=(props)=>{const t=useCurrentFrame()/30;const p=props.pose??{},phase=(props.position?.[0]??0)*.71;const h=p.head??[0,0,0];return <BearHuman {...props} pose={{...p,bob:(p.bob??0)+.003*Math.sin(t*2.3+phase),head:[h[0]+.012*Math.sin(t*1.7+phase),h[1]+.025*Math.sin(t*.9+phase),h[2]],face:{...p.face,lid:Math.max(p.face?.lid??0,blink(t,phase))}}}/>};

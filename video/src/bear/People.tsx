@@ -123,7 +123,7 @@ export type HumanPose = {
 
 const CLOTH = (c: string) => ({rim: '#ffffff', rimK: 0.12, rimPow: 2.6, rough: 0.85});
 
-const faceStyle = (o: Outfit, R: number): FaceStyle => ({
+export const faceStyle = (o: Outfit, R: number): FaceStyle => ({
   R,
   skin: o.skin,
   eyeR: R * 0.27,
@@ -143,7 +143,7 @@ const faceStyle = (o: Outfit, R: number): FaceStyle => ({
   blush: '#ff8a80',
 });
 
-const Hair: React.FC<{o: Outfit; R: number; p: HumanPose}> = ({o, R, p}) => {
+export const Hair: React.FC<{o: Outfit; R: number; p: HumanPose}> = ({o, R, p}) => {
   const c = o.hair;
   const look = {rim: '#ffd8b0', rimK: 0.25, rough: 0.7};
   const swing = p.hairSwing ?? 0;

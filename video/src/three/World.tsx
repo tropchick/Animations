@@ -17,8 +17,8 @@ export const World:React.FC<{v:number;panel?:'bus'|'storm'|'lab';interior?:boole
  case 'busHit':return <BusImpact v={v}/>;
  case 'busInside':return <BusInside v={v}/>;
  case 'busSign':return <BusSign v={v}/>;
- case 'stormCalm':return interior?<StormInterior v={v} calm/>:<StormExterior v={v} calm/>;
- case 'stormBreak':return v<29.05?(interior?<StormInterior v={v}/>:<StormExterior v={v}/>):v<29.55?<StormInterior v={v}/>:<StormExterior v={v}/>;
+ case 'stormCalm':return <StormExterior v={v} calm/>;
+ case 'stormBreak':return v<28.65?<StormExterior v={v} calm/>:v<29.55?<StormInterior v={v}/>:<StormExterior v={v}/>;
  case 'stormLamp':return <StormLamp v={v}/>;
  case 'flight':return <Flight v={v}/>;
  case 'wake':return <Field v={v}/>;

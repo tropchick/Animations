@@ -52,7 +52,7 @@ const Spot: React.FC<{yaw: number; pitch: number; r: number; children: React.Rea
   </group>
 );
 
-const Eye: React.FC<{s: FaceStyle; side: 1 | -1; e: Expr}> = ({s, side, e}) => {
+export const Eye: React.FC<{s: FaceStyle; side: 1 | -1; e: Expr}> = ({s, side, e}) => {
   const r = s.eyeR;
   const lidK = (side === 1 ? e.lidR : e.lidL) ?? e.lid ?? 0;
   const wide = e.wide ?? 0;
@@ -93,7 +93,7 @@ const Eye: React.FC<{s: FaceStyle; side: 1 | -1; e: Expr}> = ({s, side, e}) => {
   );
 };
 
-const Brow: React.FC<{s: FaceStyle; side: 1 | -1; e: Expr}> = ({s, side, e}) => {
+export const Brow: React.FC<{s: FaceStyle; side: 1 | -1; e: Expr}> = ({s, side, e}) => {
   const up = (e.brow ?? 0) + 0.04 * (e.wide ?? 0);
   const inner = e.browIn ?? 0;
   const pitch = s.eyeUp + (s.eyeR / s.R) * 1.75 + up;
