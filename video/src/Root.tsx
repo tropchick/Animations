@@ -16,6 +16,7 @@ import {LastDebug} from './last/Debug';
 import {BearLab} from './BearLab';
 import {QuietLab} from './QuietLab';
 import {QuietFloor} from './QuietFloor';
+import {QuietCover} from './QuietCover';
 import {DURATION_S as QUIET_S} from './quiet/cues';
 import {BearChain} from './BearChain';
 import {BearCover} from './BearCover';
@@ -356,6 +357,7 @@ export const RemotionRoot = () => (
     <Composition id="LastCover" component={LastCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="LastDebug" component={LastDebug} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{v: 0}} />
     <Composition id="QuietFloor" component={QuietFloor} durationInFrames={Math.round(QUIET_S * FPS) + 1} fps={FPS} width={1080} height={1920} defaultProps={{withAudio: false}} />
+    <Composition id="QuietCover" component={QuietCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="QuietLab" component={QuietLab} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{}} />
     <Composition id="BearLab" component={BearLab} durationInFrames={1} fps={FPS} width={1080} height={1920} defaultProps={{}} />
     <Composition id="BearCover" component={BearCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
