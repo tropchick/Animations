@@ -49,3 +49,17 @@ export const walkTo = (v: number, t0: number, t1: number, a: V3, b: V3, stride =
 };
 
 export {Human};
+
+import {humanArmTo} from '../bear/rig';
+import {local as toWorld} from '../bear/common';
+import type {HumanPose, Outfit} from '../bear/People';
+// carrying the box in front of the chest: both hands IK'd onto its sides; returns the pose and the box's world spot
+export const holdBox = (o: Outfit, pos: V3, yaw: number, p: HumanPose, at: V3 = [0, 0.98, 0.3]): {pose: HumanPose; box: V3} => {
+  const s = o.scale ?? 1;
+  const c = toWorld(pos, yaw, [at[0] * s, at[1] * s, at[2] * s]);
+  const L = toWorld(pos, yaw, [(at[0] - 0.17) * s, at[1] * s, at[2] * s]);
+  const R = toWorld(pos, yaw, [(at[0] + 0.17) * s, at[1] * s, at[2] * s]);
+  const ar = humanArmTo(o, pos, yaw, p, 1, R);
+  const al = humanArmTo(o, pos, yaw, p, -1, L);
+  return {pose: {...p, armR: ar.arm, elbowR: ar.elbow, armL: al.arm, elbowL: al.elbow}, box: c};
+};

@@ -154,3 +154,16 @@ export const OpenCan: React.FC<{position?: V3}> = ({position}) => (
     <Ball position={[0.0, 0.1, 0]} scale={[0.02, 0.006, 0.02]} color="#9a5a2a" shadow={false} />
   </group>
 );
+
+// the writing hand: a fist holding the marker (marker tip at the origin, pointing −y), cuff going up-back
+export const WritingHand: React.FC<{position?: V3; rotation?: V3}> = ({position, rotation}) => (
+  <group position={position} rotation={rotation}>
+    <Marker position={[0, 0, 0]} />
+    <group position={[0, 0.06, 0]}>
+      <RBox position={[0.012, 0, 0]} size={[0.07, 0.06, 0.085]} r={0.025} color={ARTEM.skin} look={{rough: 0.6}} />
+      <Pill position={[-0.022, -0.01, 0.03]} rotation={[0.3, 0, 0.6]} r={0.012} len={0.03} color={ARTEM.skin} look={{rough: 0.6}} />
+      <Pill position={[0.03, 0.06, -0.02]} rotation={[0.5, 0, -0.5]} r={0.03} len={0.06} color={ARTEM.skin} />
+      <Cyl position={[0.06, 0.11, -0.05]} rotation={[0.5, 0, -0.5]} rt={0.05} rb={0.052} h={0.09} seg={20} color={ARTEM.top} look={{rough: 0.85}} />
+    </group>
+  </group>
+);

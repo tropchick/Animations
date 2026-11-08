@@ -15,7 +15,7 @@ export const HOUSE: V3 = [-14, 0, -13.2];
 export const LAMP_FAR: V3 = [-13.5, 0.14, 4.5]; // lamp post index 5 // the lamp the first one stands under (south side, across from the house)
 export const PHARMACY: V3 = [9.5, 0, -10.5];
 export const SHOP: V3 = [19, 0, -10.5];
-export const SCHOOL: V3 = [-9, 0, 22];
+export const SCHOOL: V3 = [-12.6, 0, 26]; // front faces +x (the cross street)
 export const CROSS: V3 = [0, 0, 0];
 
 const ASPHALT = '#2c3038';
@@ -353,7 +353,7 @@ export const PharmacyCross: React.FC<{position: V3; on: number; v: number}> = ({
 
 // the school: three storeys, a clock over the door, a fence
 export const School: React.FC<{position: V3; v?: number}> = ({position}) => (
-  <group position={position}>
+  <group position={position} rotation={[0, Math.PI / 2, 0]}>
     <Block position={[0, 5, 0]} size={[22, 10, 9]} color="#b88a6a" look={{rough: 0.95}} />
     <Block position={[0, 10.1, 0]} size={[22.3, 0.25, 9.3]} color="#6a5048" />
     {[1.8, 5.0, 8.2].map((y) =>
@@ -373,12 +373,12 @@ export const School: React.FC<{position: V3; v?: number}> = ({position}) => (
 // moonlit night: dark blue sky dome with a moon, cold hemisphere light, moon shadows
 export const NightLight: React.FC<{center?: V3; box?: number; k?: number; moon?: V3}> = ({center = [0, 0, 0], box = 14, k = 1, moon = [-12, 22, -16]}) => (
   <>
-    <hemisphereLight color="#6a80b8" groundColor="#1c2030" intensity={1.05 * k} />
+    <hemisphereLight color="#6a80b8" groundColor="#1c2030" intensity={1.3 * k} />
     <directionalLight
       position={[center[0] + moon[0], center[1] + moon[1], center[2] + moon[2]]}
       target-position={center}
       color="#a8bcff"
-      intensity={1.5 * k}
+      intensity={1.8 * k}
       castShadow
       shadow-mapSize={[2048, 2048]}
       shadow-camera-left={-box}

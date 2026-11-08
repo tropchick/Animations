@@ -511,7 +511,7 @@ export const THREAD_PTS: V3[] = [
   [0.36, F1 + 1.0, FRONT - T - 0.06],
   [-1.8, F1 + 2.2, 0.8],
   [-2.8, F2 + 0.02, HATCH[3] - 0.02],
-  [-2.6, F2 + 0.35, 0.9],
+  [-2.42, F2 + 0.42, 1.05],
 ];
 const Thread: React.FC<{k: number; tug?: number}> = ({k, tug = 0}) => {
   const pts = THREAD_PTS.map((p) => new THREE.Vector3(...p));
