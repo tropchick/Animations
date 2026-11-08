@@ -147,13 +147,28 @@ const Blanket: React.FC<{h: Hole; z: number; color: string; drawn?: number; part
 
 // ---------------------------------------------------------------- props inside
 
+// the lit dial: amber scale with ticks and the big «91.4»
+const drawDial = (g: CanvasRenderingContext2D, W: number, H: number) => {
+  g.fillStyle = '#e8a040';
+  g.fillRect(0, 0, W, H);
+  g.fillStyle = '#3a2408';
+  for (let i = 0; i <= 20; i++) g.fillRect(12 + i * ((W - 24) / 20), 0, 3, i % 5 ? H * 0.16 : H * 0.28);
+  g.font = `700 ${Math.round(H * 0.62)}px ${COND}`;
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.fillText('91.4', W / 2, H * 0.62);
+};
 export const Radio: React.FC<{position: V3; rotation?: V3; on?: number; v?: number}> = ({position, rotation, on = 0, v = 0}) => (
   <group position={position} rotation={rotation}>
     <RBox size={[0.46, 0.22, 0.28]} r={0.02} color="#4a4e44" look={{rough: 0.6, metal: 0.2}} />
     {/* dial window */}
-    <mesh position={[-0.08, 0.03, 0.141]} material={mat(on > 0.5 ? '#ffb24a' : '#3a3424', {basic: true})}>
-      <planeGeometry args={[0.2, 0.07]} />
-    </mesh>
+    {on > 0.5 ? (
+      <Pic size={[0.2, 0.07]} res={[400, 140]} k="radio_dial_914" draw={drawDial} position={[-0.08, 0.03, 0.141]} />
+    ) : (
+      <mesh position={[-0.08, 0.03, 0.141]} material={mat('#3a3424', {basic: true})}>
+        <planeGeometry args={[0.2, 0.07]} />
+      </mesh>
+    )}
     <Block position={[-0.08 + 0.02 * Math.sin(v * 0.2), 0.03, 0.144]} size={[0.006, 0.07, 0.002]} color="#c8281e" shadow={false} />
     {[0.12, 0.19].map((x) => (
       <Cyl key={x} position={[x, 0.02, 0.15]} rotation={[Math.PI / 2, 0, 0]} rt={0.025} rb={0.028} h={0.03} seg={16} color="#1e1e1e" />
@@ -162,7 +177,7 @@ export const Radio: React.FC<{position: V3; rotation?: V3; on?: number; v?: numb
     {/* bare wires and a coil (home-made) */}
     <Ring position={[0.1, 0.13, -0.05]} rotation={[0, 0, 0]} r={0.05} tube={0.006} color="#c87a2a" />
     <Pill position={[-0.15, 0.4, -0.08]} rotation={[0, 0, -0.18]} r={0.004} len={0.5} color="#a0a0a0" shadow={false} />
-    {on > 0.5 ? <Glow position={[-0.08, 0.03, 0.18]} size={0.35} color="#ffb24a" k={0.7} /> : null}
+    {on > 0.5 ? <Glow position={[-0.08, 0.03, 0.18]} size={0.22} color="#ffb24a" k={0.35} /> : null}
   </group>
 );
 

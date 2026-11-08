@@ -4,6 +4,7 @@ import {Shot, V3, shotAt} from './cues';
 import type {Scene} from './common';
 import * as s1 from './scenes1';
 import * as s2 from './scenes2';
+import * as s3 from './scenes3';
 
 const SCENES: Partial<Record<Shot, Scene>> = {
   door: s1.doorScene,
@@ -25,6 +26,16 @@ const SCENES: Partial<Record<Shot, Scene>> = {
   pThread: s2.pThreadScene,
   pExit: s2.pExitScene,
   pFood: s2.pFoodScene,
+  knock: s3.knockScene,
+  slit: s3.slitScene,
+  whisper: s3.whisperScene,
+  crowd: s3.crowdScene,
+  radio: s3.radioScene,
+  wall: s3.wallScene,
+  dawn: s3.dawnScene,
+  change: s3.changeScene,
+  palm2: s3.palm2Scene,
+  road: s3.roadScene,
 };
 export {SCENES};
 
