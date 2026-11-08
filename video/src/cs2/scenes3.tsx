@@ -123,12 +123,6 @@ const ToyEarth: React.FC<{r: number; spin: number; position?: V3}> = ({r, spin, 
       const e = new THREE.Euler().setFromQuaternion(q);
       return <Ball key={i} position={[c.d[0] * r * Math.sqrt(1 - Math.max(c.s[0], c.s[1]) ** 2 / 25), c.d[1] * r * Math.sqrt(1 - Math.max(c.s[0], c.s[1]) ** 2 / 25), c.d[2] * r * Math.sqrt(1 - Math.max(c.s[0], c.s[1]) ** 2 / 25)]} rotation={[e.x, e.y, e.z]} scale={[(c.s[0] * r) / 5, (c.s[1] * r) / 5, (c.s[2] * r) / 5]} color={i % 3 ? '#6fbf73' : '#c8b878'} look={{rough: 0.8}} />;
     })}
-    {Array.from({length: 9}, (_, i) => {
-      const d = CONTINENTS[(i * 3) % CONTINENTS.length].d;
-      const off: V3 = [d[0] + 0.2 * Math.sin(i), d[1] + 0.15, d[2] + 0.2 * Math.cos(i)];
-      const l = Math.hypot(...off);
-      return <Ball key={`c${i}`} position={[(off[0] / l) * r * 1.05, (off[1] / l) * r * 1.05, (off[2] / l) * r * 1.05]} scale={[(0.7 * r) / 5, (0.25 * r) / 5, (0.45 * r) / 5]} color="#ffffff" look={{rough: 1}} shadow={false} />;
-    })}
   </group>
 );
 
@@ -155,7 +149,7 @@ export const orbitScene: Scene = {
         const ground: V3 = [(p[0] / l) * EARTH_R, (p[1] / l) * EARTH_R, (p[2] / l) * EARTH_R];
         return (
           <group key={i}>
-            <Shield position={p} rotation={[0, yaw, 0]} size={0.8} wings={1} mood={{look: [0, -0.3]}} />
+            <Shield position={p} rotation={[0, yaw, 0]} size={1.05} wings={1} mood={{look: [0, -0.3]}} />
             <Beam from={p} to={ground} r={0.9} k={0.9} />
           </group>
         );
@@ -180,12 +174,12 @@ const House: React.FC<{p: V3; c: string; roof: string; yaw: number; see: number;
   const look = op < 1 ? {opacity: op, rough: 0.9} : {rough: 0.9};
   return (
     <group position={p} rotation={[0, yaw, 0]}>
-      <Block position={[0, 0.01, 0]} size={[2.1, 0.02, 2.1]} color="#b89a7a" />
+      <Block position={[0, 0.006, 0]} size={[2.06, 0.012, 2.06]} color="#b89a7a" />
       {/* four walls, each its own slab so the inside shows */}
-      <Block position={[0, 1.0, 1.0]} size={[2.1, 2.0, 0.1]} color={c} look={look} />
-      <Block position={[0, 1.0, -1.0]} size={[2.1, 2.0, 0.1]} color={c} look={look} />
-      <Block position={[1.0, 1.0, 0]} size={[0.1, 2.0, 1.9]} color={c} look={look} />
-      <Block position={[-1.0, 1.0, 0]} size={[0.1, 2.0, 1.9]} color={c} look={look} />
+      <Block position={[0, 1.004, 1.0]} size={[2.1, 1.992, 0.1]} color={c} look={look} />
+      <Block position={[0, 1.004, -1.0]} size={[2.1, 1.992, 0.1]} color={c} look={look} />
+      <Block position={[1.0, 1.004, 0]} size={[0.1, 1.992, 1.9]} color={c} look={look} />
+      <Block position={[-1.0, 1.004, 0]} size={[0.1, 1.992, 1.9]} color={c} look={look} />
       {op >= 1 ? (
         <>
           <RBox position={[-0.45, 1.15, 1.06]} size={[0.5, 0.5, 0.03]} r={0.02} color="#9ad0f0" />
@@ -235,8 +229,8 @@ const fallOf = (v: number) => {
 
 export const mirrorScene: Scene = {
   view: (v): View => {
-    if (v < DETECT - 0.3) return mv(v, S('mirror'), DETECT - 0.3, [1.6, 0.9, 4.6], [0.95, 0.55, 3.55], [0, 0.1, -1.2], [0, 0.05, -1.4], [42, 40], 0.3);
-    if (v < STAMP - 0.75) return mv(v, DETECT - 0.3, STAMP - 0.75, [0.95, 0.55, 3.55], [0.75, 0.45, 3.2], [0, 0.05, -1.4], [0, 0.05, -1.5], [40, 36]);
+    if (v < DETECT - 0.3) return mv(v, S('mirror'), DETECT - 0.3, [2.3, 1.0, 5.2], [1.9, 0.6, 4.4], [-0.2, 0.1, -1.3], [-0.2, 0.05, -1.5], [42, 40], 0.3);
+    if (v < STAMP - 0.75) return mv(v, DETECT - 0.3, STAMP - 0.75, [1.9, 0.6, 4.4], [1.5, 0.45, 3.6], [-0.2, 0.05, -1.5], [-0.15, 0.05, -1.6], [40, 36]);
     return mv(v, STAMP - 0.75, E('mirror'), [1.35, 0.35, 0.35], [1.6, 0.3, 0.1], [0, 0.0, 1.6], [0, -0.35, 1.7], [40, 46]);
   },
   shakes: [[STAMP, 0.7]],
@@ -266,10 +260,10 @@ export const mirrorScene: Scene = {
           <Cyl position={[0, -2.2, -0.2]} rt={0.05} rb={0.05} h={2.0} seg={8} color="#c8c8d0" />
         </group>
         {/* the reflection (a mirrored twin behind the glass) */}
-        <Shield position={REFL} rotation={[0, 0, 0]} size={0.9} wings={0.8} mood={mood} outline={out * (1 - dead * 0.3)} />
+        <Shield position={REFL} rotation={[0, 0, 0]} size={0.9} wings={0} mood={mood} outline={out * (1 - dead * 0.3)} />
         {/* the real one, falling after the ban */}
         <group position={[REAL[0], REAL[1] + f.dy, REAL[2] + f.dz]} rotation={[f.spin, 0, f.spin * 0.6]}>
-          <Shield rotation={[0, Math.PI, 0]} size={0.9} wings={0.8} mood={mood} />
+          <Shield rotation={[0, Math.PI, 0]} size={0.9} wings={0} mood={mood} />
         </group>
       </>
     );

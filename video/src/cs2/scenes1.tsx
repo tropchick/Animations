@@ -313,7 +313,7 @@ const ARENA_FANS = blobFans([0, 0, 4.4], 2.8, 80, 7, [0, 0, 0]).filter((f) => f.
 export const arenaScene: Scene = {
   view: (v): View => {
     if (v < BOTS_IN - 0.15) return mv(v, S('arena'), BOTS_IN - 0.15, [0.2, 2.7, 5.4], [0.5, 2.35, 3.9], [0, 1.45, -0.4], [0, 1.4, -0.5], [44, 42], 0.3);
-    return follow(v, BOTS_IN - 0.15, E('arena'), [-1.5, 1.25, 2.7], [-0.8, 1.15, 2.3], [0, 1.75, SEAT_Z], [44, 42], 1060, 540, 0.2);
+    return follow(v, BOTS_IN - 0.15, E('arena'), [-1.4, 1.35, 1.95], [-0.8, 1.25, 1.65], [0, 1.75, SEAT_Z], [44, 42], 1060, 540, 0.2);
   },
   shakes: [
     [SEATS_BAN, 0.25],
