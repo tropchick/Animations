@@ -1,0 +1,85 @@
+{
+ "portal": {
+  "model": "veo-3-1",
+  "input": {
+   "prompt": "Street-level shot of a wide Moscow city avenue in daytime with old Stalin-era buildings. Above the rooftops a huge glowing green swirling portal tears open in the sky, lightning crackling at its edges. Small grey four-legged alien creatures pour out of it and drop onto the street. People holding laptops run away in panic. Handheld camera slowly pushing in. Vertical 9:16 frame. Photorealistic, cinematic, natural colors. No text, no subtitles, no logos, no speech, no music.",
+   "model": "veo3_fast",
+   "aspect_ratio": "9:16",
+   "resolution": "720p",
+   "duration": 8,
+   "generation_type": "TEXT_2_VIDEO"
+  }
+ },
+ "leave": {
+  "model": "veo-3-1",
+  "input": {
+   "prompt": "A modern open-plan office in daytime. At the same moment dozens of office workers jump up from their desks, grab their bags and laptops and rush out, chairs left spinning. In seconds the office is completely empty; a lone manager in a suit stands in the middle with arms spread, bewildered. Handheld camera. Vertical 9:16 frame. Photorealistic, cinematic, natural colors. No text, no subtitles, no logos, no speech, no music.",
+   "model": "veo3_fast",
+   "aspect_ratio": "9:16",
+   "resolution": "720p",
+   "duration": 8,
+   "generation_type": "TEXT_2_VIDEO"
+  }
+ },
+ "engineer": {
+  "model": "veo-3-1",
+  "input": {
+   "prompt": "The huge underground tunnel of a particle accelerator with a long blue cylindrical magnet pipe. A tired engineer in a white hard hat sits at a control console with many monitors. He takes off his hard hat, shuts his laptop, tucks it under his arm and hurries away toward the exit. Behind him red warning lights on the console start blinking and nobody looks at them. Slow dolly in toward the blinking lights. Vertical 9:16 frame. Photorealistic, cinematic, natural colors. No text, no subtitles, no logos, no speech, no music.",
+   "model": "veo3_fast",
+   "aspect_ratio": "9:16",
+   "resolution": "720p",
+   "duration": 8,
+   "generation_type": "TEXT_2_VIDEO"
+  }
+ },
+ "accident": {
+  "model": "veo-3-1",
+  "input": {
+   "prompt": "Wide shot of green fields and small villages near Geneva with mountains on the horizon, daytime. Suddenly a blinding white light bursts upward from a huge circular ring under the ground, the ground glows along the whole ring, and a shockwave of light races across the fields, clouds tearing apart. Camera shakes. Vertical 9:16 frame. Photorealistic, cinematic, natural colors. No text, no subtitles, no logos, no speech, no music.",
+   "model": "veo3_fast",
+   "aspect_ratio": "9:16",
+   "resolution": "720p",
+   "duration": 8,
+   "generation_type": "TEXT_2_VIDEO"
+  }
+ },
+ "army": {
+  "model": "veo-3-1",
+  "input": {
+   "prompt": "A military barracks room with rows of empty bunk beds. In the corner one young soldier in camouflage uniform wearing gaming headphones sits in front of a glowing monitor, completely absorbed, orange light on his face, ignoring an alarm lamp flashing on the wall. Slow push-in. Vertical 9:16 frame. Photorealistic, cinematic, natural colors. No text, no subtitles, no logos, no speech, no music.",
+   "model": "veo3_fast",
+   "aspect_ratio": "9:16",
+   "resolution": "720p",
+   "duration": 8,
+   "generation_type": "TEXT_2_VIDEO"
+  }
+ },
+ "hero": {
+  "model": "veo-3-1",
+  "input": {
+   "prompt": "The man from the reference image (same face, grey-streaked beard, round glasses, dark hoodie). Night, his apartment. He slowly stands up from his computer desk, puts on a bright orange safety vest and takes a red crowbar off the wall, determined. Then he steps out onto a dark city street lit by a green glowing portal in the sky; a small grey four-legged alien creature leaps at him and he swings the crowbar, knocking it into a trash bin like slapstick comedy, no blood. Heroic low angle. Vertical 9:16 frame. Photorealistic, cinematic, natural colors. No text, no subtitles, no logos, no speech, no music.",
+   "model": "veo3_fast",
+   "aspect_ratio": "9:16",
+   "resolution": "720p",
+   "duration": 8,
+   "generation_type": "REFERENCE_2_VIDEO",
+   "image_urls": [
+    "https://tempfile.redpandaai.co/kieai/12288772/images/hl3/fan-ref.png"
+   ]
+  }
+ },
+ "evening": {
+  "model": "veo-3-1",
+  "input": {
+   "prompt": "The man from the reference image (same face, grey-streaked beard, round glasses, dark hoodie) wearing a bright orange safety vest, dirty and covered in green slime, a red crowbar in his hand. Evening, his small apartment. He drops into the chair at his computer desk, smiles in anticipation and clicks the mouse. The monitor glows on his face. His smile slowly fades, he freezes, then slowly turns his head and looks straight into the camera with a dead tired expression. Green slime drips from the crowbar. Static camera, slow push-in. Vertical 9:16 frame. Photorealistic, cinematic, natural colors. No text, no subtitles, no logos, no speech, no music.",
+   "model": "veo3_fast",
+   "aspect_ratio": "9:16",
+   "resolution": "720p",
+   "duration": 8,
+   "generation_type": "REFERENCE_2_VIDEO",
+   "image_urls": [
+    "https://tempfile.redpandaai.co/kieai/12288772/images/hl3/fan-ref.png"
+   ]
+  }
+ }
+}

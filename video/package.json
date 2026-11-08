@@ -121,7 +121,10 @@
     "render:woody": "python3 audio/make_woody_audio.py && tools/render-chunks.sh WoodyBanner public/audio/woody-banner.wav out/woody-banner.mp4 210",
     "audio:three": "audio/run_three_audio.sh",
     "render:three": "tools/render-chunks.sh ThreeStories public/audio/three-stories.wav ../renders/three-stories.mp4 1711",
-    "cover:three": "remotion still ThreeCover ../renders/three-stories-cover.jpg --gl=swangle --jpeg-quality=95"
+    "cover:three": "remotion still ThreeCover ../renders/three-stories-cover.jpg --gl=swangle --jpeg-quality=95",
+    "audio:hl3": "python3 audio/make_hl3_audio.py",
+    "render:hl3": "python3 audio/make_hl3_audio.py && tools/render-chunks.sh HlToday public/audio/hl3-today.wav out/hl3-today.mp4 1459",
+    "cover:hl3": "npx remotion still HlCover out/hl3-today-cover.jpg --jpeg-quality=92"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

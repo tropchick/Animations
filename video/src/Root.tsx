@@ -46,6 +46,9 @@ import {DURATION_S as BUS_S} from './bus/cues';
 import {GtaDelay} from './GtaDelay';
 import {GtaTop, GtaTopCover, GTATOP_S} from './gtatop/GtaTop';
 import {GtaCover} from './GtaCover';
+import {HlToday} from './HlToday';
+import {HlCover} from './HlCover';
+import {DURATION_S as HL3_S} from './hl3/cues';
 import {GtaChain} from './GtaChain';
 import {ShawaChain} from './ShawaChain';
 import {DvizhChain} from './DvizhChain';
@@ -143,6 +146,16 @@ export const RemotionRoot = () => (
       defaultProps={{withAudio: false}}
     />
     <Composition id="GtaCover" component={GtaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition id="HlCover" component={HlCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="HlToday"
+      component={HlToday}
+      durationInFrames={Math.round(HL3_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
     <Composition id="ShawaCover" component={ShawaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="DvizhCover" component={DvizhCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="SnowCover" component={SnowCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
