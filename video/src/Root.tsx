@@ -50,6 +50,9 @@ import {HlToday} from './HlToday';
 import {HlCover} from './HlCover';
 import {DURATION_S as HL3_S} from './hl3/cues';
 import {GtaChain} from './GtaChain';
+import {GabenMom} from './GabenMom';
+import {GabenCover} from './GabenCover';
+import {DURATION_S as GABEN_S} from './gaben/cues';
 import {ShawaChain} from './ShawaChain';
 import {DvizhChain} from './DvizhChain';
 import {DvizhCover} from './DvizhCover';
@@ -220,6 +223,16 @@ export const RemotionRoot = () => (
       id="ShawaChain"
       component={ShawaChain}
       durationInFrames={Math.round(SHAWA_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="GabenCover" component={GabenCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="GabenMom"
+      component={GabenMom}
+      durationInFrames={Math.round(GABEN_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}
