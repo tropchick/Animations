@@ -34,7 +34,7 @@ const Bite: React.FC = () => (
 
 // ---------------------------------------------------------------- 8a. the knock
 // first the door from inside (the camera jolts with each knock), then Соня jerks awake upstairs
-const KNOCK_CUT = 3.1;
+const KNOCK_CUT = KNOCKS[2] - shotStart('knock') + 0.4; // after the third knock
 export const knockScene: Scene = {
   shakes: KNOCKS.map((k) => [k, 1.0] as [number, number]),
   view: (v) => {
@@ -114,8 +114,8 @@ const raised = (up: number, lift: number): HumanPose => {
 };
 
 // ---------------------------------------------------------------- 8b. the voice at the door, the bite, «Артём не открывает»
-const SL_A = 2.4;
-const SL_B = 5.4;
+const SL_A = 3.4; // «Откройте… Я успел дойти.» from inside
+const SL_B = 6.2; // through the slit: «На запястье у него свежий укус.»
 export const slitScene: Scene = {
   view: (v) => {
     const t = tIn('slit', v);
@@ -378,7 +378,7 @@ export const dawnScene: Scene = {
 };
 
 // ---------------------------------------------------------------- 9d. «ворота закрываются»: he freezes; she sleeps under the words
-const CH_CUT = 3.2;
+const CH_CUT = 5.3; // after «Ворота закрываются.»
 const ARTEM_STAND: V3 = H([-1.1, F2, -0.3]);
 export const changeScene: Scene = {
   view: (v) => {
@@ -389,7 +389,7 @@ export const changeScene: Scene = {
   },
   render: (v) => {
     const t = tIn('change', v);
-    const freeze = ease(t, 0.6, 1.0);
+    const freeze = ease(t, 3.5, 4.0);
     const morning = (
       <>
         <DarkRoom k={1.15} bg="#3a4a6a" />
@@ -425,11 +425,11 @@ export const palm2Scene: Scene = {
   render: (v) => {
     const t = tIn('palm2', v);
     const L = shotLen('palm2');
-    const wiped = ease(t, 0.3, 1.7);
-    const nw = clamp01((t - 2.0) / Math.max(1, L - 2.8));
-    const rub = t > 0.2 && t < 1.9;
+    const wiped = ease(t, 0.4, 2.6);
+    const nw = clamp01((t - 3.0) / Math.max(0.8, L - 3.6));
+    const rub = t > 0.3 && t < 2.8;
     const rubX = Math.sin(t * 14) * 0.03;
-    const writing = t > 1.95 && nw < 1;
+    const writing = t > 2.9 && nw < 1;
     const tipX = lerp(-0.026, 0.026, nw);
     return (
       <group>

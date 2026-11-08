@@ -7,7 +7,7 @@ import {FRONT} from './House';
 import {Palm, WritingHand, palmLines} from './Props';
 import {HOUSE} from './Town';
 import {Scene, Street, ease, ease5, follow, holdBox, mv, walkTo} from './common';
-import {CRUNCH, SCREAM, TIP, V3, clamp01, lerp, shotEnd, shotStart, tIn} from './cues';
+import {CRUNCH, SCREAM, TIP, V3, clamp01, lerp, shotEnd, shotLen, shotStart, tIn} from './cues';
 import {Pool} from './Town';
 
 // Scenes 1–2: the last delivery, the one under the lamp, the rules, the palm.
@@ -73,15 +73,16 @@ export const pullScene: Scene = {
   view: (v) => {
     const t = tIn('pull', v);
     // from the porch over the fence: the street opens up, a slow push towards the lamp
-    return mv(t, 0, 6.2, [HX - 0.9, 1.75, HZ + FRONT + 0.3], [HX - 0.6, 1.65, HZ + FRONT + 2.4], [UNDER[0], 1.2, UNDER[2]], [UNDER[0], 1.25, UNDER[2]], [40, 30], -0.2);
+    return mv(t, 0, shotLen('pull') + 0.6, [HX - 0.9, 1.75, HZ + FRONT + 0.3], [HX - 0.6, 1.65, HZ + FRONT + 2.4], [UNDER[0], 1.2, UNDER[2]], [UNDER[0], 1.25, UNDER[2]], [40, 30], -0.2);
   },
   render: (v) => {
     const t = tIn('pull', v);
     // he turns from the door and walks down the path to the gate
-    const turn = ease(t, 0.2, 1.0);
-    const w = walkTo(t, 0.9, 5.6, DOOR_SPOT, [HX + 0.1, 0.02, GATE[2] - 0.6], 0.6);
-    const pos: V3 = t < 0.9 ? DOOR_SPOT : [w.p[0], t < 1.6 ? lerp(PORCH_Y, 0.02, ease(t, 1.1, 1.6)) : 0.02, w.p[2]];
-    const yaw = t < 0.9 ? Math.PI - turn * Math.PI : 0;
+    const L = shotLen('pull');
+    const turn = ease(t, 0.05, 0.5);
+    const w = walkTo(t, 0.45, L - 0.1, DOOR_SPOT, [HX + 0.1, 0.02, GATE[2] - 0.6], 0.6);
+    const pos: V3 = t < 0.45 ? DOOR_SPOT : [w.p[0], t < 1.0 ? lerp(PORCH_Y, 0.02, ease(t, 0.55, 1.0)) : 0.02, w.p[2]];
+    const yaw = t < 0.45 ? Math.PI - turn * Math.PI : 0;
     const walk = w.amp > 0 ? walkPoseCarry(w.ph, w.amp) : carryPose();
     return (
       <Street v={v} center={[HX, 0, HZ + 6]} lamps={[5]} house={{lit: true}} box={12} cam={[HX - 0.8, 1.7, HZ + 4]}>
