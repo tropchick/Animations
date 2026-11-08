@@ -55,6 +55,9 @@ import {HlCover} from './HlCover';
 import {DURATION_S as HL3_S} from './hl3/cues';
 import {GtaChain} from './GtaChain';
 import {GabenMom} from './GabenMom';
+import {DotaChain} from './DotaChain';
+import {DotaCover} from './DotaCover';
+import {DURATION_S as DOTA_S} from './dota/cues';
 import {GabenCover} from './GabenCover';
 import {DURATION_S as GABEN_S} from './gaben/cues';
 import {ShawaChain} from './ShawaChain';
@@ -227,6 +230,16 @@ export const RemotionRoot = () => (
       id="ShawaChain"
       component={ShawaChain}
       durationInFrames={Math.round(SHAWA_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="DotaCover" component={DotaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="DotaChain"
+      component={DotaChain}
+      durationInFrames={Math.round(DOTA_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}
