@@ -21,7 +21,7 @@ Story time v is the time inside the story; the video has the cover as frame 0, s
 | views counter runs | 23.90 | 23.933 | 718 | ticks, ping at 25.75 |
 | backpack lift | 27.85 | 27.883 | 837 | thump |
 | subscribers counter | 29.85 | 29.883 | 897 | ticks, ping at 32.45 |
-| parcel rip | 32.20 | 32.233 | 967 | rip (ElevenLabs) |
+| parcel rip | 32.20 | 32.233 | 967 | rip (ElevenLabs), starts 0.3 s before (the take has a 0.2 s lead-in) |
 | contract slides | 34.55 | 34.583 | 1037 | paper |
 | pen dip | 36.85 | 36.883 | 1107 | soft splash |
 | STAMP | 38.30 | 38.333 | 1150 | stamp (ElevenLabs) |
@@ -54,6 +54,6 @@ Story time v is the time inside the story; the video has the cover as frame 0, s
 | freeze: total silence | 70.95 | 70.983 | 2129 | nothing until 74.4 |
 | «С мёдом» | 74.40 | 74.433 | 2233 | bear voice |
 | sunset forest | 75.90 | 75.933 | 2278 | forest + birds (ElevenLabs) |
-| unwrap | 76.70 | 76.733 | 2302 | crinkle (ElevenLabs) |
+| unwrap (tear at 77.13) | 76.70 | 76.733 | 2302 | crinkle (ElevenLabs), starts 0.45 s before so its peak lands on the tear |
 | bite | 78.05 | 78.083 | 2343 | crunch + chewing |
 | title «А ты бы кого выбрал(а)?» | 78.60 | 78.633 | 2359 | (forest continues) |

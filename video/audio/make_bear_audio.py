@@ -460,7 +460,8 @@ for k in range(ticks):
     at = SUBS[0] + (SUBS[1] - SUBS[0]) * (k / ticks) ** 0.8
     mix.add(click(0.02, 3400 + 25 * k) * 0.6, O + at, 0.12)
 mix.add(ping(), O + SUBS[1], 0.3)
-place(pick("rip", paper(0.5), 0.8), RIP, 0.45)
+# the recorded rip has ~0.2 s of lead-in before the tear: start it early so the tear lands on the parcel opening
+place(pick("rip", paper(0.5), 0.8), RIP - 0.3, 0.45)
 
 # --- day 14: contract
 tt1 = tt_(5.7)
@@ -504,7 +505,8 @@ mix.add(filt(brown(len(tt2)), "lowpass", 220) * 0.04, O + 60.6, 1.0)
 
 # --- the end: forest, birds, the last bar
 place(forest(5.6), 75.9, 1.1, fi=0.6, fo=0.6)
-place(pick("crinkle", crinkle(0.85), 1.0), UNWRAP[0], 0.4)
+# (the crinkle take builds for ~0.5 s: start it early so its peak lands on the tear)
+place(pick("crinkle", crinkle(0.85), 1.0), UNWRAP[0] - 0.45, 0.4)
 place(crunch(0.4), BITE, 0.6)
 place(chewing(2.0), BITE + 0.35, 0.35)
 
