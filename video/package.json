@@ -118,7 +118,10 @@
     "render:lastman": "python3 audio/make_lastman_audio.py && tools/render-chunks.sh LastMan public/audio/last-man.wav out/last-man.mp4 3106",
     "cover:lastman": "remotion still LastManCover out/last-man-cover.jpg --gl=swangle --jpeg-quality=90",
     "audio:woody": "python3 audio/make_woody_audio.py",
-    "render:woody": "python3 audio/make_woody_audio.py && tools/render-chunks.sh WoodyBanner public/audio/woody-banner.wav out/woody-banner.mp4 210"
+    "render:woody": "python3 audio/make_woody_audio.py && tools/render-chunks.sh WoodyBanner public/audio/woody-banner.wav out/woody-banner.mp4 210",
+    "audio:three": "audio/run_three_audio.sh",
+    "render:three": "tools/render-chunks.sh ThreeStories public/audio/three-stories.wav ../renders/three-stories.mp4 1711",
+    "cover:three": "remotion still ThreeCover ../renders/three-stories-cover.jpg --gl=swangle --jpeg-quality=95"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

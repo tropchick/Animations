@@ -1,3 +1,5 @@
+import {ThreeStories} from './ThreeStories';
+import {ThreeCover} from './ThreeCover';
 import React from 'react';
 import {Composition} from 'remotion';
 import {AirGone} from './AirGone';
@@ -91,6 +93,8 @@ const CHESS = [
 
 export const RemotionRoot = () => (
   <>
+    <Composition id="ThreeStories" component={ThreeStories} durationInFrames={1711} fps={30} width={1080} height={1920} defaultProps={{withAudio: false}} />
+    <Composition id="ThreeCover" component={ThreeCover} durationInFrames={1} fps={30} width={1080} height={1920} />
     <Composition id="GtaTop" component={GtaTop} durationInFrames={Math.round(GTATOP_S * FPS) + 1} fps={FPS} width={1080} height={1920} defaultProps={{withAudio: true}} />
     <Composition id="GtaTopCover" component={GtaTopCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="OneViewRecord" component={OneViewRecord} durationInFrames={ONEVIEW_FRAMES} fps={FPS} width={1080} height={1920} defaultProps={{withAudio: false}} />
