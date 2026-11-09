@@ -164,8 +164,8 @@ export const Fridge: React.FC<{position?: V3; open: number; donut: number}> = ({
       <RBox position={[0, H / 2, -D / 2 + 0.03]} size={[W, H, 0.06]} r={0.02} color="#eef2f6" />
       <RBox position={[-W / 2 + 0.03, H / 2, 0]} size={[0.06, H, D]} r={0.02} color="#eef2f6" />
       <RBox position={[W / 2 - 0.03, H / 2, 0]} size={[0.06, H, D]} r={0.02} color="#eef2f6" />
-      <RBox position={[0, H - 0.03, 0]} size={[W, 0.06, D]} r={0.02} color="#eef2f6" />
-      <RBox position={[0, 0.05, 0]} size={[W, 0.1, D]} r={0.02} color="#dfe4ea" />
+      <RBox position={[0, H - 0.03, 0.005]} size={[W - 0.122, 0.06, D - 0.07]} r={0.02} color="#eef2f6" />
+      <RBox position={[0, 0.05, 0.005]} size={[W - 0.122, 0.1, D - 0.07]} r={0.02} color="#dfe4ea" />
       {/* lit inside */}
       <mesh position={[0, H / 2, -D / 2 + 0.065]}>
         <planeGeometry args={[W - 0.14, H - 0.16]} />

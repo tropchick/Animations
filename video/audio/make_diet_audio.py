@@ -74,7 +74,11 @@ LONG_GAP = {1: 0.2, 4: 0.15, 7: 0.15, 10: 0.15, 13: 0.15, 16: 0.15, 18: 0.2, 20:
 HAVE_VO = VO_PATH.exists() and WORDS_PATH.exists() and "--draft" not in sys.argv
 
 # measured phrase windows in take time (from whisper, once the take exists)
-MEASURED: list[tuple[float, float]] = []
+MEASURED: list[tuple[float, float]] = [
+    (0.0, 1.7), (2.1, 4.7), (5.26, 6.0), (6.44, 7.2), (7.62, 10.48), (11.2, 11.72), (12.26, 13.2), (13.6, 16.96), (17.5, 18.28), (18.68, 19.16),
+    (19.64, 21.74), (22.4, 23.22), (23.52, 27.24), (27.6, 30.26), (30.9, 31.66), (31.98, 34.3), (34.72, 36.2), (36.88, 37.62), (37.9, 43.18), (43.7, 44.34),
+    (44.76, 45.62), (45.96, 46.58), (47.2, 48.06), (48.82, 49.66), (50.0, 50.76), (51.34, 53.68), (53.9, 56.66), (56.94, 59.4),
+]  # take 3y386LnNcSTgIj9HHBZY (flow L7onKeArOraa4NTH0J63, 873 credits), 65.7 s raw, atempo 1.1 -> 59.7 s
 
 if HAVE_VO and MEASURED:
     PT = [(VO_AT + a, VO_AT + b) for a, b in MEASURED]
