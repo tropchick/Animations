@@ -155,7 +155,7 @@ export const MomBack: React.FC<{who: Who; position?: V3; rotation?: V3; scale?: 
     const lift = (side === 1 ? feet.liftR : feet.liftL) ?? 0;
     const toe = (side === 1 ? feet.toeR : feet.toeL) ?? 0;
     return (
-      <group key={side} position={[side * 0.14, lift, 0.02]} rotation={[-toe, side * 0.08, 0]}>
+      <group key={side} position={[side * 0.14, lift, 0.02 + lift * 1.6]} rotation={[-toe, side * 0.08, 0]}>
         <Cyl position={[0, 0.27, -0.03]} rt={0.058} rb={0.052} h={0.4} seg={16} color={skin} look={{rough: 0.7}} />
         <SoftSlipper who={who} />
       </group>
@@ -221,7 +221,7 @@ export const ToyScale: React.FC<{position?: V3; squash?: number; err?: boolean; 
     <RBox position={[0, 0.03, 0]} size={[0.36, 0.06, 0.36]} r={0.025} color="#f4f6fa" look={{rough: 0.4}} />
     <RBox position={[0, 0.062, -0.02]} size={[0.3, 0.008, 0.24]} r={0.004} color="#dfe8f2" look={{rough: 0.3}} shadow={false} />
     <RBox position={[0, 0.064, 0.135]} size={[0.13, 0.008, 0.055]} r={0.004} color="#1c2430" shadow={false} />
-    <Pic size={[0.115, 0.042]} res={[256, 96]} k={`${k}-${err ? 'e' : 'o'}`} position={[0, 0.0695, 0.135]} rotation={[-Math.PI / 2, 0, 0]} lit={false} draw={(g, W, H) => {
+    <Pic size={[0.115, 0.042]} res={[256, 96]} k={`${k}-${err ? 'e' : 'o'}`} position={[0, 0.0725, 0.135]} rotation={[-Math.PI / 2, 0, 0]} lit={false} draw={(g, W, H) => {
       g.fillStyle = '#1c2430';
       g.fillRect(0, 0, W, H);
       g.fillStyle = err ? '#ff4a3a' : '#7dffb0';

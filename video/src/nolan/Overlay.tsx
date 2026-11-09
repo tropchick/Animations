@@ -231,7 +231,7 @@ export const Overlay: React.FC<{v: number}> = ({v}) => {
       <TestSticker v={v} />
       <WhoChip v={v} />
       <Sticker v={v} at={DRAW} to={shotStart('boat') - 0.05} top={760} bg={YELLOW} fg={INK}>НИЧЬЯ</Sticker>
-      <Sticker v={v} at={HOP + 0.25} to={shotStart('globe') - 0.05} top={1120} bg={CREAM} fg={INK} size={72} rot={4}>
+      <Sticker v={v} at={HOP + 0.25} to={shotStart('globe') - 0.05} top={640} bg={CREAM} fg={INK} size={72} rot={4}>
         3 балла
       </Sticker>
       <Sticker v={v} at={CHECK} to={shotStart('scopeG') - 0.05} top={1180} bg={GREEN} size={60} rot={-3}>

@@ -163,7 +163,7 @@ const nolanFlight = (v: number): {p: V3; rot: V3} | null => {
   if (v < LAUNCH + 0.1) return null;
   const t = v - LAUNCH - 0.1;
   const s = panPos(1, balAngle(LAUNCH + 0.1), BAL_C);
-  return {p: [s[0] + 3.5 * t, s[1] + 12 * t - 2 * t * t, s[2] - 2 * t], rot: [t * 4, t * 2, t * 5]};
+  return {p: [s[0] - 1.3 * t, s[1] + 4.6 * t - 0.3 * t * t, s[2] - 1.2 * t], rot: [t * 2.5, t * 1.5, t * 3]};
 };
 
 const SpaceBack: React.FC = () => (
@@ -182,7 +182,7 @@ export const finalScene: Scene = {
     const base = mv(v, S('final'), STEP_ON + 0.6, [0.8, 1.6, 16.5], [0.3, 1.2, 14.0], [0, 0.8, 0], [0, 0.5, 0], [42, 42], 0.4);
     if (v < LAUNCH) return base;
     const k = ease5(v, LAUNCH, LAUNCH + 1.6);
-    return {...base, pos: lerp3(base.pos, [0.0, 0.2, 15], k), target: lerp3(base.target, [1.5, 4, 0], k), fov: lerp(42, 50, k)};
+    return {...base, pos: lerp3(base.pos, [0.0, 0.6, 17.5], k), target: lerp3(base.target, [0.2, 2.4, 0], k), fov: lerp(42, 48, k)};
   },
   shakes: [[STEP_ON, 0.2], [LAUNCH, 0.45]],
   render: (v) => {
@@ -241,13 +241,13 @@ export const moonsScene: Scene = {
 export const legScene: Scene = {
   view: (v): View => {
     const p = panPos(-1, balAngle(v), BAL_C);
-    return mv(v, S('leg'), Math.min(E('leg'), WIN), [p[0] - 1.1, p[1] + 0.75, p[2] + 2.3], [p[0] - 0.6, p[1] + 0.5, p[2] + 1.75], [p[0], p[1] + 0.32, p[2]], [p[0], p[1] + 0.3, p[2]], [40, 38], 0.2);
+    return mv(v, S('leg'), Math.min(E('leg'), WIN), [p[0] + 1.5, p[1] + 0.32, p[2] - 2.5], [p[0] + 1.05, p[1] + 0.28, p[2] - 2.05], [p[0] - 0.05, p[1] + 0.3, p[2] - 0.2], [p[0] - 0.05, p[1] + 0.26, p[2] - 0.2], [42, 40], 0.2);
   },
   render: (v) => (
     <>
       <SpaceBack />
       <SpaceLights />
-      <Balance position={BAL_C} angle={balAngle(v)} leftPan={<MomBack who="g" position={[0, 0, 0]} rotation={[0, Math.PI - 0.35, 0]} feet={{liftR: 0.2 + 0.03 * Math.sin(v * 3), toeR: 0.4}} />} rightPan={null} />
+      <Balance position={BAL_C} angle={balAngle(v)} leftPan={<MomBack who="g" position={[0, 0, 0]} rotation={[0, Math.PI - 0.35, 0]} feet={{liftR: 0.26 + 0.03 * Math.sin(v * 3), toeR: 0.45}} />} rightPan={null} />
     </>
   ),
 };

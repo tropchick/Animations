@@ -47,7 +47,7 @@ const Crack: React.FC<{position: V3; k: number; seed: number}> = ({position, k, 
 const G_X = -0.44;
 const N_X = 0.44;
 export const introScene: Scene = {
-  view: (v): View => mv(v, 0, E('intro'), [0.0, 0.42, 4.0], [0.15, 0.5, 3.45], [0, 0.6, 0], [0, 0.5, 0], [42, 40], 0.3),
+  view: (v): View => mv(v, 0, E('intro'), [0.0, 0.3, 3.6], [0.15, 0.36, 3.15], [0, 0.48, 0], [0, 0.4, 0], [42, 40], 0.3),
   shakes: [[LAND, 0.25]],
   render: (v) => {
     const lg = LAND;
