@@ -59,6 +59,9 @@ import {DotaChain} from './DotaChain';
 import {Cs2Chain} from './Cs2Chain';
 import {Cs2Cover} from './Cs2Cover';
 import {DURATION_S as CS2_S} from './cs2/cues';
+import {DURATION_S as NOLAN_S} from './nolan/cues';
+import {NolanMom} from './NolanMom';
+import {NolanCover} from './NolanCover';
 import {DotaCover} from './DotaCover';
 import {DURATION_S as DOTA_S} from './dota/cues';
 import {GabenCover} from './GabenCover';
@@ -233,6 +236,16 @@ export const RemotionRoot = () => (
       id="ShawaChain"
       component={ShawaChain}
       durationInFrames={Math.round(SHAWA_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="NolanCover" component={NolanCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="NolanMom"
+      component={NolanMom}
+      durationInFrames={Math.round(NOLAN_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}

@@ -134,6 +134,9 @@
     "audio:dota": "python3 audio/make_dota_audio.py",
     "render:dota": "python3 audio/make_dota_audio.py && tools/render-chunks.sh DotaChain public/audio/dota-closed.wav out/dota-closed.mp4 1849",
     "cover:dota": "remotion still DotaCover out/dota-closed-cover.jpg --gl=swangle --jpeg-quality=90",
+    "audio:nolan": "python3 audio/make_nolan_audio.py",
+    "render:nolan": "python3 audio/make_nolan_audio.py && tools/render-chunks.sh NolanMom public/audio/nolan-mom.wav out/nolan-mom.mp4 1899",
+    "cover:nolan": "remotion still NolanCover out/nolan-mom-cover.jpg --gl=swangle --jpeg-quality=90",
     "audio:gaben": "python3 audio/make_gaben_audio.py",
     "render:gaben": "python3 audio/make_gaben_audio.py && tools/render-chunks.sh GabenMom public/audio/gaben-mom.wav out/gaben-mom.mp4 1507",
     "cover:gaben": "remotion still GabenCover out/gaben-mom-cover.jpg --gl=swangle --jpeg-quality=90"
