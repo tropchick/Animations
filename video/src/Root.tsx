@@ -88,6 +88,9 @@ import {ShawaCover} from './ShawaCover';
 import {DURATION_S as SHAWA_S} from './shawa/cues';
 import {DURATION_S as GTA2_S} from './gta2/cues';
 import {DURATION_S as GTA_S} from './gta/cues';
+import {DietMom} from './DietMom';
+import {DietCover} from './DietCover';
+import {DURATION_S as DIET_S} from './diet/cues';
 
 // the «Шахматный разбор» videos: composition ids and their show
 const CHESS = [
@@ -236,6 +239,16 @@ export const RemotionRoot = () => (
       id="ShawaChain"
       component={ShawaChain}
       durationInFrames={Math.round(SHAWA_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="DietCover" component={DietCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="DietMom"
+      component={DietMom}
+      durationInFrames={Math.round(DIET_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}

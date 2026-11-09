@@ -109,7 +109,7 @@ export const SoftSlipper: React.FC<{who: Who; position?: V3; rotation?: V3; scal
 
 export type Feet = {liftL?: number; liftR?: number; toeL?: number; toeR?: number};
 
-export const Mom: React.FC<{who: Who; position?: V3; rotation?: number; scale?: number; hem?: number; feet?: Feet; squash?: number; sway?: number; cap?: boolean}> = ({who, position = [0, 0, 0], rotation = 0, scale = 1, hem = 1.6, feet = {}, squash = 1, sway = 0, cap = false}) => {
+export const Mom: React.FC<{who: Who; position?: V3; rotation?: number; scale?: number; hem?: number; feet?: Feet; squash?: number; sway?: number; cap?: boolean; bare?: boolean; waist?: number}> = ({who, position = [0, 0, 0], rotation = 0, scale = 1, hem = 1.6, feet = {}, squash = 1, sway = 0, cap = false, bare = false, waist = 1}) => {
   const print = usePrint(who, [5, Math.max(1, Math.round(hem * 2))]);
   const robeMat = useMemo(() => new THREE.MeshStandardMaterial({map: print, roughness: 0.95, side: THREE.DoubleSide}), [print]);
   const trim = who === 'g' ? '#fff0f6' : '#3a2412';
@@ -121,7 +121,7 @@ export const Mom: React.FC<{who: Who; position?: V3; rotation?: number; scale?: 
     return (
       <group key={side} position={[side * 0.13, lift, 0.02]} rotation={[-toe, side * 0.08, 0]}>
         <Cyl position={[0, 0.27, -0.03]} rt={0.058} rb={0.052} h={0.4} seg={16} color={skin} look={{rough: 0.7}} />
-        <SoftSlipper who={who} />
+        {bare ? <Ball position={[0, 0.05, 0.02]} scale={[0.06, 0.05, 0.11]} color={skin} look={{rough: 0.7}} /> : <SoftSlipper who={who} />}
       </group>
     );
   };
@@ -129,7 +129,7 @@ export const Mom: React.FC<{who: Who; position?: V3; rotation?: number; scale?: 
     <group position={position} rotation={[0, rotation, 0]} scale={[scale, scale * squash, scale]}>
       {foot(-1)}
       {foot(1)}
-      <group position={[0, 0.34, -0.02]} rotation={[0, 0, sway]}>
+      <group position={[0, 0.34, -0.02]} rotation={[0, 0, sway]} scale={[waist, 1, waist]}>
         <mesh position={[0, hem / 2, 0]} material={robeMat} castShadow receiveShadow>
           <cylinderGeometry args={[R * 0.9, R * 1.12, hem, 40, 1, true]} />
         </mesh>
