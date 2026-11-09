@@ -67,7 +67,7 @@ export const serversScene: Scene = {
 };
 
 export const rwServersScene: Scene = {
-  view: (v): View => mv(v, S('rwServers'), E('rwServers'), [0.0, 1.45, -6.2], [0.1, 1.5, -7.2], [0, 1.5, -10.4], [0, 1.6, -10.4], [46, 44]),
+  view: (v): View => mv(v, S('rwServers'), E('rwServers'), [0.0, 1.5, -6.4], [0.05, 1.5, -6.9], [0, 1.52, -10.4], [0, 1.52, -10.4], [42, 40]),
   render: (v) => serversRender(v, 'back', 1e9),
 };
 
@@ -146,10 +146,10 @@ export const weighScene: Scene = {
 
 export const fridgeScene: Scene = {
   view: (v): View => {
-    const base = mv(v, S('fridge'), DOOR, [1.3, 1.2, 3.2], [1.0, 1.15, 2.8], [-0.45, 0.95, -0.4], [-0.35, 1.0, -0.45], [46, 44], 0.1);
+    const base = mv(v, S('fridge'), DOOR, [1.3, 1.25, 3.2], [1.0, 1.2, 2.8], [-0.45, 1.2, -0.4], [-0.35, 1.25, -0.45], [46, 44], 0.1);
     if (v < DOOR) return base;
     const k = ease5(v, DOOR, BITE + 0.3);
-    return {...base, pos: [lerp(1.0, 0.85, k), lerp(1.15, 1.2, k), lerp(2.8, 1.7, k)], target: [lerp(-0.35, 0.0, k), lerp(1.0, 1.05, k), lerp(-0.45, -0.7, k)]};
+    return {...base, pos: [lerp(1.0, 0.85, k), lerp(1.15, 1.2, k), lerp(2.8, 1.7, k)], target: [lerp(-0.35, 0.0, k), lerp(1.25, 1.05, k), lerp(-0.45, -0.7, k)]};
   },
   noHandheld: false,
   render: (v) => {
@@ -159,9 +159,9 @@ export const fridgeScene: Scene = {
     return (
       <>
         <color attach="background" args={['#0c1028']} />
-        <InteriorLights key1={[2, 5, 4]} k={0.28} box={3} warm="#8aa0ff" sky="#3a4880" ground="#141830" />
+        <InteriorLights key1={[2, 5, 4]} k={0.45} box={3} warm="#9ab0ff" sky="#4a58a0" ground="#1a2038" />
         <Kitchen night />
-        <WallClock position={[1.25, 1.75, -1.27]} text="03:00" />
+        <WallClock position={[0.1, 2.3, -1.27]} text="03:00" />
         <Fridge position={[0, 0, -0.85]} open={open} donut={donut} />
         <Mom who="g" position={[-0.8, 0, 0.3]} rotation={Math.PI - 0.7} hem={3} feet={{liftL: 0}} />
         {crumbs > 0

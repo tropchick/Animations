@@ -127,7 +127,7 @@ SHOTS = [
     ("rwSaturn", P[24].s - 0.1),
     ("rwBeach", P[25].s - 0.1),
     ("rwServers", P[26].s - 0.1),
-    ("monday", P[27].s - 0.1),
+    ("monday", word_at(27, "она", 0.4) - 0.1),
 ]
 
 KICK = word_at(0, "диет", 0.8) + 0.05
