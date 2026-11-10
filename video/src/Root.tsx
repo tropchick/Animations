@@ -57,6 +57,8 @@ import {GtaChain} from './GtaChain';
 import {GabenMom} from './GabenMom';
 import {DotaChain} from './DotaChain';
 import {Cs2Chain} from './Cs2Chain';
+import {GtaDay, GtaDayCover} from './GtaDay';
+import {DURATION_S as DAY_S} from './day/cues';
 import {Cs2Cover} from './Cs2Cover';
 import {DURATION_S as CS2_S} from './cs2/cues';
 import {DURATION_S as NOLAN_S} from './nolan/cues';
@@ -259,6 +261,16 @@ export const RemotionRoot = () => (
       id="NolanMom"
       component={NolanMom}
       durationInFrames={Math.round(NOLAN_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="GtaDayCover" component={GtaDayCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="GtaDay"
+      component={GtaDay}
+      durationInFrames={Math.round(DAY_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}
