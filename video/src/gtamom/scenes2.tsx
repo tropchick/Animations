@@ -159,7 +159,7 @@ export const liftScene: Scene = {
         <Pic size={[8, 6]} res={[512, 384]} k="lift-floor" position={[0, 0, 2]} rotation={[-Math.PI / 2, 0, 0]} shadow draw={drawTiles('#8a8a92', '#7a7a82', 10)} />
         {/* the cabin behind the doors: walls, and her robe filling it all */}
         <Block position={[0, 1.1, -1.4]} size={[2.2, 2.2, 0.05]} color="#b8a888" />
-        <Block position={[0, 2.22, -0.7]} size={[2.2, 0.04, 1.4]} color="#a89878" />
+        <Block position={[0, 2.17, -0.74]} size={[2.2, 0.04, 1.32]} color="#a89878" />
         <Block position={[0, 0.0, -0.7]} size={[2.2, 0.02, 1.4]} color="#7a6a5a" />
         <RobeBulge squash={squash} />
         <SoftSlipper who="g" position={[-0.3, 0.015, -0.05]} rotation={[0, 0.15, 0]} scale={2.2} />
@@ -218,7 +218,7 @@ export const SlipperIsland: React.FC<{v: number}> = ({v}) => (
     <Block position={[0, lining(0, -1.5) - 0.02, -1.5]} size={[0.5, 0.06, 6.2]} color="#4a4a52" shadow={false} />
     {Array.from({length: 8}).map((_, i) => {
       const dir = i % 2 ? 1 : -1;
-      const z = -4.4 + ((rnd(i) * 6 + dir * v * 1.2) % 6 + 6) % 6;
+      const z = -4.4 + ((Math.floor(i / 2) * 1.5 + (i % 2) * 0.7 + dir * v * 1.2) % 6 + 6) % 6;
       return <ToyCar key={i} position={[dir * 0.12, lining(0, z) + 0.02, z]} yaw={dir > 0 ? 0 : Math.PI} i={i} scale={0.6} />;
     })}
     {PALMS.map((p, i) => (
