@@ -91,6 +91,9 @@ import {DURATION_S as SHAWA_S} from './shawa/cues';
 import {DURATION_S as GTA2_S} from './gta2/cues';
 import {DURATION_S as GTA_S} from './gta/cues';
 import {DietMom} from './DietMom';
+import {GtaMom} from './GtaMom';
+import {GtaMomCover} from './GtaMomCover';
+import {DURATION_S as GTAMOM_S} from './gtamom/cues';
 import {DietCover} from './DietCover';
 import {DURATION_S as DIET_S} from './diet/cues';
 
@@ -241,6 +244,16 @@ export const RemotionRoot = () => (
       id="ShawaChain"
       component={ShawaChain}
       durationInFrames={Math.round(SHAWA_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="GtaMomCover" component={GtaMomCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="GtaMom"
+      component={GtaMom}
+      durationInFrames={Math.round(GTAMOM_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}
