@@ -36,7 +36,7 @@ const LiftSet: React.FC<{v: number}> = ({v}) => {
       <BillsOnGround area={[-9, 7, -7, -3.4]} n={100} seed={5} />
       {ROAD_CARS.map((c, i) => {
         const t = Math.max(0, v - LIFT - c.d);
-        const up = t * t * 1.6 + t * 0.8;
+        const up = t * t * 2.2 + t * 1.5;
         return <Car key={i} position={[c.x + t * 1.2, ROAD_Y + up, c.z]} i={c.i} pitch={Math.min(0.25, t * 0.15) * (i % 2 ? 1 : -1)} roll={Math.sin(t * 2 + i) * 0.06 * Math.min(1, t)} wheels={v * 12} />;
       })}
       {[[-3.4, -4.9], [0.4, -5.2], [1.8, -4.5]].map(([x, z], i) => (
@@ -194,8 +194,8 @@ const OfficeSet: React.FC<{v: number}> = ({v}) => {
       <Office />
       <Human o={BOSS} position={BOSS_AT} pose={bossPose} />
       <Human o={WORKER} position={WORKER_AT} rotation={WORKER_YAW} pose={withArm(WORKER, WORKER_AT, WORKER_YAW, {lean: 0.05, head: [0.15, 0, 0], face: {browIn: 0.4, brow: 0.02, mouth: torn ? 0.5 : 0.1, o: torn ? 0.6 : 0, lid: blink(v, 7) * 0.8}}, 1, [notePos[0] + 0.12, notePos[1] - 0.05, notePos[2] + 0.04])} />
-      <group position={[WORKER_AT[0], 1.98, WORKER_AT[2]]} rotation={[0, 0.0, 0]}>
-        <Bar position={[0, 0, 0]} hp={1} w={0.5} k="wb" />
+      <group position={[WORKER_AT[0] - 0.12, 1.86, WORKER_AT[2]]} rotation={[0, -0.12, 0]}>
+        <Bar position={[0, 0, 0]} hp={1} w={0.42} k="wb" />
       </group>
       {!torn ? (
         <group position={notePos} rotation={[-0.15, 0.5, 0]}>
@@ -272,7 +272,7 @@ const RoundSet: React.FC<{v: number; roll?: boolean}> = ({v, roll = true}) => {
   );
 };
 export const roundScene: Scene = {
-  view: (v): View => mv(v, S('round'), E('round'), [-0.5, 1.9, 0.8], [0.2, 1.8, 0.6], [-1.2, 0.6, -5.0], [0.4, 0.6, -5.0], [54, 54]),
+  view: (v): View => mv(v, S('round'), E('round'), [-0.9, 2.2, 3.4], [0.3, 2.0, 3.1], [-1.2, 0.8, -5.0], [0.6, 0.7, -5.0], [58, 58]),
   shakes: [[POP, 0.2]],
   render: (v) => <RoundSet v={v} />,
 };

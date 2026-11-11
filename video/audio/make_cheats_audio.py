@@ -74,7 +74,35 @@ SPEED = 1.0  # atempo applied to the raw take before it goes in (audio/voice/che
 HAVE_VO = VO_PATH.exists() and "--draft" not in sys.argv
 
 # measured phrase windows in take time (from whisper once the take exists): list of (start, end)
-MEASURED: list[tuple[float, float]] = []
+MEASURED: list[tuple[float, float]] = [
+    (0.0, 3.88),  # 0
+    (4.28, 5.0),  # 1
+    (5.32, 7.28),  # 2
+    (7.62, 9.5),  # 3
+    (9.84, 12.5),  # 4
+    (12.96, 15.26),  # 5
+    (15.52, 17.52),  # 6
+    (17.9, 20.2),  # 7
+    (20.44, 22.6),  # 8
+    (23.02, 25.08),  # 9
+    (25.34, 27.06),  # 10
+    (27.38, 28.95),  # 11
+    (29.1, 31.74),  # 12
+    (32.0, 33.9),  # 13
+    (34.28, 35.98),  # 14
+    (36.38, 38.48),  # 15
+    (38.8, 40.74),  # 16
+    (41.08, 42.6),  # 17
+    (43.04, 43.92),  # 18
+    (44.22, 46.0),  # 19
+    (46.38, 47.54),  # 20
+    (47.94, 49.46),  # 21
+    (49.82, 51.06),  # 22
+    (51.48, 53.3),  # 23
+    (53.64, 56.76),  # 24
+    (57.06, 58.92),  # 25
+    (59.29, 60.75),  # 26
+]
 
 if HAVE_VO and MEASURED:
     PT = [(VO_AT + a, VO_AT + b) for a, b in MEASURED]
@@ -105,7 +133,7 @@ def code(text, a, b):
 CODES = [
     code("HESOYAM", P[3].s + 0.35, P[3].e + 0.05),
     code("AEZAKMI", P[7].s + 0.5, P[7].e),
-    code("RIPAZHA", P[10].s, P[10].s + 1.0),
+    code("RIPAZHA", P[10].s - 0.45, P[10].s + 0.4),
     code("YECGAA", P[12].s - 0.3, P[12].s + 0.55),
     code("BAGUVIX", P[13].s + 0.5, P[13].e),
     code("BTCDBCB", P[16].e - 0.9, P[17].s + 0.5),
@@ -138,7 +166,7 @@ SHOTS = [
     ("typecop", P[7].s - 0.1),
     ("cop", P[8].s - 0.2),
     ("lift", P[10].s - 0.1),
-    ("jam", P[11].s - 0.1),
+    ("jam", P[11].s + 0.45),
     ("granny", P[12].s - 0.1),
     ("bars", P[13].s - 0.1),
     ("office", P[15].s - 0.1),

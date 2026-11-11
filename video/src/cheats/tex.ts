@@ -273,21 +273,42 @@ export const drawDiary = (g: CanvasRenderingContext2D, W: number, H: number, e: 
 // health / armour bar over a head
 export const drawBar = (g: CanvasRenderingContext2D, W: number, H: number, hp: number, armour: number) => {
   g.clearRect(0, 0, W, H);
-  const row = (y: number, h: number, k: number, col: string, bg: string) => {
+  // a GTA-style HUD: icon on the left (heart / shield), bar to the right
+  const row = (y: number, h: number, k: number, col: string, bg: string, icon: 'heart' | 'shield') => {
+    const ix = h; // icon cell width
     g.fillStyle = '#1b1c24';
     roundRect(g, 0, y, W, h, h / 2);
     g.fill();
+    const cx = ix * 0.55;
+    const cy = y + h / 2;
+    const r = h * 0.3;
+    g.fillStyle = col;
+    g.beginPath();
+    if (icon === 'heart') {
+      g.moveTo(cx, cy + r);
+      g.bezierCurveTo(cx - r * 1.6, cy - r * 0.2, cx - r * 0.8, cy - r * 1.4, cx, cy - r * 0.5);
+      g.bezierCurveTo(cx + r * 0.8, cy - r * 1.4, cx + r * 1.6, cy - r * 0.2, cx, cy + r);
+    } else {
+      g.moveTo(cx, cy - r * 1.1);
+      g.lineTo(cx + r, cy - r * 0.6);
+      g.quadraticCurveTo(cx + r, cy + r * 0.6, cx, cy + r * 1.1);
+      g.quadraticCurveTo(cx - r, cy + r * 0.6, cx - r, cy - r * 0.6);
+      g.closePath();
+    }
+    g.fill();
+    const x0 = ix;
+    const bw = W - ix - 8;
     g.fillStyle = bg;
-    roundRect(g, 6, y + 6, W - 12, h - 12, (h - 12) / 2);
+    roundRect(g, x0, y + 8, bw, h - 16, (h - 16) / 2);
     g.fill();
     if (k > 0.01) {
       g.fillStyle = col;
-      roundRect(g, 6, y + 6, Math.max(h - 12, (W - 12) * k), h - 12, (h - 12) / 2);
+      roundRect(g, x0, y + 8, Math.max(h - 16, bw * k), h - 16, (h - 16) / 2);
       g.fill();
     }
   };
-  row(0, armour > 0 ? H * 0.55 : H, hp, '#e8453c', '#5a2020');
-  if (armour > 0) row(H * 0.6, H * 0.4, armour, '#5ab4ff', '#20304a');
+  row(0, armour > 0 ? H * 0.52 : H, hp, '#e8453c', '#5a2020', 'heart');
+  if (armour > 0) row(H * 0.56, H * 0.44, armour, '#5ab4ff', '#20304a', 'shield');
 };
 
 export const drawSackTag = (g: CanvasRenderingContext2D, W: number, H: number) => {

@@ -41,7 +41,7 @@ export const PhoneInHand: React.FC<{k?: string}> = ({k = 'ph'}) => (
 export const BigPhone: React.FC<{position: V3; rotation?: V3; k: string; draw: (g: CanvasRenderingContext2D, W: number, H: number) => void}> = ({position, rotation, k, draw}) => (
   <group position={position} rotation={rotation}>
     <RBox size={[0.075, 0.155, 0.01]} r={0.009} color="#1c1d24" look={{rough: 0.3}} />
-    <Pic position={[0, 0, 0.0056]} size={[0.068, 0.145]} res={[540, 1140]} k={k} draw={draw} lit={false} glow={1.05} />
+    <Pic position={[0, 0, 0.0068]} size={[0.068, 0.145]} res={[540, 1140]} k={k} draw={draw} lit={false} glow={1.05} />
   </group>
 );
 

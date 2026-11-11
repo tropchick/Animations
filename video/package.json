@@ -133,7 +133,7 @@
     "cover:day": "remotion still GtaDayCover out/gta6-day-cover.jpg --jpeg-quality=92",
     "audio:brain": "python3 audio/make_brain_audio.py",
     "audio:cheats": "python3 audio/make_cheats_audio.py",
-    "render:cheats": "python3 audio/make_cheats_audio.py && tools/render-chunks.sh CheatsChain public/audio/gta-cheats.wav out/gta-cheats.mp4 FRAMES",
+    "render:cheats": "python3 audio/make_cheats_audio.py && tools/render-chunks.sh CheatsChain public/audio/gta-cheats.wav out/gta-cheats.mp4 1909",
     "cover:cheats": "remotion still CheatsCover out/gta-cheats-cover.jpg --gl=swangle --jpeg-quality=90",
     "render:brain": "python3 audio/make_brain_audio.py && tools/render-chunks.sh BrainChain public/audio/brainrot-never.wav out/brainrot-never.mp4 2068",
     "cover:brain": "remotion still BrainCover out/brainrot-never-cover.jpg --gl=swangle --jpeg-quality=90",

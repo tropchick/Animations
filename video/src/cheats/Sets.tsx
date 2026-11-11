@@ -167,12 +167,13 @@ export const Fat: React.FC<{o: Outfit; position: V3; rotation?: number; k: numbe
   const lift = 0.3 * k * sc; // the ball rests on the ground once round
   const p: HumanPose = {...pose, armL: [-0.1, 0.25 + 1.0 * k, 0], armR: [-0.1, 0.25 + 1.0 * k, 0], elbowL: -0.2, elbowR: -0.2};
   return (
-    <group position={[position[0], position[1] + cy + lift * 0.4, position[2]]} rotation={[0, rotation, 0]}>
+    <group position={[position[0], position[1] + cy + lift * 0.4 - 0.18 * k * sc, position[2]]} rotation={[0, rotation, 0]}>
       <group rotation={[0, 0, -roll]}>
-        <group position={[0, -cy, 0]}>
+        {/* the body is pushed up as the ball grows, so the head stays on top of the ball */}
+        <group position={[0, -cy + 0.22 * k * sc, 0]}>
           <Human o={o} pose={p} head={head} />
         </group>
-        {k > 0 ? <Ball scale={[r * 1.02, r, r]} color={o.top} look={{rim: '#ffffff', rimK: 0.15, rough: 0.85}} /> : null}
+        {k > 0 ? <Ball position={[0, -0.05 * k * sc, 0]} scale={[r * 1.02, r * 0.85, r]} color={o.top} look={{rim: '#ffffff', rimK: 0.15, rough: 0.85}} /> : null}
       </group>
     </group>
   );
@@ -407,7 +408,7 @@ export const BillsOnGround: React.FC<{area: [number, number, number, number]; n?
     {Array.from({length: n}, (_, i) => (
       <Block
         key={i}
-        position={[area[0] + rnd(seed * 7 + i * 1.7) * (area[1] - area[0]), 0.004 + (i % 4) * 0.003, area[2] + rnd(seed * 3 + i * 2.3) * (area[3] - area[2])]}
+        position={[area[0] + rnd(seed * 7 + i * 1.7) * (area[1] - area[0]), 0.004 + (i % 20) * 0.0032, area[2] + rnd(seed * 3 + i * 2.3) * (area[3] - area[2])]}
         rotation={[0, rnd(i * 4.1 + seed) * 3, 0]}
         size={[0.3, 0.003, 0.14]}
         color={i % 3 ? '#7cc47a' : '#6ab46a'}

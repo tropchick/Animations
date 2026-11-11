@@ -132,8 +132,8 @@ const SackSet: React.FC<{v: number}> = ({v}) => {
       <Flowerbed />
       <Human o={HERO} position={KID_AT} pose={pose} handR={<PhoneInHand k="sack" />} />
       {bars > 0 ? (
-        <group scale={bars}>
-          <Bar position={[KID_AT[0], 1.6, KID_AT[2]]} hp={1} armour={1} w={0.55} k="kidbar" />
+        <group position={[KID_AT[0], 1.5, KID_AT[2]]} scale={bars}>
+          <Bar position={[0, 0, 0]} yaw={0.36} hp={1} armour={1} w={0.6} k="kidbar" />
         </group>
       ) : null}
       {flash > 0 ? <Glow position={[KID_AT[0], 0.9, KID_AT[2] + 0.2]} size={3} color="#fff4c0" k={flash} /> : null}

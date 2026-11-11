@@ -45,7 +45,7 @@ export const diaryScene: Scene = {
         <AnyaRoom />
         <Table position={[0, 0, 0]} size={[1.0, 0.7]} top="#b07a4a" />
         <RBox position={[DIARY_AT[0], DIARY_AT[1] - 0.004, DIARY_AT[2]]} size={[0.45, 0.012, 0.59]} r={0.004} color="#2a5bd8" />
-        <Pic position={[DIARY_AT[0], DIARY_AT[1] + 0.003, DIARY_AT[2]]} rotation={[-Math.PI / 2, 0, 0]} size={[0.42, 0.56]} res={[840, 1120]} k={`diary-${Math.round(e * 30)}`} draw={(g, W, H) => drawDiary(g, W, H, e)} />
+        <Pic position={[DIARY_AT[0], DIARY_AT[1] + 0.0045, DIARY_AT[2]]} rotation={[-Math.PI / 2, 0, 0]} size={[0.42, 0.56]} res={[840, 1120]} k={`diary-${Math.round(e * 30)}`} draw={(g, W, H) => drawDiary(g, W, H, e)} />
         <RBox position={[-0.3, 0.775, 0.12]} rotation={[0, 0.6, 0]} size={[0.16, 0.02, 0.012]} r={0.004} color="#e8453c" />
         <group scale={0.25} position={[fiveAt[0] * 0.75, fiveAt[1] * 0.75, fiveAt[2] * 0.75]}>
           <Crumble center={fiveAt} t={(v - ERASE) * 1.2} colors={['#e8453c', '#ff6a5a', '#c43b3b']} h={0.25} w={0.12} n={26} seed={9} />
@@ -143,7 +143,7 @@ export const doorScene: Scene = {
 // the kid panics and types the police code on the phone (close)
 const PANIC_PH: V3 = [0.33, 1.0, -0.33];
 export const panicScene: Scene = {
-  view: (v): View => mv(v, S('panic'), E('panic'), [-0.35, 1.08, 0.45], [-0.25, 1.05, 0.3], [0.3, 0.95, -0.5], [0.3, 0.95, -0.5], [42, 38]),
+  view: (v): View => mv(v, S('panic'), E('panic'), [-0.75, 1.2, 0.95], [-0.6, 1.15, 0.78], [0.3, 0.92, -0.45], [0.3, 0.95, -0.45], [44, 40]),
   render: (v) => {
     const keys: [number, string][] = CODES[6].keys.map((t, i) => [t, CODES[6].text[i]]);
     return (
@@ -160,7 +160,7 @@ export const panicScene: Scene = {
 
 // mom keeps staring and slowly raises the slipper
 export const stareScene: Scene = {
-  view: (v): View => mv(v, S('stare'), E('stare'), [-0.3, 1.25, 0.95], [-0.7, 1.32, 1.15], [-1.9, 1.35, 1.42], [-1.9, 1.45, 1.42], [38, 34]),
+  view: (v): View => mv(v, S('stare'), E('stare'), [0.25, 1.3, 0.85], [-0.25, 1.36, 1.0], [-1.9, 1.4, 1.42], [-1.9, 1.5, 1.42], [40, 36]),
   render: (v) => <RoomSet v={v} />,
 };
 
