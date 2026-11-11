@@ -40,6 +40,8 @@ export const LOOKBACK = cues.lookback;
 export const PLATE1 = cues.plate1;
 export const PLATE2 = cues.plate2;
 export const HURT = cues.hurt as number[];
+export const TONS = cues.tons;
+export const KILOS = cues.kilos;
 
 const keyed = (keys: number[][]) => (v: number) => {
   if (v <= keys[0][0]) return keys[0][1];

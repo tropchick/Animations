@@ -5,6 +5,7 @@ import {ThreeCanvas} from '@remotion/three';
 import {Stage, World} from './gor/World';
 import {labScene} from './gor/lab';
 import {View} from './slime/camera';
+import {Overlay} from './gor/Overlay';
 
 // «100 мужчин против гориллы»: comic 3D (toon fill + ink outlines), vertical 1080x1920, Russian VO.
 // Frame 0 is the cover; the story runs from frame 1, so story time v = (frame - 1) / fps.
@@ -26,7 +27,7 @@ export const Gorilla100: React.FC<{withAudio?: boolean; cam?: View; at?: number;
       <Canvas3D>
         <World v={v} view={cam ? () => cam : undefined} />
       </Canvas3D>
-      {clean ? null : null}
+      {clean ? null : <Overlay v={v} />}
       {withAudio ? <Audio src={staticFile('audio/gorilla-100.wav')} /> : null}
     </AbsoluteFill>
   );

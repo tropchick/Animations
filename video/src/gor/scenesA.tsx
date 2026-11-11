@@ -192,7 +192,7 @@ export const beatScene: GScene = {
 
 // ---------------------------------------------------------------- charge: seen from among the men
 const CH_FROM: V3 = [0, 0, 0.3];
-const CH_TO: V3 = [0.42, 0, 5.75];
+export const CH_TO: V3 = [0.42, 0, 5.75];
 export const chargeGor = (v: number): {g: Gor; pos: V3} => {
   const k = 1 - Math.pow(1 - ramp(v, CHARGE, STOP), 1.7);
   const back = sm(v, STOP + 1.35, E.charge + 0.6);
@@ -310,8 +310,8 @@ export const braveScene: GScene = {
 
 // ---------------------------------------------------------------- clash: three hits
 const [H1, H2, H3] = HITS;
-const TOSS_A: Toss = {from: [0.55, 1.55, 1.6], vel: [5.1, 4.3, 1.5], spin: -7, yaw: Math.PI + 0.4};
-const TOSS_B: Toss = {from: [-0.95, 1.15, 2.2], vel: [-5.6, 3.6, 1.2], spin: 8, yaw: Math.PI - 0.9};
+export const TOSS_A: Toss = {from: [0.55, 1.55, 1.6], vel: [5.1, 4.3, 1.5], spin: -7, yaw: Math.PI + 0.4};
+export const TOSS_B: Toss = {from: [-0.95, 1.15, 2.2], vel: [-5.6, 3.6, 1.2], spin: 8, yaw: Math.PI - 0.9};
 LAND[A] = {p: tossLand(TOSS_A).rest, yaw: TOSS_A.yaw};
 LAND[B] = {p: tossLand(TOSS_B).rest, yaw: TOSS_B.yaw};
 LAND[C] = {p: [SPOT[C][0] + 0.3, 0, SPOT[C][1] - 0.1], yaw: Math.PI + 1.3};
@@ -407,8 +407,8 @@ export const clashScene: GScene = {
     const lb = tossLand(TOSS_B);
     puff(P, la.land, v - (H1 + la.T), 41, 0.9, 0.8);
     puff(P, lb.land, v - (H2 + lb.T), 42, 0.9, 0.8);
-    puff(P, [LAND[C].p[0] + 0.6, 0, LAND[C].p[2] + 0.3], v - H3, 43, 1.1, 0.9, [0.5, 0, 0.3]);
-    puff(P, [LAND[C].p[0] - 0.6, 0, LAND[C].p[2] + 0.5], v - H3, 44, 1.0, 0.9, [-0.5, 0, 0.3]);
+    puff(P, [LAND[C].p[0] + 0.7, 0, LAND[C].p[2] - 0.5], v - H3, 43, 0.6, 0.8, [0.6, 0, -0.3]);
+    puff(P, [LAND[C].p[0] - 0.5, 0, LAND[C].p[2] - 0.8], v - H3, 44, 0.55, 0.8, [-0.5, 0, -0.4]);
     marker(P, [LAND[A].p[0], 1.0, LAND[A].p[2]], cam, v, 1, easeOut(ramp(v, H1 + la.T + 0.1, H1 + la.T + 0.35)));
     marker(P, [LAND[B].p[0], 1.0, LAND[B].p[2]], cam, v, 2, easeOut(ramp(v, H2 + lb.T + 0.1, H2 + lb.T + 0.35)));
     marker(P, [LAND[C].p[0] + 0.5, 1.15, LAND[C].p[2] + 0.5], cam, v, 3, easeOut(ramp(v, H3 + 0.15, H3 + 0.4)));

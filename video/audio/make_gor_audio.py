@@ -1,6 +1,7 @@
 """Soundtrack and timing cues for «100 мужчин против гориллы» (Russian TikTok, comic 3D, the realistic fight).
 
-Voice: ONE take, ElevenLabs Eleven v4, «VASKO - Deep, Warm and Pleasant» -> audio/voice/gor-vo.mp3 (word times: gor-words.json,
+Voice: ONE take, ElevenLabs Eleven v4, «VASKO - Deep, Warm and Pleasant» (flow 7rbccOAqlMQTJp98cDmg, 564 credits),
+41.7 s raw (audio/voice/gor-vo-raw.mp3) -> atempo 1.1 = 37.9 s -> audio/voice/gor-vo.mp3 (word times: gor-words.json,
 audio/transcribe_gor.py). Until the take exists the script runs on ESTIMATED phrase windows and writes no voice.
 The take is cut at the pauses between phrases and the pieces are spread out (GAPS), so the fight has room without narration.
 Frame 0 is the cover: v = (frame - 1) / 30.
@@ -53,9 +54,14 @@ ESTIMATE = [
     (0.0, 2.2), (2.6, 4.7), (5.2, 7.0), (7.4, 10.4), (10.6, 11.4), (12.0, 14.0), (14.4, 17.0), (17.6, 19.2),
     (19.5, 20.5), (21.1, 23.8), (24.2, 26.3), (26.6, 28.1), (28.7, 31.0), (31.4, 34.0), (34.5, 35.7), (36.0, 38.6),
 ]
-MEASURED = ESTIMATE
+# measured with whisper on the 1.1x take (37.9 s)
+TAKE = [
+    (0.00, 2.50), (2.86, 4.44), (5.00, 6.72), (7.14, 10.28), (10.62, 11.36), (11.70, 13.80), (14.14, 16.52), (16.90, 18.82),
+    (19.14, 19.96), (20.42, 23.24), (23.44, 25.60), (25.90, 27.26), (27.34, 29.98), (30.28, 32.94), (33.26, 34.64), (34.90, 37.60),
+]
+MEASURED = TAKE if HAVE_VO else ESTIMATE
 # extra silence BEFORE a phrase (story seconds): room for the action
-GAPS = {2: 0.3, 3: 0.2, 5: 1.0, 7: 0.9, 9: 3.2, 12: 1.5, 13: 0.2, 14: 0.9}
+GAPS = {2: 0.2, 3: 0.2, 5: 1.1, 7: 0.9, 9: 3.3, 12: 1.6, 13: 0.2, 14: 1.3}
 
 shift = 0.0
 PT = []
@@ -111,10 +117,10 @@ THROWN = [HEAVE + 0.45, HEAVE + 0.57, HEAVE + 0.7]
 SLUMP = HEAVE + 1.05
 SPENT = P[12].s - 0.15
 RELEASE = P[13].s - 0.15
-LOOKBACK = P[13].e + 0.35
+LOOKBACK = P[13].e - 0.15
 RESULT = P[14].s - 0.15
 PLATE1 = P[14].s + 0.05
-PLATE2 = word_at(15, "четырн", 0.12)
+PLATE2 = word_at(15, "14", 0.12)
 DUR = round(VO_END + 2.3, 2)
 
 SHOTS = [
@@ -373,6 +379,8 @@ cues = {
     "lookback": round(LOOKBACK, 3),
     "plate1": round(PLATE1, 3),
     "plate2": round(float(PLATE2), 3),
+    "tons": round(float(word_at(9, "две", 0.5)), 3),
+    "kilos": round(float(word_at(10, "200", 0.5)), 3),
     "timer": [[round(float(a), 3), b] for a, b in TIMER],
     "power": [[round(float(a), 3), b] for a, b in POWER],
     "hurt": HURT,

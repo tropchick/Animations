@@ -15,7 +15,7 @@ const dirOf = (az: number): V3 => [Math.sin(az), 0, Math.cos(az)];
 // ---------------------------------------------------------------- melee choreography (also used by the swarm)
 // hit j: the gorilla faces PHI[j]; the victim stands there and flies off along it
 const PHI = MELEE_HITS.map((_, j) => 0.9 + j * 2.15);
-const VSPOT = MELEE_V.map((_, j): [number, number] => [G0[0] + Math.sin(PHI[j]) * 1.85, G0[2] + Math.cos(PHI[j]) * 1.85]);
+export const VSPOT = MELEE_V.map((_, j): [number, number] => [G0[0] + Math.sin(PHI[j]) * 1.85, G0[2] + Math.cos(PHI[j]) * 1.85]);
 const VTOSS: Toss[] = MELEE_V.map((i, j) => {
   const d = dirOf(PHI[j] + (hash(i) - 0.5) * 0.5);
   const sp = 4.6 + 1.6 * hash(i * 3);
@@ -83,7 +83,7 @@ const hurtDown = (P: Parts, blobs: Blob[], v: number, cam: V3, ids: number[], fa
 
 // ---------------------------------------------------------------- swarm: from above, the ring closes
 export const swarmScene: GScene = {
-  view: (v) => mv(v, S.swarm - 0.3, E.swarm + 0.4, [1.2, 20, 9.5], [0.4, 15.5, 6.2], [0, 0, 0.9], [0, 0, 0.5], [48, 44]),
+  view: (v) => mv(v, S.swarm - 0.3, E.swarm + 0.4, [1.2, 19, 10.5], [0.4, 13.5, 7.2], [0, 0, 1.2], [0, 0, 0.6], [50, 46]),
   build: (v, P, blobs) => {
     const cam = swarmScene.view(v).pos;
     const t = v - S.swarm;
@@ -95,10 +95,10 @@ export const swarmScene: GScene = {
       const j = MELEE_V.indexOf(i);
       const end: [number, number] = j >= 0 ? [G0[0] + Math.sin(PHI[j]) * 2.75, G0[2] + Math.cos(PHI[j]) * 2.75] : ringP(i);
       const az = Math.atan2(end[0] - G0[0], end[1] - G0[2]);
-      const far = 6.5 + 2.5 * hash(i * 1.3);
+      const far = 5.0 + 2.0 * hash(i * 1.3);
       const start: [number, number] = [end[0] + Math.sin(az) * far, end[1] + Math.cos(az) * far];
       const t0 = S.swarm - 0.5 + 0.5 * hash(i * 2.9);
-      put(P, blobs, runner(i, v, start, end, t0, t0 + 2.7 + 0.6 * hash(i * 4.3), [G0[0], G0[2]], guard), 0, true);
+      put(P, blobs, runner(i, v, start, end, t0, t0 + 2.2 + 0.6 * hash(i * 4.3), [G0[0], G0[2]], guard), 0, true);
     }
   },
 };
@@ -134,7 +134,7 @@ export const meleeScene: GScene = {
 
 // ---------------------------------------------------------------- pile
 export const PILE_YAW = 0.55;
-const PC: V3 = [G0[0] + Math.sin(PILE_YAW) * 0.35, 0, G0[2] + Math.cos(PILE_YAW) * 0.35]; // middle of the lying body
+export const PC: V3 = [G0[0] + Math.sin(PILE_YAW) * 0.35, 0, G0[2] + Math.cos(PILE_YAW) * 0.35]; // middle of the lying body
 const JUMP = (j: number) => S.pile + 0.25 + j * 0.15;
 const downK = (v: number) => sm(v, S.pile + 0.7, S.pile + 1.7); // off his feet
 const flatK = (v: number) => sm(v, S.pile + 1.6, S.pile + 3.4) * (1 - 0.5 * heaveK(v));
@@ -234,7 +234,7 @@ const pileCommon = (v: number, P: Parts, blobs: Blob[], cam: V3, lane: V3, half:
   // the slump throws a ring of dust
   for (let j = 0; j < 8; j++) {
     const d = dirOf(j * 0.8 + 0.3);
-    puff(P, [PC[0] + d[0] * 1.5, 0, PC[2] + d[2] * 1.7], v - SLUMP, 60 + j, 1.0, 0.9, [d[0] * 0.8, 0, d[2] * 0.8]);
+    puff(P, [PC[0] + d[0] * 1.7, 0, PC[2] + d[2] * 1.9], v - SLUMP, 60 + j, 0.5, 0.8, [d[0] * 0.9, 0, d[2] * 0.9]);
   }
   let pressers = 0;
   for (let i = 0; i < N; i++) {
@@ -289,16 +289,18 @@ export const spentScene: GScene = {
     const g = spentGor(v);
     drawGorilla(P, g);
     gorBlob(blobs, G0, 1.1);
+    const inFront = (p: V3 | [number, number, number]) => (p[0] - HEAD_DOWN[0]) * (cam[0] - HEAD_DOWN[0]) + (p[2] - HEAD_DOWN[2]) * (cam[2] - HEAD_DOWN[2]) > -0.25;
     PILE_MEN.forEach((i, j) => {
       if (j < 3) return;
       const s = pileMan(j, v);
+      if (inFront(s.m.root.pos)) return;
       put(P, blobs, s.m, s.y);
     });
     // breath: small puffs at the nostrils on each exhale
     const n = Math.floor(((v - S.spent) * 5.6) / (Math.PI * 2));
     for (let j = n - 1; j <= n; j++) {
       const t0 = S.spent + ((j + 0.3) * Math.PI * 2) / 5.6;
-      puff(P, [HEAD_DOWN[0] + 0.28, HEAD_DOWN[1] - 0.16, HEAD_DOWN[2] + 0.3], v - t0, 80 + j, 0.2, 0.7, [0.25, 0, 0.25]);
+      puff(P, [HEAD_DOWN[0] + 0.3, HEAD_DOWN[1] - 0.2, HEAD_DOWN[2] + 0.32], v - t0, 80 + j, 0.1, 0.6, [0.2, 0, 0.2]);
     }
     let pressers = 0;
     for (let i = 0; i < N; i++) {
@@ -309,11 +311,11 @@ export const spentScene: GScene = {
         const d = dirOf(r.az);
         const p: [number, number] = [PC[0] + d[0] * 2.05, PC[2] + d[2] * 2.25];
         // nobody kneels in front of the lens
-        if (Math.hypot(p[0] - cam[0], p[1] - cam[2]) < 1.6 || laneBlocked(i, cam, 0.9)) continue;
+        if (inFront([p[0], 0, p[1]])) continue;
         put(P, blobs, standing(i, v, p, [PC[0], PC[2]], press(v, i, 0.55)));
         continue;
       }
-      if (laneBlocked(i, cam, 1.3)) continue;
+      if (inFront([r.x, 0, r.z]) && Math.hypot(r.x - cam[0], r.z - cam[2]) < 3.5) continue;
       put(P, blobs, ringMan(i, v, 0.2));
     }
   },
@@ -355,8 +357,8 @@ const bankSpot = (n: number): [number, number] => {
   const side = n % 2 ? 1 : -1;
   const row = Math.floor(n / 2) % 4;
   const col = Math.floor(n / 8);
-  const along = -5.2 + col * 1.05 + 0.4 * hash(n * 3.1);
-  const off = side * (2.0 + row * 0.85 + 0.3 * hash(n * 5.3) + Math.max(0, -along - 3) * 0.25);
+  const along = -4.6 + col * 1.0 + 0.4 * hash(n * 3.1);
+  const off = side * (1.35 + row * 0.75 + 0.25 * hash(n * 5.3) + Math.max(0, -along - 3) * 0.2);
   return [G0[0] + RG[0] * along + SUN_X[0] * off, G0[2] + RG[2] * along + SUN_X[2] * off];
 };
 const HEALTHY = Array.from({length: N}, (_, i) => i).filter((i) => !HURT_MEN.includes(i));
@@ -364,8 +366,8 @@ export const releaseScene: GScene = {
   view: (v) => {
     const {pos} = releaseGor(v);
     const k = sm(v, S.release - 0.3, E.release + 0.3);
-    const cam = along2([G0[0], lerp(0.95, 1.25, k), G0[2]], RG, lerp(-8.2, -6.4, k), SUN_X, lerp(0.9, 0.5, k));
-    return {pos: cam, target: [pos[0] * 0.7 + G0[0] * 0.3, 1.05, pos[2] * 0.7 + G0[2] * 0.3], fov: 40, far: 900};
+    const cam = along2([G0[0], lerp(1.25, 1.5, k), G0[2]], RG, lerp(-7.6, -6.0, k), SUN_X, lerp(0.5, 0.2, k));
+    return {pos: cam, target: [pos[0] * 0.7 + G0[0] * 0.3, 1.05, pos[2] * 0.7 + G0[2] * 0.3], fov: 46, far: 900};
   },
   build: (v, P, blobs) => {
     const {g, pos} = releaseGor(v);

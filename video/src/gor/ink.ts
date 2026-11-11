@@ -204,8 +204,8 @@ export type Part = {k: Kind; m: THREE.Matrix4; c: THREE.Color; line: boolean};
 
 const colorCache = new Map<string, THREE.Color>();
 // bright colours above 1 stay light even in the shade (dust, breath)
-export const DUST_A = 'rgb:2.3,2.15,1.5';
-export const DUST_B = 'rgb:1.9,1.7,1.25';
+export const DUST_A = 'rgb:1.75,1.5,1.0';
+export const DUST_B = 'rgb:1.45,1.2,0.82';
 export const col = (hex: string) => {
   let c = colorCache.get(hex);
   if (!c) {
