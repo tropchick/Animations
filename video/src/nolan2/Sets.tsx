@@ -43,9 +43,7 @@ export const Yard: React.FC<{crater?: number}> = () => (
   <>
     <Block position={[0, -0.05, 0]} size={[40, 0.1, 40]} color="#6f7480" />
     <Block position={[0, 0.0, -6]} size={[40, 0.12, 6]} color="#7ab85a" />
-    {[-1, 1].map((s) => (
-      <Block key={s} position={[0, 0.04, -3 + s * 0.0]} size={[40, 0.08, 0.2]} color="#c8c8cc" />
-    ))}
+    <Block position={[0, 0.04, -3]} size={[40, 0.08, 0.2]} color="#c8c8cc" />
     {Array.from({length: 7}).map((_, i) => (
       <Tree key={i} position={[-12 + i * 4 + rnd(i) * 1.5, 0.06, -6.5 - rnd(i * 3) * 2]} h={3.2 + rnd(i * 5)} seed={i + 3} />
     ))}
@@ -165,7 +163,7 @@ export const Pit: React.FC<{position: V3; k: number; s?: number; color?: string}
   k <= 0 ? null : (
     <group position={position} scale={[s * k, 1, s * k]}>
       <Ball position={[0, 0.004, 0.06]} scale={[0.17, 0.004, 0.26]} color={color} look={{rough: 1}} shadow={false} />
-      <Ball position={[0, 0.0045, 0.08]} scale={[0.13, 0.004, 0.2]} color="#7a5428" look={{rough: 1}} shadow={false} />
+      <Ball position={[0, 0.012, 0.08]} scale={[0.13, 0.004, 0.2]} color="#7a5428" look={{rough: 1}} shadow={false} />
       <Ring position={[0, 0.0, 0.06]} rotation={[Math.PI / 2, 0, 0]} scale={[1, 1.5, 1]} r={0.18} tube={0.03} color="#f2d49a" look={{rough: 1}} />
     </group>
   );
