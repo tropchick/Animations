@@ -71,7 +71,11 @@ GAP = 0.35
 HAVE_VO = VO_PATH.exists() and "--draft" not in sys.argv
 
 # measured phrase windows in take time (from whisper once the take exists): list of (start, end)
-MEASURED: list[tuple[float, float]] = []
+MEASURED: list[tuple[float, float]] = [
+    (0.0, 3.28), (4.3, 5.88), (6.8, 10.54), (10.54, 13.2), (13.9, 15.76), (16.22, 18.16), (18.68, 22.1), (22.96, 25.4),
+    (25.92, 27.86), (27.86, 29.1), (29.86, 32.44), (32.74, 34.48), (34.82, 37.6), (37.6, 40.28), (40.54, 43.42), (44.0, 45.08),
+    (45.58, 47.28), (47.66, 50.12), (50.76, 53.84), (53.84, 56.18), (56.66, 57.92), (57.92, 61.1), (61.38, 63.58), (63.96, 65.94),
+]  # take khBx6LPULmWcNOsSCEcl (flow 4J1t9vDwRizh6hybmecF, 1045 credits), 74.1 s raw -> atempo 1.12 = 66.1 s
 
 if HAVE_VO and MEASURED:
     PT = [(VO_AT + a, VO_AT + b) for a, b in MEASURED]
@@ -124,7 +128,7 @@ SHOTS = [
     ("cartoons", P[17].s - 0.1),
     ("tower", P[18].s - 0.1),
     ("enter", P[21].s - 0.3),
-    ("desks", P[21].e - 0.4),
+    ("desks", P[21].s + 1.5),
     ("dad", P[22].s - 0.1),
 ]
 

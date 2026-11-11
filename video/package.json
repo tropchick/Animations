@@ -132,7 +132,7 @@
     "render:day": "python3 audio/make_day_audio.py && tools/render-chunks.sh GtaDay public/audio/gta6-day.wav out/gta6-day.mp4 $(node -e \"console.log(Math.round(require('./src/day/cues.json').duration*30)+1)\")",
     "cover:day": "remotion still GtaDayCover out/gta6-day-cover.jpg --jpeg-quality=92",
     "audio:brain": "python3 audio/make_brain_audio.py",
-    "render:brain": "python3 audio/make_brain_audio.py && tools/render-chunks.sh BrainChain public/audio/brainrot-never.wav out/brainrot-never.mp4 FRAMES",
+    "render:brain": "python3 audio/make_brain_audio.py && tools/render-chunks.sh BrainChain public/audio/brainrot-never.wav out/brainrot-never.mp4 2068",
     "cover:brain": "remotion still BrainCover out/brainrot-never-cover.jpg --gl=swangle --jpeg-quality=90",
     "audio:cs2": "python3 audio/make_cs2_audio.py",
     "render:cs2": "python3 audio/make_cs2_audio.py && tools/render-chunks.sh Cs2Chain public/audio/cs2-anticheat.wav out/cs2-anticheat.mp4 1853",

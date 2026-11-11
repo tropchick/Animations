@@ -192,7 +192,6 @@ const NotebookStack: React.FC<{position: V3}> = ({position}) => (
 );
 
 const KitchenSet: React.FC<{v: number}> = ({v}) => {
-  const bubble = ease(v, S('stack') + 0.1, S('stack') + 0.3) * (1 - ease(v, STACK + 0.6, STACK + 0.9));
   return (
     <>
       <color attach="background" args={['#f2e2c4']} />
@@ -201,11 +200,6 @@ const KitchenSet: React.FC<{v: number}> = ({v}) => {
       <Human o={MOM} position={MOM_AT} rotation={Math.PI / 2 + 0.25} pose={momPose(v)} />
       <Human o={KID} position={KID_K} rotation={KID_YAW} pose={kidKitchenPose(v)} head={<Cap />} />
       {v > S('stack') - 0.1 ? <NotebookStack position={stackPos(v)} /> : null}
-      {bubble > 0.01 ? (
-        <group position={[-0.25, 1.95, 1.0]} scale={0.6 + 0.4 * bubble}>
-          <Pic size={[1.0, 0.48]} res={[520, 248]} k="bubble-mom" draw={drawBubble('ИДИ ДЕЛАЙ УРОКИ!')} lit={false} transparent glow={1} />
-        </group>
-      ) : null}
     </>
   );
 };
@@ -314,7 +308,7 @@ const planDraw = (v: number) => {
   const b = ramp(v, PLAN - 0.3, PLAN + 1.6);
   return {k: `plan-${Math.round(a * 20)}-${Math.round(b * 40)}`, draw: (g: CanvasRenderingContext2D, W: number, H: number) => drawPlan(g, W, H, a, b)};
 };
-const BasementSet: React.FC<{v: number}> = ({v}) => {
+const BasementSet: React.FC<{v: number; people?: boolean}> = ({v, people = true}) => {
   const pd = planDraw(v);
   return (
     <>
@@ -324,7 +318,7 @@ const BasementSet: React.FC<{v: number}> = ({v}) => {
       <directionalLight position={[1, 3, 3]} color="#9aa8d8" intensity={0.35} />
       <pointLight position={[0.4, 1.5, 2.2]} color="#ffd8b0" intensity={1.4} distance={5} decay={1.4} />
       <Basement v={v} board={<Pic size={[1.2, 1.4]} res={[480, 560]} k={pd.k} draw={pd.draw} />} />
-      {MEET.map((m, i) => (
+      {people && MEET.map((m, i) => (
         <Human
           key={i}
           o={adult(i + 4)}
@@ -344,6 +338,6 @@ export const meetingScene: Scene = {
 };
 export const planScene: Scene = {
   view: (v): View => mv(v, S('plan'), E('plan'), [0.3, 1.78, 0.75], [0.1, 1.76, 0.45], [0, 1.75, -2.1], [0, 1.75, -2.1], [44, 44]),
-  render: (v) => <BasementSet v={v} />,
+  render: (v) => <BasementSet v={v} people={false} />,
 };
 export {KID_SUIT};

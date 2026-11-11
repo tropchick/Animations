@@ -138,6 +138,23 @@ const Counter: React.FC<{v: number}> = ({v}) => {
   );
 };
 
+// ---------- mom's «ИДИ ДЕЛАЙ УРОКИ!» bubble ----------
+
+const MomBubble: React.FC<{v: number}> = ({v}) => {
+  const a = shotStart('stack') + 0.1;
+  const b = STACK + 0.8;
+  if (v < a || v > b) return null;
+  const t = v - a;
+  return (
+    <div style={{position: 'absolute', left: 70, top: 560, opacity: fade(v, a, b, 0.06, 0.2), transform: `scale(${0.5 + 0.5 * pop(t, 10)}) rotate(-4deg)`, transformOrigin: '20% 100%'}}>
+      <div style={{position: 'relative', background: '#ffffff', color: INK, borderRadius: 40, padding: '16px 34px 20px', fontFamily: ROUND, fontWeight: 800, fontSize: 60, boxShadow: STICKER_SHADOW}}>
+        ИДИ ДЕЛАЙ УРОКИ!
+        <div style={{position: 'absolute', left: 60, bottom: -34, width: 0, height: 0, borderLeft: '22px solid transparent', borderRight: '22px solid transparent', borderTop: '40px solid #ffffff'}} />
+      </div>
+    </div>
+  );
+};
+
 // ---------- final plate ----------
 
 const Final: React.FC<{v: number}> = ({v}) => {
@@ -191,6 +208,7 @@ export const Overlay: React.FC<{v: number}> = ({v}) => (
     <DateStamp v={v} />
     <MindBar v={v} />
     <Counter v={v} />
+    <MomBubble v={v} />
     <Final v={v} />
     {GROUPS.map((_, g) => (
       <Caption key={g} v={v} g={g} />

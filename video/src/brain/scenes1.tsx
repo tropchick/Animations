@@ -29,9 +29,9 @@ const LAPTOP: V3 = [0, 0.76, -1.45];
 const AUTHOR_AT: V3 = [0, 0, -0.78];
 // the three brainrots float next to the desk, facing the camera
 export const TRIO: {p: V3; yaw: number}[] = [
-  {p: [1.45, 0.12, 0.05], yaw: -0.2},
+  {p: [1.45, 0.12, 0.05], yaw: -0.75},
   {p: [1.6, 0.12, -0.45], yaw: 0.35},
-  {p: [1.05, 0.12, -1.0], yaw: 0.55},
+  {p: [0.8, 0.12, -0.7], yaw: 0.55},
 ];
 
 const NightRoom: React.FC<{v: number}> = ({v}) => (
@@ -219,6 +219,6 @@ export const BedRoom: React.FC<{v: number}> = ({v}) => {
 };
 
 export const bedScene: Scene = {
-  view: (v): View => follow(v, S('bed'), E('bed'), [1.45, 1.05, 1.3], [1.15, 0.98, 0.85], [KID_BED[0] + 0.05, 0.8, KID_BED[2]], [44, 42], 760),
+  view: (v): View => follow(v, S('bed'), E('bed'), [1.65, 1.2, 1.65], [1.3, 1.1, 1.2], [KID_BED[0] + 0.05, 0.95, KID_BED[2]], [44, 42], 930),
   render: (v) => <BedRoom v={v} />,
 };

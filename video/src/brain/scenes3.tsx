@@ -126,8 +126,8 @@ const ENTRY: {o: number; seat: V3}[] = [
   {o: 3, seat: [1.3, 0, 1.6]},
 ];
 const enterWalk = (v: number, i: number): {p: V3; yaw: number; pose: HumanPose; seated: number} => {
-  const t = v - S('enter') - i * 0.45;
-  const door: V3 = [3.6, 0, -0.1];
+  const t = v - S('enter') + 0.9 - i * 0.45;
+  const door: V3 = [3.3, 0, -0.1];
   const seat = ENTRY[i].seat;
   const aisle: V3 = [seat[0], 0, 0.05];
   const d1 = Math.hypot(aisle[0] - door[0], aisle[2] - door[2]);
@@ -182,7 +182,7 @@ const SchoolSet: React.FC<{v: number; mode: 'enter' | 'desks'}> = ({v, mode}) =>
 );
 
 export const enterScene: Scene = {
-  view: (v): View => mv(v, S('enter'), E('enter'), [-0.9, 1.75, 3.9], [-0.4, 1.65, 3.4], [1.7, 1.05, -0.1], [1.2, 1.05, 0.1], [50, 48], 0.3),
+  view: (v): View => mv(v, S('enter'), E('enter'), [-0.5, 1.75, 3.9], [-0.1, 1.65, 3.4], [1.9, 1.1, -0.1], [1.3, 1.05, 0.1], [50, 48], 0.3),
   render: (v) => <SchoolSet v={v} mode="enter" />,
 };
 export const desksScene: Scene = {
