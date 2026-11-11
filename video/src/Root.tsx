@@ -104,6 +104,9 @@ import {Hl3Gta} from './Hl3Gta';
 import {Hl3GtaCover} from './Hl3GtaCover';
 import {DURATION_S as HL3GTA_S} from './hl3gta/cues';
 import {DietCover} from './DietCover';
+import {CheatsChain} from './CheatsChain';
+import {CheatsCover} from './CheatsCover';
+import {DURATION_S as CHEATS_S} from './cheats/cues';
 import {DURATION_S as DIET_S} from './diet/cues';
 
 // the «Шахматный разбор» videos: composition ids and their show
@@ -313,6 +316,16 @@ export const RemotionRoot = () => (
       id="GtaDay"
       component={GtaDay}
       durationInFrames={Math.round(DAY_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="CheatsCover" component={CheatsCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="CheatsChain"
+      component={CheatsChain}
+      durationInFrames={Math.round(CHEATS_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}
