@@ -1,6 +1,8 @@
 import {ThreeStories} from './ThreeStories';
 import {ThreeCover} from './ThreeCover';
 import React from 'react';
+import {GorLab, Gorilla100} from './Gorilla100';
+import {DURATION_S as GOR_S} from './gor/cues';
 import {Composition} from 'remotion';
 import {AirGone} from './AirGone';
 import {GravityFlip} from './GravityFlip';
@@ -261,6 +263,16 @@ export const RemotionRoot = () => (
       height={1920}
       defaultProps={{withAudio: false}}
     />
+    <Composition
+      id="Gorilla100"
+      component={Gorilla100}
+      durationInFrames={Math.round(GOR_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="GorLab" component={GorLab} durationInFrames={300} fps={FPS} width={1080} height={1920} />
     <Composition id="Hl3GtaCover" component={Hl3GtaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition
       id="Hl3Gta"
