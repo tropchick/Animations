@@ -67,6 +67,9 @@ import {DURATION_S as CS2_S} from './cs2/cues';
 import {DURATION_S as NOLAN_S} from './nolan/cues';
 import {NolanMom} from './NolanMom';
 import {NolanCover} from './NolanCover';
+import {NolanMom2} from './NolanMom2';
+import {NolanCover2} from './NolanCover2';
+import {DURATION_S as NOLAN2_S} from './nolan2/cues';
 import {DotaCover} from './DotaCover';
 import {DURATION_S as DOTA_S} from './dota/cues';
 import {GabenCover} from './GabenCover';
@@ -290,6 +293,16 @@ export const RemotionRoot = () => (
       id="NolanMom"
       component={NolanMom}
       durationInFrames={Math.round(NOLAN_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="NolanCover2" component={NolanCover2} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="NolanMom2"
+      component={NolanMom2}
+      durationInFrames={Math.round(NOLAN2_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}
