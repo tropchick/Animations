@@ -57,6 +57,9 @@ import {GtaChain} from './GtaChain';
 import {GabenMom} from './GabenMom';
 import {DotaChain} from './DotaChain';
 import {Cs2Chain} from './Cs2Chain';
+import {BrainChain} from './BrainChain';
+import {BrainCover} from './BrainCover';
+import {DURATION_S as BRAIN_S} from './brain/cues';
 import {GtaDay, GtaDayCover} from './GtaDay';
 import {DURATION_S as DAY_S} from './day/cues';
 import {Cs2Cover} from './Cs2Cover';
@@ -297,6 +300,16 @@ export const RemotionRoot = () => (
       id="GtaDay"
       component={GtaDay}
       durationInFrames={Math.round(DAY_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="BrainCover" component={BrainCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="BrainChain"
+      component={BrainChain}
+      durationInFrames={Math.round(BRAIN_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}
