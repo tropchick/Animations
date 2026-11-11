@@ -481,7 +481,7 @@ export const drawGorilla = (P: Parts, g: Gor) => {
     P.seg('cyl', knee, an, 0.14, FUR2);
     P.at('sph', knee, 0.165, FUR2);
     P.at('sph', an, 0.14, FUR2);
-    P.ell('sph', along(an, [[0, 0, 1], -0.1], [[0, 1, 0], -0.03]), along(an, [[0, 0, 1], 0.24], [[sgn, 0, 0], 0.05], [[0, 1, 0], -0.035]), 0.12, 0.07, X, SKIN);
+    P.ell('sph', along(an, [[0, 0, 1], -0.1], [[0, 1, 0], -0.03]), along(an, [[0, 0, 1], 0.27], [[sgn, 0, 0], 0.05], [[0, 1, 0], -0.035]), 0.165, 0.075, X, SKIN);
   }
   // arms
   const hands: V3[] = [];
@@ -496,7 +496,8 @@ export const drawGorilla = (P: Parts, g: Gor) => {
     P.at('sph', wr, 0.165, FUR);
     const fd = norm(sub(wr, el));
     const palm = g.palm ?? 0;
-    P.ell('sph', along(wr, [fd, -0.02]), along(wr, [fd, 0.24]), 0.15 + 0.03 * palm, 0.135 - 0.06 * palm, cross(fd, [sgn, 0.3, 0.2]), SKIN);
+    // the hand starts past the wrist ball and is wider than it, so the two surfaces cross steeply (no shimmer)
+    P.ell('sph', along(wr, [fd, 0.03]), along(wr, [fd, 0.3]), 0.175 + 0.03 * palm, 0.15 - 0.07 * palm, cross(fd, [sgn, 0.3, 0.2]), SKIN);
     hands.push(along(wr, [fd, 0.1]));
   }
   // neck + head

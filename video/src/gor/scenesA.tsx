@@ -236,7 +236,7 @@ export const chargeScene: GScene = {
     for (let j = 0; j < 5; j++) {
       const tj = CHARGE + 0.12 + j * 0.2;
       const kj = 1 - Math.pow(1 - ramp(tj, CHARGE, STOP), 1.7);
-      puff(P, [lerp(CH_FROM[0], CH_TO[0], kj), 0, lerp(CH_FROM[2], CH_TO[2], kj) - 0.4], v - tj, j + 20, 0.7, 0.7);
+      puff(P, [lerp(CH_FROM[0], CH_TO[0], kj) + (j % 2 ? 0.75 : -0.75), 0, lerp(CH_FROM[2], CH_TO[2], kj) - 0.5], v - tj, j + 20, 0.55, 0.7, [j % 2 ? 0.4 : -0.4, 0, -0.2]);
     }
     puff(P, [CH_TO[0] - 0.7, 0, CH_TO[2] + 0.5], v - (STOP - 0.1), 31, 0.8, 0.9, [-0.5, 0, 0.3]);
     puff(P, [CH_TO[0] + 0.7, 0, CH_TO[2] + 0.4], v - (STOP - 0.05), 32, 0.75, 0.9, [0.5, 0, 0.3]);
