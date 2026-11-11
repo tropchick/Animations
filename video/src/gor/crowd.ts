@@ -126,11 +126,12 @@ export const marker = (P: Parts, at: V3, cam: V3, v: number, seed: number, grow 
   const yaw = Math.atan2(cam[0] - at[0], cam[2] - at[2]);
   const bob = 0.05 * Math.sin(v * 3 + seed * 2.1);
   const blink = 0.9 + 0.15 * Math.sin(v * 9 + seed);
-  const s = grow * blink;
+  // close to the lens a marker keeps the size it has at five metres, so it never fills the frame
+  const s = grow * blink * Math.min(1, Math.hypot(cam[0] - at[0], cam[1] - at[1], cam[2] - at[2]) / 5);
   P.root.makeRotationY(yaw).setPosition(at[0], at[1] + bob, at[2]);
   P.at('sph', [0, 0, 0], [0.2 * s, 0.2 * s, 0.03], '#fff6ea');
   P.at('box', [0, 0, 0.03], [0.26 * s, 0.085 * s, 0.03], '#ff2d46', undefined, false);
-  P.at('box', [0, 0, 0.03], [0.085 * s, 0.26 * s, 0.031], '#ff2d46', undefined, false);
+  P.at('box', [0, 0, 0.034], [0.085 * s, 0.26 * s, 0.03], '#ff2d46', undefined, false);
   P.root.identity();
 };
 
@@ -139,10 +140,10 @@ export const puff = (P: Parts, at: V3, t: number, seed: number, size = 1, life =
   if (t <= 0 || t >= life) return;
   const k = t / life;
   P.root.identity();
-  for (let j = 0; j < 5; j++) {
+  for (let j = 0; j < 7; j++) {
     const a = hash(seed * 7 + j) * Math.PI * 2;
-    const r = (0.25 + 0.75 * hash(seed * 3 + j * 5)) * size * (1 - Math.exp(-t * 6));
-    const s = size * (0.22 + 0.3 * hash(seed + j * 11)) * (0.6 + 0.9 * k) * (1 - k * k);
+    const r = (0.15 + 0.5 * hash(seed * 3 + j * 5)) * size * (1 - Math.exp(-t * 6));
+    const s = size * (0.16 + 0.24 * hash(seed + j * 11)) * (0.6 + 0.9 * k) * (1 - k * k);
     P.at('sph', [at[0] + Math.cos(a) * r + dir[0] * k, at[1] + s * 0.6 + 0.35 * k * size * hash(seed + j), at[2] + Math.sin(a) * r + dir[2] * k], s, j % 2 ? DUST_A : DUST_B);
   }
 };

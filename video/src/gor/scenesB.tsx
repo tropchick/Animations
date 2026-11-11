@@ -140,13 +140,17 @@ const downK = (v: number) => sm(v, S.pile + 0.7, S.pile + 1.7); // off his feet
 const flatK = (v: number) => sm(v, S.pile + 1.6, S.pile + 3.4) * (1 - 0.5 * heaveK(v));
 const heaveK = (v: number) => sm(v, HEAVE, HEAVE + 0.45) * (1 - sm(v, SLUMP - 0.1, SLUMP + 0.02));
 type Slot = {az: number; r: number; lift: number; pitch: number};
-const SLOT: Slot[] = PILE_MEN.map((_, j) => {
+// nobody lies on his face: the circle of bodies leaves a wedge open around the head and the arms
+const WEDGE = 0.72;
+const open = (az: number) => PILE_YAW + WEDGE + ((((az / (Math.PI * 2)) % 1) + 1) % 1) * (Math.PI * 2 - 2 * WEDGE);
+const SLOT0: Slot[] = PILE_MEN.map((_, j) => {
   // PILE_OFF (the first three) sit on top, so they are the ones shaken off
   if (j < 3) return {az: j * 2.1 + 0.4, r: 0.3, lift: 1.42, pitch: 1.35};
   if (j < 15) return {az: ((j - 3) / 12) * Math.PI * 2 + 0.2, r: 1.25, lift: 0.52, pitch: 1.05};
   if (j < 25) return {az: ((j - 15) / 10) * Math.PI * 2 + 0.5, r: 0.75, lift: 0.98, pitch: 1.25};
   return {az: ((j - 25) / 5) * Math.PI * 2 + 0.9, r: 0.4, lift: 1.25, pitch: 1.4};
 });
+const SLOT: Slot[] = SLOT0.map((q, j) => (j < 3 ? q : {...q, az: open(q.az)}));
 // the first three jump last (they end up on top)
 const ORDER = PILE_MEN.map((_, j) => (j < 3 ? 27 + j : j - 3));
 const OFF_TOSS: Toss[] = PILE_OFF.map((i, j) => {

@@ -6,6 +6,7 @@ import {Stage, World} from './gor/World';
 import {labScene} from './gor/lab';
 import {View} from './slime/camera';
 import {Overlay} from './gor/Overlay';
+import {CoverPlates, coverScene} from './gor/cover';
 
 // «100 мужчин против гориллы»: comic 3D (toon fill + ink outlines), vertical 1080x1920, Russian VO.
 // Frame 0 is the cover; the story runs from frame 1, so story time v = (frame - 1) / fps.
@@ -22,6 +23,8 @@ export const Gorilla100: React.FC<{withAudio?: boolean; cam?: View; at?: number;
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const v = at ?? Math.max(0, (frame - 1) / fps);
+  // the cover is the very first frame, so it can be picked as the thumbnail
+  if (frame === 0 && at === undefined && !cam) return <GorCover />;
   return (
     <AbsoluteFill style={{backgroundColor: '#000'}}>
       <Canvas3D>
@@ -32,6 +35,15 @@ export const Gorilla100: React.FC<{withAudio?: boolean; cam?: View; at?: number;
     </AbsoluteFill>
   );
 };
+
+export const GorCover: React.FC<{cam?: View; clean?: boolean}> = ({cam, clean}) => (
+  <AbsoluteFill style={{backgroundColor: '#000'}}>
+    <Canvas3D>
+      <Stage v={0} scene={coverScene} view={cam ? () => cam : coverScene.view} />
+    </Canvas3D>
+    {clean ? null : <CoverPlates />}
+  </AbsoluteFill>
+);
 
 export const GorLab: React.FC<{cam?: View; at?: number}> = ({cam, at}) => {
   const frame = useCurrentFrame();

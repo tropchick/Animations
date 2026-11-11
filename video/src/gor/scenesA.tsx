@@ -78,7 +78,7 @@ export const faceScene: GScene = {
     const t = v - S.face;
     const look = sm(t, 1.25, 1.75);
     const chew = (1 - look) * (0.18 + 0.16 * Math.sin(t * 11));
-    const hand = mix3([0.13, 1.0, 1.02], [0.62, 0.12, 0.5], look);
+    const hand: V3 = [0.62, 0.12, 0.5];
     drawGorilla(P, {
       root: {pos: G0, yaw: 0.1},
       up: 0.4,
@@ -92,11 +92,6 @@ export const faceScene: GScene = {
       brow: mix(0.15, 1, look),
       breath: Math.sin(t * 1.8),
     });
-    // the stem he was chewing
-    const h: V3 = [G0[0] + hand[0] * Math.cos(0.1) + hand[2] * Math.sin(0.1), hand[1], G0[2] - hand[0] * Math.sin(0.1) + hand[2] * Math.cos(0.1)];
-    const tip: V3 = [h[0] - 0.05 - 0.2 * look, h[1] + 0.34 - 0.2 * look, h[2] + 0.1 + 0.2 * look];
-    P.seg('cyl', [h[0], h[1] - 0.12, h[2]], tip, 0.018, '#4a8a3a', false);
-    for (let j = 0; j < 3; j++) P.ell('sph', tip, [tip[0] + 0.16 * Math.cos(j * 2.1), tip[1] + 0.1 + 0.03 * j, tip[2] + 0.16 * Math.sin(j * 2.1)], 0.06, 0.012, [0, 1, 0], j % 2 ? '#6fb23c' : '#57a43c', true, 0.02);
     gorBlob(blobs, G0, 0.9);
   },
 };
@@ -391,7 +386,7 @@ export const clashMan = (i: number, v: number): {m: ManState; y: number} | null 
   return {m: runner(i, v, SPOT[i], [SPOT[i][0] * 2.4, 10.5], flee, flee + 2.2), y: 0};
 };
 export const clashScene: GScene = {
-  view: (v) => mv(v, S.clash - 0.3, E.clash + 0.3, [4.3, 1.75, 5.9], [3.3, 1.5, 5.2], [0.1, 1.25, 1.3], [0.35, 1.0, 1.5], [48, 44]),
+  view: (v) => mv(v, S.clash - 0.3, E.clash + 0.3, [4.3, 1.75, 5.9], [3.4, 1.5, 5.3], [0.25, 1.25, 1.2], [0.9, 0.95, 0.95], [48, 46]),
   shakes: [[H1, 0.7], [H2, 0.9], [H3, 1.3]],
   build: (v, P, blobs) => {
     const {g, pos} = clashGor(v);

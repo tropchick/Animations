@@ -61,7 +61,7 @@ TAKE = [
 ]
 MEASURED = TAKE if HAVE_VO else ESTIMATE
 # extra silence BEFORE a phrase (story seconds): room for the action
-GAPS = {2: 0.2, 3: 0.2, 5: 1.1, 7: 0.9, 9: 3.3, 12: 1.6, 13: 0.2, 14: 1.3}
+GAPS = {2: 0.2, 3: 0.2, 4: 0.6, 5: 0.8, 7: 0.9, 9: 3.3, 12: 1.6, 13: 0.2, 14: 1.3}
 
 shift = 0.0
 PT = []
@@ -99,7 +99,7 @@ def word_at(k, prefix, frac):
 
 
 # ---------------------------------------------------------------- events
-STOP = P[4].s - 0.05  # the charge ends face to face, on «это блеф»
+STOP = P[4].s - 0.7  # the charge ends face to face; the roar gets its own beat, then «это блеф»
 CHARGE = STOP - 1.15
 BEAT0 = P[3].s + 0.55
 BEATS = [round(BEAT0 + 0.14 * j, 3) for j in range(int(max(4, (CHARGE - 0.45 - BEAT0) / 0.14)))]
@@ -282,11 +282,11 @@ for j in range(n):
 place(RUMBLE, CHARGE, 0.22, length=STOP - CHARGE + 0.3, fade_in=0.15, fade_out=0.3)
 mix.add(skid(0.8), O + STOP - 0.12, 0.45)
 mix.add(thump(60, 34, 0.6, decay=6, click=0.3), O + STOP, 0.7)
-place(ROAR_S, STOP + 0.02, 0.42, length=1.1, skip=0.15, fade_out=0.45)
-place(CROWD_B, STOP + 0.05, 0.24, length=1.5, fade_in=0.05, fade_out=0.7)
+place(ROAR_S, STOP + 0.02, 0.42, length=0.95, skip=0.15, fade_out=0.45)
+place(CROWD_B, STOP + 0.05, 0.2, length=1.1, fade_in=0.05, fade_out=0.6)
 
 # five brave ones
-place(CROWD_C, RUN5, 0.22, length=HITS[0] - RUN5 + 0.2, fade_in=0.1, fade_out=0.3)
+place(CROWD_C, RUN5, 0.16, length=HITS[0] - RUN5 + 0.2, fade_in=0.8, fade_out=0.3)
 for j in range(9):
     mix.add(thump(140, 80, 0.12, decay=30, click=0.5), O + RUN5 + 0.25 + j * 0.19, 0.18, pan=0.4 * np.sin(j * 2.1))
 

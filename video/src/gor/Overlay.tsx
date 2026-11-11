@@ -47,7 +47,7 @@ export const project = (v: number, p: V3): [number, number, boolean] => {
 };
 
 // ---------------------------------------------------------------- ink panel
-const Panel: React.FC<{children: React.ReactNode; bg?: string; color?: string; skew?: number; rot?: number; pad?: string; size?: number; style?: React.CSSProperties}> = ({children, bg = CREAM, color = INK, skew = -7, rot = 0, pad = '8px 26px 10px', size = 44, style}) => (
+export const Panel: React.FC<{children: React.ReactNode; bg?: string; color?: string; skew?: number; rot?: number; pad?: string; size?: number; style?: React.CSSProperties}> = ({children, bg = CREAM, color = INK, skew = -7, rot = 0, pad = '8px 26px 10px', size = 44, style}) => (
   <div
     style={{
       display: 'inline-block',
@@ -73,7 +73,7 @@ const Panel: React.FC<{children: React.ReactNode; bg?: string; color?: string; s
 const HUD_FROM = S.hesitate;
 const clock = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, '0')}`;
 const Hud: React.FC<{v: number}> = ({v}) => {
-  if (v < HUD_FROM) return null;
+  if (v < HUD_FROM || v >= S.result) return null;
   const inn = pop(v - HUD_FROM, 8);
   const n = hurtAt(v);
   const last = HURT.filter((x) => v >= x).pop();
@@ -82,7 +82,7 @@ const Hud: React.FC<{v: number}> = ({v}) => {
   const running = v >= CHARGE;
   const barCol = power > 0.55 ? '#62d143' : power > 0.25 ? '#ffb21f' : RED;
   const low = power < 0.25 ? 0.5 + 0.5 * Math.sin(v * 12) : 0;
-  const out = v > PLATE2 - 0.25 ? clamp01((v - (PLATE2 - 0.25)) / 0.25) : 0;
+  const out = 0;
   return (
     <div style={{position: 'absolute', left: 60, right: 60, top: 150, transform: `translateY(${(1 - inn) * -260 - out * 420}px)`}}>
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
@@ -126,7 +126,7 @@ const Captions: React.FC<{v: number}> = ({v}) => {
           const on = v >= w[0] - 0.03;
           const now = on && v < w[1] + 0.05;
           return (
-            <span key={i} style={{color: now ? YELLOW : on ? '#fff' : 'rgba(255,255,255,0.55)', display: 'inline-block', marginRight: 16, transform: now ? 'translateY(-5px) scale(1.07)' : undefined}}>
+            <span key={i} style={{color: now ? YELLOW : on ? '#fff' : 'rgba(255,255,255,0.55)', display: 'inline-block', margin: '0 12px', transform: now ? 'translateY(-5px) scale(1.07)' : undefined}}>
               {w[2]}
             </span>
           );
@@ -137,15 +137,15 @@ const Captions: React.FC<{v: number}> = ({v}) => {
 };
 
 // ---------------------------------------------------------------- hits: starbursts with sound words
-type Impact = {t: number; p: V3; word?: string; size: number; hue?: string};
+type Impact = {t: number; p: V3; word?: string; size: number; hue?: string; at?: [number, number]};
 const WORDS_M = ['БАМ!', '', 'ХЛОП!', '', 'БУМ!', '', 'ХРЯСЬ!', ''];
 export const IMPACTS: Impact[] = [
   ...BEATS.filter((_, j) => j % 2 === 0).map((t, j): Impact => ({t, p: [G0[0] + (j % 2 ? 0.75 : -0.75), 1.75, G0[2] + 0.5], word: 'БУМ', size: 0.55, hue: CREAM})),
-  {t: STOP, p: [CH_TO[0], 2.5, CH_TO[2]], word: 'Р-Р-РА!', size: 1.25, hue: RED},
+  {t: STOP, p: [CH_TO[0], 2.5, CH_TO[2]], word: 'Р-Р-РА!', size: 0.95, hue: RED, at: [770, 1040]},
   {t: HITS[0], p: TOSS_A.from, word: 'ВЖУХ!', size: 1.0},
   {t: HITS[1], p: TOSS_B.from, word: 'БАМ!', size: 1.1},
   {t: HITS[2], p: [LAND[C].p[0], 0.5, LAND[C].p[2]], word: 'БУХ!', size: 1.15, hue: RED},
-  ...MELEE_HITS.map((t, j): Impact => ({t, p: [VSPOT[j][0], 1.25, VSPOT[j][1]], word: WORDS_M[j], size: 0.95, hue: j % 4 === 2 ? RED : YELLOW})),
+  ...MELEE_HITS.map((t, j): Impact => ({t, p: [VSPOT[j][0], 1.25, VSPOT[j][1]], word: WORDS_M[j], size: WORDS_M[j] ? 0.8 : 0.5, hue: j % 4 === 2 ? RED : YELLOW})),
   {t: SLUMP, p: [PC[0], 0.5, PC[2]], word: 'БУХ!', size: 1.3, hue: RED},
 ];
 const star = (n: number, r0: number, r1: number, seed: number) => {
@@ -169,8 +169,8 @@ const Bursts: React.FC<{v: number}> = ({v}) => {
         const [x, y] = project(v, im.p);
         const s = im.size * (0.35 + 0.65 * pop(t, 14)) * (t > 0.45 ? 1 - (t - 0.45) / 0.17 : 1);
         const rot = (i % 2 ? 1 : -1) * (8 + 4 * Math.sin(i * 3.1));
-        const cx = Math.min(880, Math.max(200, x));
-        const cy = Math.min(1150, Math.max(520, y - 60 * im.size));
+        const cx = im.at ? im.at[0] : Math.min(880, Math.max(200, x));
+        const cy = im.at ? im.at[1] : Math.min(1150, Math.max(520, y - 60 * im.size));
         return (
           <div key={i} style={{position: 'absolute', left: cx, top: cy, transform: `translate(-50%, -50%) rotate(${rot}deg) scale(${s})`}}>
             <svg width={560} height={420} viewBox="-280 -210 560 420" style={{display: 'block', overflow: 'visible'}}>
@@ -240,8 +240,9 @@ const Title: React.FC<{v: number}> = ({v}) => {
   );
 };
 const Weights: React.FC<{v: number}> = ({v}) => {
-  if (v < TONS - 0.1 || v > E.pinned) return null;
-  const o = fade(v, TONS - 0.1, E.pinned - 0.1, 0.05, 0.25);
+  const end = PHRASES[11][1] - 0.1; // gone before the last heave
+  if (v < TONS - 0.1 || v > end) return null;
+  const o = fade(v, TONS - 0.1, end, 0.05, 0.25);
   const a = pop(v - TONS + 0.05, 9);
   const b = pop(v - KILOS + 0.05, 9);
   return (
