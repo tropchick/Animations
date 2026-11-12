@@ -161,6 +161,9 @@
     "audio:gaben": "python3 audio/make_gaben_audio.py",
     "render:gaben": "python3 audio/make_gaben_audio.py && tools/render-chunks.sh GabenMom public/audio/gaben-mom.wav out/gaben-mom.mp4 1507",
     "cover:gaben": "remotion still GabenCover out/gaben-mom-cover.jpg --gl=swangle --jpeg-quality=90",
+    "audio:beast": "python3 audio/make_beast_audio.py",
+    "render:beast": "python3 audio/make_beast_audio.py && tools/render-chunks.sh BeastRich public/audio/gaben-vs-mrbeast.wav out/gaben-vs-mrbeast.mp4 $(node -e \"console.log(Math.round(require('./src/beast/cues.json').duration*30)+1)\")",
+    "cover:beast": "remotion still BeastCover out/gaben-vs-mrbeast-cover.jpg --gl=swangle --jpeg-quality=90",
     "audio:hl3gta": "python3 audio/make_hl3gta_audio.py",
     "render:hl3gta": "python3 audio/make_hl3gta_audio.py && tools/render-chunks.sh Hl3Gta public/audio/hl3-vs-gta7.wav out/hl3-vs-gta7.mp4 $(node -e \"console.log(Math.round(require('./src/hl3gta/cues.json').duration*30)+1)\")",
     "cover:hl3gta": "remotion still Hl3GtaCover out/hl3-vs-gta7-cover.jpg --gl=swangle --jpeg-quality=90"

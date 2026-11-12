@@ -105,6 +105,9 @@ import {DURATION_S as GTAMOM_S} from './gtamom/cues';
 import {Hl3Gta} from './Hl3Gta';
 import {Hl3GtaCover} from './Hl3GtaCover';
 import {DURATION_S as HL3GTA_S} from './hl3gta/cues';
+import {DURATION_S as BEAST_S} from './beast/cues';
+import {BeastRich} from './BeastRich';
+import {BeastCover} from './BeastCover';
 import {DietCover} from './DietCover';
 import {CheatsChain} from './CheatsChain';
 import {CheatsCover} from './CheatsCover';
@@ -274,6 +277,16 @@ export const RemotionRoot = () => (
     />
     <Composition id="Gorilla100Cover" component={GorCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition id="GorLab" component={GorLab} durationInFrames={300} fps={FPS} width={1080} height={1920} />
+    <Composition id="BeastCover" component={BeastCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="BeastRich"
+      component={BeastRich}
+      durationInFrames={Math.round(BEAST_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
     <Composition id="Hl3GtaCover" component={Hl3GtaCover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
     <Composition
       id="Hl3Gta"
