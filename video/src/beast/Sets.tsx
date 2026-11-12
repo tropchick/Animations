@@ -529,7 +529,7 @@ const drawHeart = (g: CanvasRenderingContext2D, W: number, H: number) => {
 export const Envelope: React.FC<{position: V3; rotation?: V3}> = ({position, rotation}) => (
   <group position={position} rotation={rotation}>
     <Block size={[0.24, 0.15, 0.008]} color="#efe6d2" />
-    <Pic position={[0, 0, 0.0045]} size={[0.235, 0.145]} res={[256, 158]} k="env" draw={drawHeart} />
+    <Pic position={[0, 0, 0.008]} size={[0.235, 0.145]} res={[256, 158]} k="env" draw={drawHeart} />
   </group>
 );
 
