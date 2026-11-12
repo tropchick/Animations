@@ -175,8 +175,8 @@ export const yachtScene: Scene = {
     const x = yachtX(v);
     const k = ease5(v, S('yacht') + 0.2, RULER + 0.9);
     // close on Gaben at the bow, then far out to see the whole hull with the ruler
-    const pos = lerp3([x - 7.2, 4.6, 6.0], [x - 13, 9.5, 30], k);
-    const tgt = lerp3([x - 6.2, 3.6, 0.0], [x + 0.6, 2.4, 0], k);
+    const pos = lerp3([x - 5.6, 4.0, 5.6], [x - 13, 9.5, 30], k);
+    const tgt = lerp3([x - 4.6, 3.2, 0.0], [x + 0.6, 2.4, 0], k);
     return {pos, target: tgt, fov: lerp(36, 40, k), far: 400};
   },
   render: (v) => {

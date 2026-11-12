@@ -256,7 +256,7 @@ export const Overlay: React.FC<{v: number}> = ({v}) => (
     <Sticker v={v} at={RULER + 0.3} to={S('factory') - 0.05} top={1150} bg={YELLOW} fg={INK} size={76} rot={3}>
       яхта 111 м
     </Sticker>
-    <Sticker v={v} at={BOUGHT} to={S('ageG') - 0.05} top={480} bg={RED} size={86} rot={-8}>
+    <Sticker v={v} at={BOUGHT} to={S('ageG') - 0.05} top={830} bg={RED} size={80} rot={-8} side="r">
       КУПЛЕН
     </Sticker>
     <Source v={v} at={BOUGHT + 0.2} to={S('ageG') - 0.05} text="верфь Oceanco, август 2025" />
