@@ -141,7 +141,7 @@ export const Calculator: React.FC<{position: V3; rotation?: V3; text: string; er
       return (
         <group key={i} position={[-0.066 + c * 0.044, 0.013 - down, -0.02 + r * 0.04]}>
           <RBox size={[0.036, 0.008, 0.032]} r={0.004} color={col} />
-          <group position={[0, 0.0048, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <group position={[0, 0.006, 0]} rotation={[-Math.PI / 2, 0, 0]}>
             <Pic size={[0.03, 0.026]} res={[90, 78]} k={`key-${l}`} draw={drawKey(l, col)} />
           </group>
         </group>

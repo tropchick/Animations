@@ -172,7 +172,7 @@ const zavStandPose = (v: number, up: number, extra: HumanPose = {}): HumanPose =
   ...extra,
 });
 
-const LAW_AT: V3 = [0, 0.782, 0.12];
+const LAW_AT: V3 = [0, 0.787, 0.12];
 const stampY = (v: number) => {
   // the stamp rises, then slams down at STAMP and lifts again
   const down = v < STAMP ? 1 - ease(v, STAMP - 0.9, STAMP - 0.35) + ease(v, STAMP - 0.25, STAMP) : 1 - ease(v, STAMP + 0.35, STAMP + 0.8);
