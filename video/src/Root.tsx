@@ -112,6 +112,9 @@ import {DietCover} from './DietCover';
 import {CheatsChain} from './CheatsChain';
 import {CheatsCover} from './CheatsCover';
 import {DURATION_S as CHEATS_S} from './cheats/cues';
+import {Six7Chain} from './Six7Chain';
+import {Six7Cover} from './Six7Cover';
+import {DURATION_S as SIX7_S} from './six7/cues';
 import {DURATION_S as DIET_S} from './diet/cues';
 
 // the «Шахматный разбор» videos: composition ids and their show
@@ -352,6 +355,16 @@ export const RemotionRoot = () => (
       id="CheatsChain"
       component={CheatsChain}
       durationInFrames={Math.round(CHEATS_S * FPS) + 1}
+      fps={FPS}
+      width={1080}
+      height={1920}
+      defaultProps={{withAudio: false}}
+    />
+    <Composition id="Six7Cover" component={Six7Cover} durationInFrames={1} fps={FPS} width={1080} height={1920} />
+    <Composition
+      id="Six7Chain"
+      component={Six7Chain}
+      durationInFrames={Math.round(SIX7_S * FPS) + 1}
       fps={FPS}
       width={1080}
       height={1920}

@@ -1,0 +1,25 @@
+import {PHRASES} from './cues';
+// phrase windows (story time) by index
+export const P = PHRASES.map(([s, e]) => ({s, e}));
+export const P0 = P[0];
+export const P1 = P[1];
+export const P2 = P[2];
+export const P3 = P[3];
+export const P4 = P[4];
+export const P5 = P[5];
+export const P6 = P[6];
+export const P7 = P[7];
+export const P8 = P[8];
+export const P9 = P[9];
+export const P10 = P[10];
+export const P11 = P[11];
+export const P12 = P[12];
+export const P13 = P[13];
+export const P14 = P[14];
+export const P15 = P[15];
+export const P16 = P[16];
+export const P17 = P[17];
+export const P18 = P[18];
+export const P19 = P[19];
+export const P20 = P[20];
+export const P21 = P[21];
