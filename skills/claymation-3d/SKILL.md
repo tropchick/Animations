@@ -20,4 +20,4 @@ description: Create handmade claymation, plasticine puppets, miniature sets and 
 
 Общие правила интеграции находятся в [Remotion 3D](../remotion-markup/3d.md), команды экспорта — в [remotion-render](../remotion-render/SKILL.md). [Источники и принятые решения](references/sources.md).
 
-[Контрольные кадры и разбор тестов](references/review.md)
+[Готовый фильм, 12 секунд](../../renders/clay-postal-street/film.mp4) · [Контрольные кадры и разбор тестов](references/review.md)
