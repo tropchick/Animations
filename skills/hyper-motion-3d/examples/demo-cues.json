@@ -1,0 +1,13 @@
+{
+  "fps": 30,
+  "frames": 720,
+  "beats": {
+    "target": 42,
+    "pickup": 122,
+    "dish": 237,
+    "dock": 338,
+    "charge": 456,
+    "launch": 542,
+    "received": 654
+  }
+}
