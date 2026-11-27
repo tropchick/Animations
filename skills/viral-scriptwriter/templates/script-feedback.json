@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "demo-001",
+      "date": "2026-11-27",
+      "script_id": "demo-scene",
+      "revision": 2,
+      "idea_id": null,
+      "published_video_id": null,
+      "type": "hook_rejected",
+      "item": "Начало с объяснения правила за кадром",
+      "scope": "script",
+      "reason": "Зритель успевает прочитать правило, пока в кадре ничего не меняется",
+      "source": "Демонстрационная запись. Укажи действительный источник обратной связи.",
+      "supersedes_id": null
+    }
+  ]
+}
