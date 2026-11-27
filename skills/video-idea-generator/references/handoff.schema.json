@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Video concept handoff v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "idea_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "concept": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_duration_seconds": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "min",
+        "max"
+      ]
+    },
+    "hook": {
+      "type": "string",
+      "minLength": 1
+    },
+    "key_events": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 2
+    },
+    "visual_opportunities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "tone": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verified_facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "claim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "pattern": "^https?://"
+                },
+                "checked_on": {
+                  "type": "string",
+                  "format": "date"
+                }
+              },
+              "required": [
+                "title",
+                "url",
+                "checked_on"
+              ]
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "claim",
+          "sources"
+        ]
+      },
+      "minItems": 0
+    },
+    "fictional_assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0
+    },
+    "production_constraints": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "user_preferences": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0
+    },
+    "freshness": {
+      "enum": [
+        "current",
+        "evergreen",
+        "historical"
+      ]
+    },
+    "recheck_before_publication": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "idea_id",
+    "title",
+    "concept",
+    "target_duration_seconds",
+    "hook",
+    "key_events",
+    "visual_opportunities",
+    "tone",
+    "verified_facts",
+    "fictional_assumptions",
+    "production_constraints",
+    "user_preferences",
+    "freshness",
+    "recheck_before_publication"
+  ]
+}

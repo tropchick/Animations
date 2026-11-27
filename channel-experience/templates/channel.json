@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "channel_id": "example-channel",
+  "published_videos": [],
+  "metric_snapshots": [],
+  "ideas": [],
+  "preferences": [],
+  "observations": [],
+  "hypotheses": [],
+  "experiments": []
+}
