@@ -5,6 +5,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "studio": "remotion studio",
+    "studio:clay": "remotion studio src/ClayPostalStreet.tsx",
+    "render:clay": "remotion render src/ClayPostalStreet.tsx ClayPostalStreet out/clay-postal-street.mp4 --concurrency=1 --crf=18",
     "audio": "python3 audio/make_audio.py",
     "render": "python3 audio/make_audio.py && remotion render AirGone out/air-gone.mp4 --concurrency=4 --crf=18",
     "frames": "remotion render AirGone out/frames --sequence --image-format=jpeg",
