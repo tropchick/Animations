@@ -1,0 +1,949 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Channel experience v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "channel_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+    },
+    "published_videos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/video"
+      },
+      "minItems": 0
+    },
+    "metric_snapshots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/snapshot"
+      },
+      "minItems": 0
+    },
+    "ideas": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/idea"
+      },
+      "minItems": 0
+    },
+    "preferences": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/preference"
+      },
+      "minItems": 0
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/observation"
+      },
+      "minItems": 0
+    },
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hypothesis"
+      },
+      "minItems": 0
+    },
+    "experiments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/experiment"
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "channel_id",
+    "published_videos",
+    "metric_snapshots",
+    "ideas",
+    "preferences",
+    "observations",
+    "hypotheses",
+    "experiments"
+  ],
+  "$defs": {
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+        },
+        "platform": {
+          "enum": [
+            "youtube",
+            "tiktok",
+            "instagram",
+            "other"
+          ]
+        },
+        "published_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri",
+          "pattern": "^https?://"
+        }
+      },
+      "required": [
+        "id",
+        "platform",
+        "published_at",
+        "url"
+      ]
+    },
+    "video": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_result": {
+          "enum": [
+            null,
+            "плохо",
+            "ниже среднего",
+            "средне",
+            "хорошо",
+            "отлично"
+          ]
+        },
+        "publication_context": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "publications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/publication"
+          },
+          "minItems": 0
+        },
+        "duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "duration_basis": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "analysis": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "topic": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "timeliness": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "hook": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "recognizability": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "narrative": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "humor": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "intrigue": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "visuals": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "ending": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "differentiation": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            },
+            "style": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "required": [
+            "topic",
+            "timeliness",
+            "hook",
+            "recognizability",
+            "narrative",
+            "humor",
+            "intrigue",
+            "visuals",
+            "ending",
+            "differentiation",
+            "style"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "owner_result",
+        "publication_context",
+        "publications",
+        "duration_seconds",
+        "duration_basis",
+        "sources",
+        "analysis"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "duration_seconds": {
+                "type": "number"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "duration_basis": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "publication_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+        },
+        "captured_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "window": {
+          "enum": [
+            "lifetime",
+            "fixed"
+          ]
+        },
+        "window_start": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "window_end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "definitions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "views": {
+              "type": "string",
+              "minLength": 1
+            },
+            "likes": {
+              "type": "string",
+              "minLength": 1
+            },
+            "comments": {
+              "type": "string",
+              "minLength": 1
+            },
+            "shares": {
+              "type": "string",
+              "minLength": 1
+            },
+            "saves": {
+              "type": "string",
+              "minLength": 1
+            },
+            "gained_subscribers": {
+              "type": "string",
+              "minLength": 1
+            },
+            "avg_view_duration_seconds": {
+              "type": "string",
+              "minLength": 1
+            },
+            "avg_percentage_viewed": {
+              "type": "string",
+              "minLength": 1
+            },
+            "viewed_instead_of_swiped_percentage": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": []
+        },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "views": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "likes": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "comments": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "shares": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "saves": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "gained_subscribers": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "avg_view_duration_seconds": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "avg_percentage_viewed": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "viewed_instead_of_swiped_percentage": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          "required": [],
+          "anyOf": [
+            {
+              "required": [
+                "views"
+              ],
+              "properties": {
+                "views": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "likes"
+              ],
+              "properties": {
+                "likes": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "comments"
+              ],
+              "properties": {
+                "comments": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "shares"
+              ],
+              "properties": {
+                "shares": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "saves"
+              ],
+              "properties": {
+                "saves": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "gained_subscribers"
+              ],
+              "properties": {
+                "gained_subscribers": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "avg_view_duration_seconds"
+              ],
+              "properties": {
+                "avg_view_duration_seconds": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "avg_percentage_viewed"
+              ],
+              "properties": {
+                "avg_percentage_viewed": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            },
+            {
+              "required": [
+                "viewed_instead_of_swiped_percentage"
+              ],
+              "properties": {
+                "viewed_instead_of_swiped_percentage": {
+                  "type": [
+                    "integer",
+                    "number"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "publication_id",
+        "captured_at",
+        "window",
+        "window_start",
+        "window_end",
+        "source",
+        "metrics"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "window": {
+                "const": "fixed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "window_start": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "window_end": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "window_start": {
+                "type": "null"
+              },
+              "window_end": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "progression": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visual_device": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payoff": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "subject",
+        "rule",
+        "progression",
+        "visual_device",
+        "payoff"
+      ]
+    },
+    "feedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "rejected",
+            "reopened"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "required": [
+        "date",
+        "source",
+        "decision",
+        "reason"
+      ]
+    },
+    "idea": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "concept": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "approved",
+            "rejected",
+            "published"
+          ]
+        },
+        "direction": {
+          "enum": [
+            "established",
+            "adjacent",
+            "experimental"
+          ]
+        },
+        "signature": {
+          "$ref": "#/$defs/signature"
+        },
+        "feedback": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/feedback"
+          },
+          "minItems": 0
+        },
+        "published_video_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "concept",
+        "created_at",
+        "status",
+        "direction",
+        "signature",
+        "feedback",
+        "published_video_id"
+      ]
+    },
+    "preference": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "statement",
+        "source"
+      ]
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "video_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "statement",
+        "video_ids"
+      ]
+    },
+    "hypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "video_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "status": {
+          "enum": [
+            "untested",
+            "tested"
+          ]
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "next_test": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "statement",
+        "video_ids",
+        "status"
+      ]
+    },
+    "experiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+        },
+        "hypothesis_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "video_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:[-_][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "design": {
+          "type": "string",
+          "minLength": 1
+        },
+        "measured_outcome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "planned",
+            "running",
+            "completed",
+            "cancelled"
+          ]
+        },
+        "result": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "hypothesis_ids",
+        "video_ids",
+        "design",
+        "measured_outcome",
+        "status",
+        "result",
+        "limitations",
+        "sources"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "completed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "result"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

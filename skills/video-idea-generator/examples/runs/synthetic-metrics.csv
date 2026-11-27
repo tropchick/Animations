@@ -1,0 +1,7 @@
+publication_id,captured_at,window,source,views,avg_view_duration_seconds,avg_percentage_viewed,viewed_instead_of_swiped_percentage,likes,comments,shares,saves,gained_subscribers
+demo-track-action,2026-11-13T12:00:00Z,lifetime,synthetic_test_fixture,1200,25,89.29,68,58,5,7,,3
+demo-track-intro,2026-11-14T12:00:00Z,lifetime,synthetic_test_fixture,1100,24,85.71,54,42,4,6,,2
+demo-light-action,2026-11-17T12:00:00Z,lifetime,synthetic_test_fixture,1000,19.6,70,65,45,7,5,,4
+demo-light-intro,2026-11-18T12:00:00Z,lifetime,synthetic_test_fixture,950,20.16,72,58,37,5,7,,2
+demo-light-tiktok,2026-11-27T12:00:00Z,lifetime,synthetic_test_fixture,12000,23.1,82.5,,1200,32,83,30,17
+demo-track-long,2026-11-27T12:00:00Z,lifetime,synthetic_test_fixture,24000,32.4,54,74,1100,60,120,,38
