@@ -21,6 +21,7 @@ Paths provided as arguments resolve from the current directory.
 
 Optional:
   --entry=entry.tsx      Remotion entry (default: video/src/HyperMotionDemo.tsx)
+  --public-dir=path      Assets for a custom entry (default: video/public)
   --props=props.json     JSON composition input props
   --scale=0.5            Preview scale (default: 1)
   --browser=executable   Chromium path (default: Remotion browser or REMOTION_BROWSER_EXECUTABLE)
@@ -31,6 +32,7 @@ Optional:
 const {values: options} = parseArgs({
   options: {
     entry: {type: 'string'},
+    'public-dir': {type: 'string'},
     composition: {type: 'string'},
     frames: {type: 'string'},
     out: {type: 'string'},
@@ -88,7 +90,8 @@ const {bundle} = requireFromVideo('@remotion/bundler');
 const {openBrowser, renderFrames, renderStill, selectComposition} = requireFromVideo('@remotion/renderer');
 
 await mkdir(output, {recursive: true});
-const publicDir = join(video, 'public');
+const publicDir = options['public-dir'] ? resolve(options['public-dir']) : join(video, 'public');
+if (options['public-dir'] && !existsSync(publicDir)) throw new Error(`Public directory does not exist: ${publicDir}`);
 const serveUrl = await bundle({
   entryPoint,
   rootDir: video,

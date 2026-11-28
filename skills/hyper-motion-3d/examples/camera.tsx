@@ -39,12 +39,21 @@ export type CameraSample = {
   focusDistance: number;
 };
 
+export type MappedCameraSample = CameraSample & {near: number; far: number};
+
 export type CameraTrack = {
   shots: readonly CameraShot[];
   accents?: readonly CameraAccent[];
   intensity?: number;
   /** Add a frame-sampled world anchor to the authored positions and targets. */
   sampleTarget?: (frame: number) => Vec3;
+  /** A frame offset for the rig anchor. The point of interest can remain current. */
+  trackLag?: number;
+  /** A world-space gaze anchor independent of the moving rig origin. */
+  sampleLook?: (frame: number) => Vec3;
+  lookWeight?: number;
+  /** Retimes the authored shot keys while cues, drift and live anchors stay on output time. */
+  sampleMotionTime?: (frame: number) => number;
   /** Optionally rack focus independently of the target and tracking anchor. */
   sampleFocus?: (frame: number) => Vec3;
   drift?: number;
@@ -127,13 +136,15 @@ function focusAt(focus: number | Vec3 | undefined, position: Vector3, target: Ve
 
 /** Frame sampling is independent of React, playback direction, and worker history. */
 export function sampleCamera({frame, fps = 30, shots, accents = [], intensity = 1,
-  sampleTarget, sampleFocus, drift = 0}: CameraTrack & {frame: number; fps?: number}): CameraSample {
+  sampleTarget, trackLag = 0, sampleLook, lookWeight = 1, sampleMotionTime, sampleFocus, drift = 0}:
+  CameraTrack & {frame: number; fps?: number}): CameraSample {
   if (shots.length === 0) throw new Error('DynamicCamera needs at least one shot');
+  const at = sampleMotionTime?.(frame) ?? frame;
   let i = 0;
-  while (i + 1 < shots.length && frame >= shots[i + 1].frame) i++;
+  while (i + 1 < shots.length && at >= shots[i + 1].frame) i++;
   const a = shots[i];
   const b = shots[i + 1];
-  const u = b && !b.cut ? clamp((frame - a.frame) / span(a, b), 0, 1) : 0;
+  const u = b && !b.cut ? clamp((at - a.frame) / span(a, b), 0, 1) : 0;
   const p = b?.ease === 'linear' || b?.ease === 'spline' ? u : smooth(u);
   const target = b && p > 0 ? interpolatePoint(shots, i, 'target', p) : vector(a.target);
   let position = b && p > 0 ? interpolatePoint(shots, i, 'position', p) : vector(a.position);
@@ -145,9 +156,11 @@ export function sampleCamera({frame, fps = 30, shots, accents = [], intensity = 
       : lerp(fov, keyFov(shots, i + 1), p);
   }
   let roll = lerp(a.roll ?? 0, b?.roll ?? 0, p);
-  const tracking = sampleTarget ? vector(sampleTarget(frame)) : new Vector3();
+  const lag = Math.max(0, trackLag);
+  const tracking = sampleTarget ? vector(sampleTarget(lag > 0 ? Math.max(0, frame - lag) : frame)) : new Vector3();
   position.add(tracking);
   target.add(tracking);
+  if (sampleLook) target.lerp(vector(sampleLook(frame)), clamp(lookWeight));
 
   const forward = forwardOf(position, target);
   const right = forward.clone().cross(up);
@@ -204,28 +217,35 @@ export function sampleCamera({frame, fps = 30, shots, accents = [], intensity = 
 }
 
 /** Mount one camera owner in a perspective ThreeCanvas. */
-export function DynamicCamera({frame, renderFocus, ...track}: CameraTrack & {
+export function DynamicCamera({frame, renderFocus, mapSample, ...track}: CameraTrack & {
   frame?: number;
+  /** Opt in for every frame of a scaled shot track. Supplies both clip planes each time. */
+  mapSample?: (sample: CameraSample) => MappedCameraSample;
   /** Render a deterministic depth-of-field pass or a focal diagnostic. */
   renderFocus?: (distance: number) => ReactNode;
 }) {
   const currentFrame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const camera = useThree((state) => state.camera);
-  const {position: [x, y, z], target: [tx, ty, tz], fov, roll, focusDistance} = sampleCamera({
-    ...track, frame: frame ?? currentFrame, fps,
-  });
+  const source = sampleCamera({...track, frame: frame ?? currentFrame, fps});
+  const mapped = mapSample?.(source);
+  const {position: [x, y, z], target: [tx, ty, tz], fov, roll, focusDistance} = mapped ?? source;
+  const near = mapped?.near;
+  const far = mapped?.far;
   useLayoutEffect(() => {
     if (!(camera instanceof PerspectiveCamera)) throw new Error('DynamicCamera requires a perspective ThreeCanvas');
     camera.position.set(x, y, z);
     camera.up.copy(up);
     camera.lookAt(tx, ty, tz);
     camera.rotateZ(roll * radians);
-    if (camera.fov !== fov) {
+    if (camera.fov !== fov || (near !== undefined && near !== camera.near)
+        || (far !== undefined && far !== camera.far)) {
       camera.fov = fov;
+      if (near !== undefined) camera.near = near;
+      if (far !== undefined) camera.far = far;
       camera.updateProjectionMatrix();
     }
     camera.updateMatrixWorld();
-  }, [camera, x, y, z, tx, ty, tz, fov, roll]);
+  }, [camera, x, y, z, tx, ty, tz, fov, roll, near, far]);
   return renderFocus?.(focusDistance) ?? null;
 }

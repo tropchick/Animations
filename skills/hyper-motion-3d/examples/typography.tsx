@@ -1,5 +1,5 @@
 import {useEffect, useMemo, type CSSProperties, type ReactNode} from 'react';
-import {AbsoluteFill, useCurrentFrame, useVideoConfig} from 'remotion';
+import {useCurrentFrame, useVideoConfig} from 'remotion';
 import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
 import type {Font} from 'three/addons/loaders/FontLoader.js';
 
@@ -20,8 +20,10 @@ export function SafeArea({children, insets, style}: {
   const {width, height} = useVideoConfig();
   const safe = {...SHORT_VERTICAL_INSETS, ...insets};
   return (
-    <AbsoluteFill style={{
-      inset: 'auto',
+    <div style={{
+      position: 'absolute',
+      display: 'flex',
+      flexDirection: 'column',
       top: height * safe.top,
       right: width * safe.right,
       bottom: height * safe.bottom,
@@ -32,7 +34,7 @@ export function SafeArea({children, insets, style}: {
       ...style,
     }}>
       {children}
-    </AbsoluteFill>
+    </div>
   );
 }
 

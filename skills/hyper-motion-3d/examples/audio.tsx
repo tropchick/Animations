@@ -90,17 +90,24 @@ export function cueGain(frame: number, duration: number, volume: number, fadeIn:
   return clamp(volume) * Math.min(attack, release);
 }
 
-export function CueAudio({cues, gain = 1}: {cues: readonly PlaybackCue[]; gain?: number}) {
+export type CueGain = number | ((frame: number) => number);
+
+export function CueAudio({cues, gain = 1}: {cues: readonly PlaybackCue[]; gain?: CueGain}) {
   const {fps} = useVideoConfig();
-  if (gain <= 0) return null;
+  if (typeof gain === 'number' && gain <= 0) return null;
   return (
     <>
-      {cues.map(({id, src, time, duration, volume = 1, trimBefore = 0, fadeIn = 0, fadeOut = 0}) => (
-        <Sequence key={id} from={frameAt(time, fps)} durationInFrames={duration} layout="none">
-          <Audio src={src} trimBefore={trimBefore}
-            volume={(localFrame) => cueGain(localFrame, duration, volume * gain, fadeIn, fadeOut)}/>
-        </Sequence>
-      ))}
+      {cues.map(({id, src, time, duration, volume = 1, trimBefore = 0, fadeIn = 0, fadeOut = 0}) => {
+        const from = frameAt(time, fps);
+        return (
+          <Sequence key={id} from={from} durationInFrames={duration} layout="none">
+            <Audio src={src} trimBefore={trimBefore} volume={(localFrame) => {
+              const multiplier = typeof gain === 'number' ? gain : gain(from + localFrame);
+              return cueGain(localFrame, duration, volume * multiplier, fadeIn, fadeOut);
+            }}/>
+          </Sequence>
+        );
+      })}
     </>
   );
 }

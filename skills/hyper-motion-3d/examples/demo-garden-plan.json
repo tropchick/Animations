@@ -1,0 +1,947 @@
+{
+  "fps": 30,
+  "durationInFrames": 840,
+  "events": [
+    {
+      "id": "seed-rattle",
+      "at": 18,
+      "origin": [
+        0.22,
+        0.25,
+        1.23
+      ],
+      "recipe": "stylized-impact",
+      "subject": "Семечко подскакивает у стока",
+      "size": 0.35,
+      "strength": 0.48,
+      "particles": 12,
+      "audio": {
+        "key": "rattle",
+        "gain": 0.63
+      }
+    },
+    {
+      "id": "catch",
+      "at": 46,
+      "origin": [
+        -1.18,
+        0.98,
+        1.69
+      ],
+      "recipe": "elastic-transformation",
+      "subject": "Садовник ловит семечко",
+      "size": 0.35,
+      "strength": 0.72,
+      "particles": 11,
+      "audio": {
+        "key": "catch",
+        "gain": 0.79
+      }
+    },
+    {
+      "id": "dock",
+      "at": 124,
+      "origin": [
+        0.2,
+        0.7,
+        -0.8
+      ],
+      "recipe": "geometric-assembly",
+      "subject": "Семя входит в лунку",
+      "size": 0.7,
+      "strength": 0.78,
+      "palette": {
+        "color": "#61e1c2",
+        "accent": "#ffd081"
+      },
+      "particles": 23,
+      "audio": {
+        "key": "seed",
+        "gain": 0.86
+      }
+    },
+    {
+      "id": "courtyard",
+      "at": 178,
+      "origin": [
+        0.2,
+        0,
+        -1.0
+      ],
+      "recipe": "environmental-ripple",
+      "subject": "Вода наполняет первые ящики",
+      "size": 3.8,
+      "strength": 0.75,
+      "direction": [
+        0,
+        1,
+        0
+      ],
+      "palette": {
+        "color": "#83f2bc",
+        "accent": "#c7f696"
+      },
+      "particles": 24,
+      "hud": {
+        "label": "Цветение",
+        "value": 10,
+        "unit": "percent",
+        "maximum": 100,
+        "stage": "Двор",
+        "palette": "#aef39a",
+        "tween": 19,
+        "motif": "ring"
+      },
+      "audio": {
+        "key": "growth",
+        "gain": 0.79
+      },
+      "reaction": {
+        "speed": 0.19,
+        "attack": 6,
+        "hold": 5,
+        "decay": 34,
+        "channels": {
+          "sway": 0.85
+        },
+        "persist": {
+          "grown": 1
+        },
+        "transitionFrames": 26
+      }
+    },
+    {
+      "id": "awning",
+      "at": 219,
+      "origin": [
+        -1.55,
+        0.7,
+        -5.22
+      ],
+      "recipe": "layered-reveal",
+      "subject": "У воды раскрываются полотнища тени",
+      "size": 1.1,
+      "strength": 0.51,
+      "particles": 0,
+      "layers": {
+        "vfx": false
+      }
+    },
+    {
+      "id": "terrace",
+      "at": 263,
+      "origin": [
+        0.15,
+        0.72,
+        -6.6
+      ],
+      "recipe": "world-reaction-sequence",
+      "subject": "Террасы оживают вслед за водой",
+      "size": 3.5,
+      "strength": 0.8,
+      "palette": {
+        "color": "#72eab9",
+        "accent": "#ffe699"
+      },
+      "particles": 26,
+      "hud": {
+        "label": "Цветение",
+        "value": 35,
+        "unit": "percent",
+        "maximum": 100,
+        "stage": "Террасы",
+        "palette": "#ffd583",
+        "tween": 23,
+        "motif": "chevron"
+      },
+      "audio": {
+        "key": "light",
+        "gain": 0.74
+      },
+      "reaction": {
+        "speed": 0.19,
+        "attack": 6,
+        "hold": 5,
+        "decay": 34,
+        "channels": {
+          "sway": 0.85
+        },
+        "persist": {
+          "grown": 1
+        },
+        "transitionFrames": 26
+      }
+    },
+    {
+      "id": "alley",
+      "at": 355,
+      "origin": [
+        0.28,
+        1.55,
+        -11.2
+      ],
+      "recipe": "material-change",
+      "subject": "Листья раскрываются вдоль улицы",
+      "size": 3.9,
+      "strength": 0.88,
+      "palette": {
+        "color": "#69e5a8",
+        "accent": "#ffb893"
+      },
+      "particles": 28,
+      "hud": {
+        "label": "Цветение",
+        "value": 60,
+        "unit": "percent",
+        "maximum": 100,
+        "stage": "Улица",
+        "palette": "#f8b1c3",
+        "tween": 24,
+        "motif": "chevron"
+      },
+      "audio": {
+        "key": "bloom",
+        "gain": 0.81
+      },
+      "reaction": {
+        "speed": 0.19,
+        "attack": 6,
+        "hold": 5,
+        "decay": 34,
+        "channels": {
+          "sway": 0.85
+        },
+        "persist": {
+          "grown": 1
+        },
+        "transitionFrames": 26
+      }
+    },
+    {
+      "id": "trellis",
+      "at": 415,
+      "origin": [
+        0.07,
+        1.67,
+        -13.35
+      ],
+      "recipe": "object-transformation",
+      "subject": "Поток освобождает складчатую шпалеру на лестнице",
+      "size": 1.5,
+      "strength": 0.64,
+      "particles": 0,
+      "layers": {
+        "vfx": false
+      }
+    },
+    {
+      "id": "roof",
+      "at": 480,
+      "origin": [
+        0.14,
+        3.13,
+        -16.1
+      ],
+      "recipe": "particle-cascade",
+      "subject": "Волна достигает сада на крыше",
+      "size": 4.6,
+      "strength": 0.92,
+      "palette": {
+        "color": "#79efb3",
+        "accent": "#ffd090"
+      },
+      "particles": 36,
+      "priority": 2,
+      "hud": {
+        "label": "Цветение",
+        "value": 85,
+        "unit": "percent",
+        "maximum": 100,
+        "stage": "Крыши",
+        "palette": "#9df3d5",
+        "tween": 27,
+        "motif": "star"
+      },
+      "audio": {
+        "key": "crest",
+        "gain": 0.87
+      },
+      "reaction": {
+        "speed": 0.19,
+        "attack": 6,
+        "hold": 5,
+        "decay": 34,
+        "channels": {
+          "sway": 0.85
+        },
+        "persist": {
+          "grown": 1
+        },
+        "transitionFrames": 26
+      }
+    },
+    {
+      "id": "ridge",
+      "at": 529,
+      "origin": [
+        0.1,
+        3.24,
+        -18.74
+      ],
+      "recipe": "scale-reveal",
+      "subject": "Ростки пересекают гребень крыши и открывают общий вид",
+      "size": 2.2,
+      "strength": 0.63,
+      "particles": 0,
+      "layers": {
+        "vfx": false
+      }
+    },
+    {
+      "id": "city",
+      "at": 574,
+      "origin": [
+        0.14,
+        3.12,
+        -16.1
+      ],
+      "recipe": "continuous-scale-journey",
+      "subject": "Сады загораются по всему району",
+      "size": 12,
+      "strength": 0.95,
+      "palette": {
+        "color": "#b3ffae",
+        "accent": "#ffd289"
+      },
+      "particles": 42,
+      "priority": 3,
+      "hud": {
+        "label": "Цветение",
+        "value": 92,
+        "unit": "percent",
+        "maximum": 100,
+        "stage": "Квартал",
+        "palette": "#dcfaac",
+        "tween": 52,
+        "motif": "star"
+      },
+      "audio": {
+        "key": "spread",
+        "gain": 0.94
+      },
+      "reaction": {
+        "speed": 0.82,
+        "attack": 6,
+        "hold": 5,
+        "decay": 34,
+        "channels": {
+          "sway": 0.45
+        },
+        "persist": {
+          "grown": 1
+        },
+        "transitionFrames": 35
+      }
+    },
+    {
+      "id": "full-bloom",
+      "at": 630,
+      "origin": [
+        0.52,
+        5.67,
+        -33.29
+      ],
+      "recipe": "counter-level-up",
+      "subject": "В последних садах раскрываются листья",
+      "particles": 0,
+      "layers": {
+        "body": false,
+        "world": false,
+        "vfx": false,
+        "light": false,
+        "camera": false,
+        "audio": false,
+        "edit": false
+      },
+      "hud": {
+        "label": "Цветение",
+        "value": 100,
+        "unit": "percent",
+        "maximum": 100,
+        "stage": "Квартал",
+        "palette": "#dcfaac",
+        "tween": 20,
+        "motif": "star"
+      }
+    },
+    {
+      "id": "settle",
+      "at": 660,
+      "origin": [
+        -0.28,
+        4.04,
+        -15.42
+      ],
+      "recipe": "cinematic-focus-shift",
+      "subject": "Садовник видит каплю на новом цветке",
+      "size": 0.3,
+      "strength": 0.4
+    },
+    {
+      "id": "dew",
+      "at": 762,
+      "origin": [
+        0.04,
+        3.99,
+        -15.28
+      ],
+      "recipe": "comedic-reaction",
+      "subject": "Капля попадает в ладонь",
+      "size": 0.35,
+      "strength": 0.45,
+      "particles": 7,
+      "audio": {
+        "key": "dew",
+        "gain": 0.67
+      }
+    }
+  ],
+  "intensity": [
+    {
+      "frame": 0,
+      "level": "Dynamic"
+    },
+    {
+      "frame": 46,
+      "level": "Hyper",
+      "channels": {
+        "camera": 0.46
+      }
+    },
+    {
+      "frame": 99,
+      "level": "Minimal"
+    },
+    {
+      "frame": 124,
+      "level": "Dynamic"
+    },
+    {
+      "frame": 178,
+      "level": "Hyper"
+    },
+    {
+      "frame": 263,
+      "level": "Hyper"
+    },
+    {
+      "frame": 355,
+      "level": "Ultra"
+    },
+    {
+      "frame": 480,
+      "level": "Ultra"
+    },
+    {
+      "frame": 574,
+      "level": "Climax",
+      "channels": {
+        "camera": 0.48,
+        "hud": 0.68
+      }
+    },
+    {
+      "frame": 637,
+      "level": "Dynamic"
+    },
+    {
+      "frame": 671,
+      "level": "Minimal"
+    },
+    {
+      "frame": 762,
+      "level": "Dynamic"
+    },
+    {
+      "frame": 814,
+      "level": "Minimal"
+    }
+  ],
+  "shots": [
+    {
+      "from": 0,
+      "to": 62,
+      "focus": "Семечко / рука",
+      "camera": "Наезд с низкой точки",
+      "scale": "detail",
+      "transition": "Открытое действие в первом кадре"
+    },
+    {
+      "from": 62,
+      "to": 166,
+      "focus": "Рука / лунка",
+      "camera": "Склейка по руке, крупный план лунки",
+      "scale": "detail",
+      "transition": "Склейка на движении руки"
+    },
+    {
+      "from": 166,
+      "to": 242,
+      "focus": "Первые листья",
+      "camera": "Ниже взгляда, затем по линии воды",
+      "scale": "street",
+      "transition": "Увеличение масштаба по объекту"
+    },
+    {
+      "from": 242,
+      "to": 339,
+      "focus": "Лестница и терраса",
+      "camera": "Пролёт параллельно ступеням",
+      "scale": "street",
+      "transition": "Направление взгляда вдоль жидкости"
+    },
+    {
+      "from": 339,
+      "to": 456,
+      "focus": "Переулок и бутоны",
+      "camera": "Отслеживание волны между слоями",
+      "scale": "street",
+      "transition": "Склейка по ступеням"
+    },
+    {
+      "from": 456,
+      "to": 548,
+      "focus": "Главная крыша",
+      "camera": "Короткий облёт сада",
+      "scale": "roof",
+      "transition": "Ракурс с высоты линии желоба"
+    },
+    {
+      "from": 548,
+      "to": 655,
+      "focus": "Несколько кварталов",
+      "camera": "Подъём и открытие следующих крыш",
+      "scale": "city",
+      "transition": "Перевод той же крыши в общий план"
+    },
+    {
+      "from": 655,
+      "to": 840,
+      "focus": "Цветок, капля, ладонь",
+      "camera": "Возврат к портрету и неподвижная развязка",
+      "scale": "detail",
+      "quietReason": "Дать рассмотреть физическую отдачу после общего плана",
+      "transition": "Совпадение формы цветка на стыке"
+    }
+  ],
+  "voice": [],
+  "cameraTrack": [
+    {
+      "frame": 0,
+      "position": [
+        0.14,
+        1.45,
+        4.53
+      ],
+      "target": [
+        0.13,
+        0.83,
+        1.32
+      ],
+      "fov": 56
+    },
+    {
+      "frame": 20,
+      "position": [
+        -0.17,
+        1.28,
+        4.2
+      ],
+      "target": [
+        -0.32,
+        0.83,
+        1.25
+      ],
+      "fov": 53
+    },
+    {
+      "frame": 45,
+      "position": [
+        -0.62,
+        1.36,
+        4.06
+      ],
+      "target": [
+        -0.86,
+        0.92,
+        1.2
+      ],
+      "fov": 42,
+      "ease": "spline"
+    },
+    {
+      "frame": 61,
+      "position": [
+        -0.59,
+        1.4,
+        4.0
+      ],
+      "target": [
+        -0.84,
+        0.95,
+        1.16
+      ],
+      "fov": 42
+    },
+    {
+      "frame": 62,
+      "position": [
+        -2.42,
+        1.7,
+        2.77
+      ],
+      "target": [
+        -0.49,
+        0.85,
+        0.46
+      ],
+      "fov": 42,
+      "cut": true
+    },
+    {
+      "frame": 96,
+      "position": [
+        -0.76,
+        1.65,
+        2.29
+      ],
+      "target": [
+        0.33,
+        0.88,
+        -0.51
+      ],
+      "fov": 39,
+      "ease": "spline"
+    },
+    {
+      "frame": 123,
+      "position": [
+        -0.67,
+        1.78,
+        2.12
+      ],
+      "target": [
+        0.39,
+        0.87,
+        -0.62
+      ],
+      "fov": 40,
+      "ease": "spline",
+      "focus": [
+        0.2,
+        0.7,
+        -0.8
+      ]
+    },
+    {
+      "frame": 162,
+      "position": [
+        -0.9,
+        1.89,
+        2.13
+      ],
+      "target": [
+        0.22,
+        0.74,
+        -0.79
+      ],
+      "fov": 45,
+      "ease": "smooth"
+    },
+    {
+      "frame": 166,
+      "position": [
+        1.35,
+        2.64,
+        4.96
+      ],
+      "target": [
+        0.1,
+        0.71,
+        -0.6
+      ],
+      "fov": 52,
+      "cut": true
+    },
+    {
+      "frame": 224,
+      "position": [
+        1.03,
+        2.61,
+        2.92
+      ],
+      "target": [
+        0.24,
+        0.4,
+        -1.23
+      ],
+      "fov": 52,
+      "ease": "spline"
+    },
+    {
+      "frame": 242,
+      "position": [
+        1.54,
+        2.75,
+        -0.34
+      ],
+      "target": [
+        -0.02,
+        1.18,
+        -5.59
+      ],
+      "fov": 51,
+      "cut": true
+    },
+    {
+      "frame": 287,
+      "position": [
+        1.25,
+        2.37,
+        -2.35
+      ],
+      "target": [
+        -0.27,
+        1.3,
+        -6.32
+      ],
+      "fov": 48,
+      "ease": "spline"
+    },
+    {
+      "frame": 335,
+      "position": [
+        1.25,
+        2.47,
+        -3.14
+      ],
+      "target": [
+        0.2,
+        1.41,
+        -7.47
+      ],
+      "fov": 51,
+      "ease": "spline"
+    },
+    {
+      "frame": 339,
+      "position": [
+        -1.49,
+        2.58,
+        -5.45
+      ],
+      "target": [
+        0.08,
+        2.07,
+        -10.91
+      ],
+      "fov": 52,
+      "cut": true
+    },
+    {
+      "frame": 396,
+      "position": [
+        -0.99,
+        2.68,
+        -6.77
+      ],
+      "target": [
+        0.03,
+        2.08,
+        -11.6
+      ],
+      "fov": 53,
+      "ease": "spline"
+    },
+    {
+      "frame": 449,
+      "position": [
+        -0.02,
+        3.65,
+        -8.29
+      ],
+      "target": [
+        0.13,
+        2.43,
+        -13.02
+      ],
+      "fov": 53,
+      "ease": "spline"
+    },
+    {
+      "frame": 456,
+      "position": [
+        -1.01,
+        5.88,
+        -12.15
+      ],
+      "target": [
+        0.03,
+        3.72,
+        -15.35
+      ],
+      "fov": 48,
+      "cut": true
+    },
+    {
+      "frame": 500,
+      "position": [
+        -1.72,
+        5.78,
+        -11.73
+      ],
+      "target": [
+        -0.08,
+        3.74,
+        -15.76
+      ],
+      "fov": 49,
+      "orbit": true
+    },
+    {
+      "frame": 547,
+      "position": [
+        -2.11,
+        6.97,
+        -7.63
+      ],
+      "target": [
+        0.07,
+        4.0,
+        -17.4
+      ],
+      "fov": 48,
+      "ease": "spline"
+    },
+    {
+      "frame": 548,
+      "position": [
+        -5.96,
+        11.93,
+        -3.4
+      ],
+      "target": [
+        0.35,
+        5.49,
+        -22.45
+      ],
+      "fov": 48,
+      "cut": true
+    },
+    {
+      "frame": 583,
+      "position": [
+        -9.12,
+        16.61,
+        -0.02
+      ],
+      "target": [
+        0.58,
+        5.59,
+        -24.27
+      ],
+      "fov": 48,
+      "ease": "spline"
+    },
+    {
+      "frame": 653,
+      "position": [
+        -11.12,
+        23.14,
+        -0.67
+      ],
+      "target": [
+        1.55,
+        5.22,
+        -27.62
+      ],
+      "fov": 53,
+      "ease": "spline"
+    },
+    {
+      "frame": 655,
+      "position": [
+        -0.88,
+        4.86,
+        -12.07
+      ],
+      "target": [
+        0.15,
+        4.02,
+        -15.46
+      ],
+      "fov": 36,
+      "cut": true
+    },
+    {
+      "frame": 704,
+      "position": [
+        -0.3,
+        4.67,
+        -12.33
+      ],
+      "target": [
+        0.29,
+        4.18,
+        -15.39
+      ],
+      "fov": 37,
+      "ease": "spline"
+    },
+    {
+      "frame": 754,
+      "position": [
+        -0.22,
+        4.55,
+        -12.49
+      ],
+      "target": [
+        0.25,
+        4.18,
+        -15.38
+      ],
+      "fov": 37,
+      "ease": "spline"
+    },
+    {
+      "frame": 791,
+      "position": [
+        -0.39,
+        4.71,
+        -12.36
+      ],
+      "target": [
+        0.17,
+        4.19,
+        -15.4
+      ],
+      "fov": 37,
+      "ease": "smooth"
+    },
+    {
+      "frame": 839,
+      "position": [
+        -0.3,
+        4.78,
+        -12.15
+      ],
+      "target": [
+        0.21,
+        4.16,
+        -15.4
+      ],
+      "fov": 38,
+      "ease": "smooth"
+    }
+  ]
+}

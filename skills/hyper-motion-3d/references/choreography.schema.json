@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hyper Motion 3D choreography plan",
+  "description": "Plan the choreography in output frames before building the scene. Use compileChoreography() to validate unique event IDs, in-range timings, and layer window ordering.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fps", "durationInFrames", "events"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "fps": {"type": "number", "exclusiveMinimum": 0},
+    "durationInFrames": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+    "events": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/cue"}
+    },
+    "shots": {
+      "description": "Shot ranges in output frames. A quietReason explains a deliberate gap between visual changes.",
+      "type": "array",
+      "items": {"$ref": "#/$defs/shot"}
+    },
+    "intensity": {
+      "description": "Independent channel overrides are sampled between keys. Hyper is the default before any keys.",
+      "type": "array",
+      "items": {"$ref": "#/$defs/intensityKey"}
+    },
+    "voice": {
+      "description": "Spoken or captioned lines on the output timeline. The end frame is exclusive.",
+      "type": "array",
+      "items": {"$ref": "#/$defs/voiceLine"}
+    },
+    "poseTracks": {
+      "description": "Frame-sampled transforms keyed by scene subject.",
+      "type": "array",
+      "items": {"$ref": "#/$defs/poseTrack"}
+    },
+    "cameraTrack": {
+      "description": "Authored camera keys in output frames, one key per frame.",
+      "type": "array",
+      "items": {"$ref": "#/$defs/cameraKey"}
+    }
+  },
+  "$defs": {
+    "text": {"type": "string", "pattern": "\\S"},
+    "frame": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+    "gain": {"type": "number", "minimum": 0, "maximum": 1},
+    "point": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "recipe": {
+      "enum": [
+        "layered-reveal",
+        "elastic-transformation",
+        "energy-build-up",
+        "world-reaction-sequence",
+        "scale-reveal",
+        "counter-level-up",
+        "geometric-assembly",
+        "object-transformation",
+        "cinematic-focus-shift",
+        "comedic-reaction",
+        "environmental-ripple",
+        "material-change",
+        "particle-cascade",
+        "stylized-impact",
+        "continuous-scale-journey"
+      ]
+    },
+    "window": {
+      "description": "False disables this lane. The tuple is [start, peak, end, gain?] in 30 FPS authoring units, with start ≤ peak < end. Negative offsets anticipate the event. Gain defaults to 1.",
+      "oneOf": [
+        {"const": false},
+        {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 4,
+          "prefixItems": [
+            {"type": "number"},
+            {"type": "number"},
+            {"type": "number"},
+            {"type": "number", "minimum": 0, "maximum": 2}
+          ],
+          "items": false
+        }
+      ]
+    },
+    "layers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "body": {"$ref": "#/$defs/window"},
+        "world": {"$ref": "#/$defs/window"},
+        "vfx": {"$ref": "#/$defs/window"},
+        "light": {"$ref": "#/$defs/window"},
+        "camera": {"$ref": "#/$defs/window"},
+        "hud": {"$ref": "#/$defs/window"},
+        "audio": {"$ref": "#/$defs/window"},
+        "edit": {"$ref": "#/$defs/window"}
+      }
+    },
+    "palette": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["color", "accent"],
+      "properties": {
+        "color": {"$ref": "#/$defs/text"},
+        "accent": {"$ref": "#/$defs/text"}
+      }
+    },
+    "hud": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {"$ref": "#/$defs/text"},
+        "label": {"$ref": "#/$defs/text"},
+        "value": {"type": "number"},
+        "unit": {"enum": ["count", "multiplier", "percent"]},
+        "maximum": {"type": "number", "exclusiveMinimum": 0},
+        "stage": {"$ref": "#/$defs/text"},
+        "palette": {"$ref": "#/$defs/text"},
+        "tween": {"$ref": "#/$defs/frame"},
+        "motif": {"enum": ["chevron", "star", "ring", "none"]},
+        "pop": {"type": "number", "minimum": 0, "maximum": 0.16}
+      }
+    },
+    "audio": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key"],
+      "properties": {
+        "key": {"$ref": "#/$defs/text"},
+        "gain": {"$ref": "#/$defs/gain", "default": 1}
+      }
+    },
+    "cue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "at", "subject", "recipe", "origin"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"},
+        "at": {"$ref": "#/$defs/frame"},
+        "subject": {"$ref": "#/$defs/text"},
+        "recipe": {"$ref": "#/$defs/recipe"},
+        "origin": {"$ref": "#/$defs/point"},
+        "direction": {"$ref": "#/$defs/point", "default": [0, 1, 0]},
+        "palette": {"$ref": "#/$defs/palette"},
+        "size": {"type": "number", "minimum": 0.001, "maximum": 1000000, "default": 1},
+        "strength": {"type": "number", "minimum": 0, "maximum": 2, "default": 1},
+        "pace": {"type": "number", "minimum": 0.1, "maximum": 16, "default": 1},
+        "priority": {"type": "number", "minimum": -100, "maximum": 100, "default": 0},
+        "particles": {"type": "integer", "minimum": 0, "maximum": 1000, "default": 48},
+        "meaningful": {
+          "description": "Set false when this cue is decoration and should not fill a visual-density interval.",
+          "type": "boolean",
+          "default": true
+        },
+        "layers": {"$ref": "#/$defs/layers"},
+        "state": {
+          "description": "Scene-owned structured data for persistent changes. Document its keys in the consuming scene.",
+          "type": "object"
+        },
+        "hud": {"$ref": "#/$defs/hud"},
+        "audio": {"$ref": "#/$defs/audio"},
+        "reaction": {"$ref": "#/$defs/reaction"}
+      }
+    },
+    "shot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "focus", "camera"],
+      "properties": {
+        "from": {"$ref": "#/$defs/frame"},
+        "to": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "focus": {"$ref": "#/$defs/text"},
+        "camera": {"$ref": "#/$defs/text"},
+        "scale": {"$ref": "#/$defs/text"},
+        "transition": {"$ref": "#/$defs/text"},
+        "quietReason": {"$ref": "#/$defs/text"}
+      }
+    },
+    "intensityKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "level"],
+      "properties": {
+        "frame": {"$ref": "#/$defs/frame"},
+        "level": {"enum": ["Minimal", "Dynamic", "Hyper", "Ultra", "Climax"]},
+        "channels": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "camera": {"$ref": "#/$defs/gain"},
+            "environment": {"$ref": "#/$defs/gain"},
+            "particles": {"$ref": "#/$defs/gain"},
+            "deformation": {"$ref": "#/$defs/gain"},
+            "hud": {"$ref": "#/$defs/gain"},
+            "transitions": {"$ref": "#/$defs/gain"},
+            "audio": {"$ref": "#/$defs/gain"}
+          }
+        }
+      }
+    },
+    "voiceLine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "text"],
+      "properties": {
+        "from": {"$ref": "#/$defs/frame"},
+        "to": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "text": {"$ref": "#/$defs/text"}
+      }
+    },
+    "poseTrack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject", "keys"],
+      "properties": {
+        "subject": {"$ref": "#/$defs/text"},
+        "keys": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/poseKey"}
+        }
+      }
+    },
+    "poseKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "position"],
+      "properties": {
+        "frame": {"$ref": "#/$defs/frame"},
+        "position": {"$ref": "#/$defs/point"},
+        "rotation": {"$ref": "#/$defs/point", "description": "Euler angles in radians."},
+        "scale": {"$ref": "#/$defs/point"},
+        "ease": {"enum": ["linear", "smooth"]}
+      }
+    },
+    "cameraKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "position", "target"],
+      "properties": {
+        "frame": {"$ref": "#/$defs/frame"},
+        "position": {"$ref": "#/$defs/point"},
+        "target": {"$ref": "#/$defs/point"},
+        "fov": {"type": "number", "minimum": 1, "maximum": 179},
+        "roll": {"type": "number", "minimum": -360, "maximum": 360},
+        "ease": {"enum": ["linear", "smooth", "spline"]},
+        "cut": {"type": "boolean"},
+        "orbit": {"enum": [true, "clockwise", "counterclockwise"]},
+        "dollyZoom": {"type": "boolean"},
+        "focus": {
+          "description": "A lens-axis distance or a world-space point.",
+          "oneOf": [
+            {"type": "number"},
+            {"$ref": "#/$defs/point"}
+          ]
+        }
+      }
+    },
+    "reaction": {
+      "description": "Propagate from the event origin and time to registered world receivers.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "targets": {"type": "array", "items": {"$ref": "#/$defs/text"}},
+        "speed": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991,
+          "description": "World units per output frame. Omit for simultaneous reaction."
+        },
+        "attack": {"type": "number", "minimum": 0, "maximum": 9007199254740991},
+        "hold": {"type": "number", "minimum": 0, "maximum": 9007199254740991},
+        "decay": {"type": "number", "minimum": 0, "maximum": 9007199254740991},
+        "radius": {"type": "number", "minimum": 0, "maximum": 9007199254740991},
+        "falloff": {"enum": ["linear", "smooth", "none"]},
+        "channels": {"type": "object", "additionalProperties": {"type": "number"}},
+        "persist": {
+          "type": "object",
+          "additionalProperties": {"type": ["number", "boolean", "string", "null"]}
+        },
+        "commit": {"enum": ["arrival", "peak", "settled"], "default": "arrival"},
+        "transitionFrames": {"type": "number", "minimum": 0, "maximum": 9007199254740991}
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "fps": 30,
+  "bed": 840,
+  "accents": {
+    "rattle": 8,
+    "catch": 9,
+    "seed": 14,
+    "growth": 21,
+    "light": 19,
+    "bloom": 24,
+    "crest": 38,
+    "spread": 32,
+    "dew": 19
+  }
+}
