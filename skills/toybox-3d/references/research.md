@@ -1,0 +1,32 @@
+# Источники и решения
+
+Исследование технических и художественных источников проведено 28 ноября 2026 года. Документация описывает актуальные API, а при запуске действуют версии и настройки, зафиксированные в Animations. Визуальные примеры служат источниками методов постановки, их модели, кадры и звуки в проекте не используются.
+
+## Технические источники
+
+| Источник | Применение в Toybox |
+| --- | --- |
+| [Remotion ThreeCanvas](https://www.remotion.dev/docs/three-canvas), [Animating properties](https://www.remotion.dev/docs/animating-properties), [random](https://www.remotion.dev/docs/random) | Положение, деформацию и видимость вычисляем из кадра и FPS. Стабильные seed используют идентификатор экземпляра, а фаза движения выводится из времени композиции. |
+| [Remotion GL](https://www.remotion.dev/docs/gl-options), [renderFrames](https://www.remotion.dev/docs/renderer/render-frames) | Тестовый CPU-рендер запускаем через SwiftShader или ANGLE в соответствии с конфигурацией. Сравниваем одинаковые кадры в одиночном запуске и в последовательности, при конкуренции 1 и 2. |
+| [Three.js Color Management](https://threejs.org/manual/pages/color-management.html) | Цвета палитры заданы в sRGB. Карты цвета маркируются как sRGB, карты шероховатости и нормалей содержат числовые данные без преобразования цвета. Свет и композиция проверяются после преобразования в экранный sRGB. |
+| [Three.js MeshStandardMaterial](https://threejs.org/docs/pages/MeshStandardMaterial.html), [MeshPhysicalMaterial](https://threejs.org/docs/pages/MeshPhysicalMaterial.html) | Стандартный PBR подходит для декораций. Transmission, clearcoat и sheen добавляем отдельным крупным объектам при наличии окружения для отражений, поскольку цена растёт на каждый пиксель. |
+| [Three.js RoundedBoxGeometry](https://threejs.org/docs/pages/RoundedBoxGeometry.html), [ExtrudeGeometry](https://threejs.org/docs/pages/ExtrudeGeometry.html), [InstancedMesh](https://threejs.org/docs/pages/InstancedMesh.html) | Радиусы зависят от масштаба и назначения объекта. Силуэты и таблички удобно экструдировать из контура. Повторяемые фасадные, дорожные и фоновые элементы группируем по геометрии и материалу. |
+| [R3F Scaling Performance](https://r3f.docs.pmnd.rs/advanced/scaling-performance), [Performance pitfalls](https://r3f.docs.pmnd.rs/advanced/pitfalls) | Храним и переиспользуем ресурсы одинаковых объектов, ограничиваем количество draw calls. Для видео используем модель времени Remotion, интерактивные примеры R3F требуют адаптации. |
+| [Blender Bevel Modifier](https://docs.blender.org/manual/en/latest/modeling/modifiers/generate/bevel.html), [Three.js GLTFLoader](https://threejs.org/docs/pages/GLTFLoader.html), [Khronos glTF](https://registry.khronos.org/glTF/) | Фаска с контролируемыми нормалями сохраняет отражение на плоскости. В GLB сохраняем именованные детали, pivots, UV и PBR-каналы. Проверяем материалы и шкалу после импорта в итоговую сцену. |
+| [Remotion Fonts](https://www.remotion.dev/docs/fonts-api), [Rubik](https://raw.githubusercontent.com/google/fonts/main/ofl/rubik/METADATA.pb), [Manrope](https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/METADATA.pb), [Golos Text](https://raw.githubusercontent.com/google/fonts/main/ofl/golostext/METADATA.pb) | У всех трёх семейств есть кириллица и расширенная кириллица под OFL. Самостоятельно добавленный шрифт храним локально с OFL, дожидаемся загрузки до кадра и проверяем ширину реального текста. |
+
+## Художественные источники
+
+- Джон Лассетер описал перенос принципов рисованной анимации в 3D. Из этой системы здесь используются постановка поз, дуги, перенос веса, упреждение, сохранение видимого объёма и разное время затухания для корпуса и аксессуаров. [SIGGRAPH 1987, DOI](https://doi.org/10.1145/280811.281005), [конспект University of Washington](https://courses.cs.washington.edu/courses/cse557/17au/assets/lectures/animation-principles-4pp.pdf).
+- BUCK строит миниатюрную сцену вокруг нескольких деталей, по которым зритель распознаёт конкретное место. Для Toybox этому соответствуют навес, цветочная кадка и дорожная разметка на одном плане, с более спокойным вторым рядом зданий. [BUCK, Airbnb It](https://buck.co/work/airbnb-it).
+- Ordinary Folk сочетает графические и трёхмерные элементы в рассказе о продукте. В Toybox трёхмерный объект несёт событие, а плоская графика поясняет результат, счёт или направление. [Ordinary Folk, Webflow Ecommerce](https://www.ordinaryfolk.co/project/webflow-ecommerce).
+- В работе Dropbear знакомые предметы становятся связующими объектами в переходах масштаба. Для Toybox выбираем одну деталь-якорь, которая сохраняет направление и положение в кадре во время превращения. [Dropbear, Gojek](https://dropbear.com/Gojek).
+- Yeti Pictures подчёркивает роль согласованных размеров декораций и реквизита в миниатюрах. Крупные фаски, относительный размер окон и швов и мягкие контактные тени передают масштаб ещё до добавления глубины резкости. [Maxon, интервью с Yeti Pictures](https://www.maxon.net/en/article/toying-with-iconic-cinema-moments).
+
+## Платформенная композиция
+
+Зоны рекламных форматов дают ориентиры, а фактические органические интерфейсы меняются от устройства, языка, длины подписи и элементов взаимодействия. Проверяйте загруженный вертикальный тест в интерфейсе каждой целевой платформы. [TikTok safe zones](https://ads.tiktok.com/help/article/tiktok-reservation-in-feed-ads-reach-frequency), [YouTube vertical safe zones](https://support.google.com/google-ads/answer/13547298), [Meta Reels best practices](https://business-auth.facebook.com/business/learn/video/reels-best-practices).
+
+## База Animations
+
+Для проекта просмотрены [реестр композиций](../../../video/src/Root.tsx), [база опыта](../../../channel-experience/README.md), сценарный архив, структура рендеров и выборочные исходники. Ролики про Мурино, «Три истории» и Gorilla100 дают примеры окружения, рига, звукового тайминга и немых поз. Гранёная база использует простые фигуры, мягкий свет и контрастный текст. Переносим общий формат, детерминированную логику и читаемость. В Toybox последовательные фаски, утопленные соединения, смена материалов и упругость работают на впечатление изготовленного предмета. [Лепная почтовая улица](../../claymation-3d/SKILL.md) использует собственный характер поверхности и экспозиции. [Hyper Motion](../../hyper-motion-3d/SKILL.md) предоставляет технические системы режиссуры без необходимости повторять их в библиотеке Toybox.

@@ -6,6 +6,8 @@
   "scripts": {
     "studio": "remotion studio",
     "studio:clay": "remotion studio src/ClayPostalStreet.tsx",
+    "studio:toybox": "remotion studio src/ToyboxDemo.tsx",
+    "render:toybox": "remotion render src/ToyboxDemo.tsx ToyboxHyperDemo out/toybox-3d.mp4 --concurrency=2 --crf=21 --timeout=180000",
     "studio:hyper": "remotion studio src/HyperMotionDemo.tsx",
     "render:hyper": "remotion render src/HyperMotionDemo.tsx HyperMotionDemo out/hyper-motion-3d.mp4 --concurrency=2 --crf=19",
     "render:clay": "remotion render src/ClayPostalStreet.tsx ClayPostalStreet out/clay-postal-street.mp4 --concurrency=1 --crf=18",
