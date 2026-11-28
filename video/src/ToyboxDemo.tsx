@@ -17,7 +17,7 @@ import {ToyContactShadow, ToyLighting} from './three/toybox/lighting';
 import {ToyTitle} from './three/toybox/typography';
 import {getToyboxHyperPreset, type ToyboxHyperPreset} from './three/toybox/presets';
 import {getToyboxTheme, type ToyboxQuality} from './three/toybox/theme';
-import {ToyCafeTable, ToyCity, ToyInterior, ToySpace} from './three/toybox/world';
+import {ToyCafeTable, ToyCity, ToyInterior, ToySpace, ToyVehicle} from './three/toybox/world';
 
 const FORMAT = {width: 1080, height: 1920, fps: 30};
 const LENGTH = 840;
@@ -175,6 +175,8 @@ function CoffeeFilm({style, compare = false, quality = 'balanced', withAudio = t
       {low ? <BaselineStreet frame={frame} /> : <>
         <ToyLighting preset={theme.lighting} quality={quality} coverage={8} />
         {!trim && <ToyCity frame={frame} fps={fps} quality={quality} reaction={reaction} />}
+        {!compare && frame < 79 && <ToyVehicle quality={quality} variant="car"
+          position={[-2.3 + frame * .083, -.156, 4.44]} distance={frame * .083} color="#CA8A6B" />}
         {trim && <ToyCity frame={frame} fps={fps} quality="preview" traffic={false} pedestrians={false} />}
         {!macro && <ToyContactShadow size={[2.32, 1.96]} position={[0, .015, 0]} opacity={.54} />}
       </>}
