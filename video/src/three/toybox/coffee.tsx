@@ -1,6 +1,7 @@
 import type {ReactNode} from 'react';
 import {Vector2} from 'three';
 import {Block, Cyl} from '../../bear/kit';
+import {Person} from '../../scene/Characters';
 import {ToyBox} from './geometry';
 import {ToyMaterial} from './materials';
 import {TOY_MOTION, toyImpact, toySettle} from './motion';
@@ -97,14 +98,28 @@ export function CoffeeMachine({frame, fps = 30, quality, low = false, children}:
         children: <Cyl position={[0, 0, 0]} rt={.68} rb={.56} h={.07} seg={10} color={COFFEE.brass} />},
       {id: 'shell', offset: [0, -.52, -.55], spin: [-.55, -.35, 0], delay: .03, arc: .38,
         children: <>
-          <Cyl position={[0, .61, 0]} rt={.84} rb={.59} h={1.22} seg={10}
-            color={COFFEE.cap} look={{flat: true}} />
-          <Cyl position={[0, 1.226, 0]} rt={.75} rb={.75} h={.015} seg={10} color={COFFEE.crema} />
+          <mesh>
+            <latheGeometry args={[cupProfile, 10]} />
+            <meshStandardMaterial color={COFFEE.cap} roughness={.8} flatShading />
+          </mesh>
         </>},
       {id: 'handle', position: [.88, .64, -.025], offset: [-1.14, -.3, -.18],
         spin: [1.25, 0, -.9], delay: .15, arc: .4,
         children: <Block position={[.03, 0, 0]} size={[.25, .51, .23]} color={COFFEE.cap} />},
     ]} />}
+    {frame > 265 && frame < 647 && <group position={[CUP_BASE[0],
+      CUP_BASE[1] + .62 + .38 * soft(frame, 265, 292) - .38 * soft(frame, 610, 646), CUP_BASE[2]]}>
+      <Cyl position={[0, 0, 0]} rt={.725} rb={.725} h={.02} seg={10} color={COFFEE.crema} />
+      <Block position={[-.12, .046, -.032]} size={[.87, .052, .68]} color="#dcb18d" />
+      <Cyl position={[-.19, .27, -.18]} rt={.012} rb={.016} h={.48} seg={8} color={COFFEE.brass} />
+      <Cyl position={[-.19, .515, -.18]} rt={.038} rb={.262} h={.11} seg={8} color={COFFEE.enamel} />
+      <Cyl position={[.19, .19, .04]} rt={.109} rb={.095} h={.031} seg={8} color={COFFEE.ivory} />
+      <Cyl position={[.19, .12, .04]} rt={.015} rb={.025} h={.14} seg={8} color={COFFEE.base} />
+      <Person position={[.34 - .245 * soft(frame, 369, 433), .063, -.145]} scale={.157}
+        rotation={-.75} shirt="#2f796f" pants="#30445b" />
+      <Person position={[-.39, .063, -.19]} scale={.13} rotation={.62}
+        shirt="#e6ac51" pants="#3e5966" />
+    </group>}
   </group>;
 
   return <group>

@@ -1,0 +1,41 @@
+{
+  "composition": "ToyboxCompareHyper",
+  "width": 540,
+  "height": 960,
+  "fps": 30,
+  "scale": 0.5,
+  "gl": "swangle",
+  "independentStillOrder": [
+    176,
+    28,
+    111
+  ],
+  "sequentialSeconds": 75.092516298,
+  "frames": [
+    {
+      "frame": 28,
+      "still": "25aa8e6aeb908a59d7a28a5adcf238cb556ded3589904ab9432d215ee5d91219",
+      "parallel": "25aa8e6aeb908a59d7a28a5adcf238cb556ded3589904ab9432d215ee5d91219"
+    },
+    {
+      "frame": 111,
+      "still": "95d36c67815716e3f5ae5b6eb16855ce67688bead884ede0f62e134718788c2e",
+      "parallel": "95d36c67815716e3f5ae5b6eb16855ce67688bead884ede0f62e134718788c2e"
+    },
+    {
+      "frame": 176,
+      "still": "abfe33f105f947ab01f50722f1e5f42db42cca7fcd8c460f471446a54986374f",
+      "parallel": "abfe33f105f947ab01f50722f1e5f42db42cca7fcd8c460f471446a54986374f"
+    }
+  ],
+  "parallel": {
+    "resolvedConcurrency": 2,
+    "completionOrder": [
+      111,
+      28,
+      176
+    ],
+    "seconds": 75.129484466,
+    "mismatches": []
+  }
+}

@@ -17,7 +17,7 @@ import {ToyContactShadow, ToyLighting} from './three/toybox/lighting';
 import {ToyTitle} from './three/toybox/typography';
 import {getToyboxHyperPreset, type ToyboxHyperPreset} from './three/toybox/presets';
 import {getToyboxTheme, type ToyboxQuality} from './three/toybox/theme';
-import {ToyCity, ToyInterior, ToySpace} from './three/toybox/world';
+import {ToyCafeTable, ToyCity, ToyInterior, ToySpace} from './three/toybox/world';
 
 const FORMAT = {width: 1080, height: 1920, fps: 30};
 const LENGTH = 840;
@@ -47,7 +47,7 @@ const CINEMA: readonly CameraShot[] = [
   {frame: 839, position: [1.47, 2.41, 5.72], target: [-.21, 1.10, -.13], fov: 42},
 ];
 
-const BASE_CAMERA = {position: [1.65, 2.60, 5.72], target: [-.24, 1.15, .05], fov: 40} as const;
+const BASE_CAMERA = {position: [1.60, 2.74, 6.25], target: [-.22, 1.17, .02], fov: 42} as const;
 const CUES: readonly ToyEffectCue[] = [
   {kind: 'ring', from: 132, duration: 13, position: [-.47, 1.21, .73], direction: [0, 0, 1], size: .26, color: '#81e6bb'},
   {kind: 'dust', from: 190, duration: 31, position: [.42, .2, .42], direction: [.83, .24, .2], size: .5, color: '#e9c9ad'},
@@ -198,11 +198,21 @@ function Specimen({kind, quality = 'balanced'}: {kind: 'interior' | 'space'; qua
   const theme = getToyboxTheme(kind === 'space' ? 'space' : 'product', quality);
   return <ThreeCanvas width={width} height={height} shadows={quality !== 'preview'} camera={{near: .03, far: 95}}>
     <color attach="background" args={[theme.palette.background]} />
-    <StaticLens position={kind === 'space' ? [4.2, 3.15, 6.95] : [3.3, 2.65, 6.15]}
-      target={kind === 'space' ? [0, 1.18, 0] : [0, 1.0, -.48]} fov={43} />
+    <StaticLens position={kind === 'space' ? [1.65, 2.8, 7.42] : [3.2, 2.82, 6.22]}
+      target={kind === 'space' ? [0, 1.72, -1.04] : [.20, 1.27, -.37]} fov={43} />
     <ToyLighting preset={theme.lighting} quality={quality} coverage={7} />
-    {kind === 'space' ? <ToySpace frame={frame} fps={fps} quality={quality} />
-      : <ToyInterior frame={frame} fps={fps} quality={quality} />}
+    {kind === 'space' ? <>
+      <ToySpace frame={frame} fps={fps} quality={quality} />
+      <ToyContactShadow position={[.55, .005, .16]} size={[1.08, .81]} opacity={.48} />
+      <ToyCharacter frame={frame} fps={fps} position={[.55, 0, .16]} yaw={-.38}
+        config={TOY_CAST.neighbor} action="gesture" emotion="delight" target={[-.62, 3.7, .4]} />
+    </> : <>
+      <ToyInterior frame={frame} fps={fps} quality={quality} />
+      <ToyCafeTable position={[.55, .034, -.38]} rotation={-.39} quality={quality} />
+      <ToyContactShadow position={[-.49, .038, .30]} size={[1.07, .79]} opacity={.36} />
+      <ToyCharacter frame={frame} fps={fps} position={[-.49, .031, .30]} yaw={.38}
+        config={TOY_CAST.vendor} action="talk" emotion="joy" />
+    </>}
   </ThreeCanvas>;
 }
 
